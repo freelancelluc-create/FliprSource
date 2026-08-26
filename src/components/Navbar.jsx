@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, ShieldCheck, Zap, Bookmark, History, User, Search } from 'lucide-react';
+import { TrendingUp, ShieldCheck, Zap, Bookmark, History, User, Search, Coins } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favoritesCount = 0, credits = 3, onOpenUpsell }) {
   return (
@@ -88,25 +88,27 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
         </nav>
 
         {/* Right side: Free Credits Indicator & CTA */}
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 rounded-lg bg-[#12151F] border border-gray-800 px-3 py-1.5 text-xs">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2 rounded-lg bg-[#12151F] border border-gray-800 px-2 sm:px-3 py-1.5 text-xs">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span className="font-medium text-gray-300">Créditos:</span>
+            <span className="hidden sm:inline font-medium text-gray-300">Créditos:</span>
             <span className={`font-bold font-mono ${credits > 0 ? 'text-emerald-400' : 'text-red-400'}`}>{credits}</span>
             <button
               onClick={onOpenUpsell}
-              className="ml-1 rounded-md bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-400 hover:bg-emerald-500/25"
+              aria-label="Comprar créditos"
+              className="ml-0.5 rounded-md bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400 hover:bg-emerald-500/25"
             >
-              + Comprar
+              <span className="sm:hidden">+</span>
+              <span className="hidden sm:inline">+ Comprar</span>
             </button>
           </div>
 
           <button
             onClick={() => (credits > 0 ? setActiveTab('analyze') : onOpenUpsell())}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-4 py-2 text-xs font-bold text-black shadow-lg shadow-emerald-500/25 transition-all hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-3 sm:px-4 py-2 text-xs font-bold text-black shadow-lg shadow-emerald-500/25 transition-all hover:scale-105 active:scale-95"
           >
             <Zap className="h-4 w-4 fill-black text-black" />
-            <span className="hidden xs:inline">{credits > 0 ? 'Analizar gratis' : 'Comprar créditos'}</span>
+            <span className="hidden sm:inline">{credits > 0 ? 'Analizar gratis' : 'Comprar créditos'}</span>
           </button>
         </div>
       </div>
@@ -151,6 +153,17 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
         >
           <Bookmark className="w-4 h-4" />
           <span>Favoritos</span>
+        </button>
+
+        <button
+          onClick={onOpenUpsell}
+          className="flex flex-col items-center gap-1 px-3 py-1 rounded-lg text-gray-400 hover:text-white"
+        >
+          <Coins className={`w-4 h-4 ${credits > 0 ? 'text-emerald-400' : 'text-red-400'}`} />
+          <span className="flex items-center gap-1">
+            Créditos
+            <b className={`font-mono ${credits > 0 ? 'text-emerald-400' : 'text-red-400'}`}>{credits}</b>
+          </span>
         </button>
       </div>
     </header>

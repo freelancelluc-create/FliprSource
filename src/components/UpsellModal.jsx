@@ -1,23 +1,37 @@
 import React, { useState } from 'react';
-import { X, Zap, Check, CreditCard, Sparkles, Lock } from 'lucide-react';
+import { X, Zap, Check, CreditCard, Sparkles, Lock, AlertCircle } from 'lucide-react';
+import { PLANS } from '../data/plans';
 
-const PLANS = [
-  { id: 'starter', credits: 10, price: 1.99, label: 'Starter', perCredit: '0,20 €' },
-  { id: 'pro', credits: 60, price: 9.99, label: 'Pro', perCredit: '0,17 €', featured: true },
-  { id: 'boost', credits: 150, price: 19.99, label: 'Boost', perCredit: '0,13 €' },
-];
-
-export default function UpsellModal({ credits = 0, onClose, onBuy }) {
+export default function UpsellModal({ credits = 0, onClose }) {
   const [buying, setBuying] = useState(null); // id del plan en proceso
+  const [error, setError] = useState('');
 
   const handleBuy = async (plan) => {
     setBuying(plan.id);
-    // En producción aquí se abriría el checkout de Stripe/PayPal y solo se
-    // abonarían los créditos tras confirmar el pago. Para el MVP simulamos la
-    // compra localmente para que el flujo funcione de punta a punta.
-    await new Promise((r) => setTimeout(r, 700));
-    onBuy(plan);
-    setBuying(null);
+    setError('');
+    try {
+      const resp = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planId: plan.id }),
+      });
+      const data = await resp.json().catch(() => null);
+      if (data && data.url) {
+        // Redirige a la página de pago de Stripe (Google Pay / Apple Pay según dispositivo)
+        window.location.href = data.url;
+        return;
+      }
+      setError(
+        data && data.error === 'no-stripe'
+          ? 'El pago aún no está configurado en el servidor (falta STRIPE_SECRET_KEY).'
+          : 'No se pudo iniciar el pago. Inténtalo de nuevo.'
+      );
+    } catch (e) {
+      console.error(e);
+      setError('Error de conexión al iniciar el pago. Inténtalo de nuevo.');
+    } finally {
+      setBuying(null);
+    }
   };
 
   return (
@@ -93,6 +107,14 @@ export default function UpsellModal({ credits = 0, onClose, onBuy }) {
           })}
         </div>
 
+        {/* Error de pago */}
+        {error && (
+          <div className="flex items-start gap-2 rounded-xl bg-red-500/10 border border-red-500/30 px-3 py-2 text-[11px] font-mono text-red-300">
+            <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
+        )}
+
         {/* Trust / note */}
         <div className="flex items-center justify-center gap-4 text-[11px] text-gray-400 font-mono">
           <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Pago seguro</span>
@@ -101,7 +123,7 @@ export default function UpsellModal({ credits = 0, onClose, onBuy }) {
         </div>
 
         <p className="text-center text-[10px] text-gray-500 font-mono">
-          En producción el pago se procesa con Stripe; aquí se simula la compra para ver el flujo completo.
+          Pagos procesados por Stripe. Google Pay y Apple Pay disponibles según tu dispositivo.
         </p>
       </div>
     </div>

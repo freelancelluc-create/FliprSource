@@ -58,6 +58,27 @@ export default function App() {
     } catch (e) {}
   }, [favoritesList]);
 
+  // Confirmar pago de Stripe al volver del checkout (?session_id=...)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    if (!sessionId) return;
+    (async () => {
+      try {
+        const resp = await fetch('/api/confirm?session_id=' + encodeURIComponent(sessionId));
+        const data = await resp.json().catch(() => null);
+        if (data && data.ok && data.credits) {
+          addCredits(data.credits);
+          setCredits(getCredits());
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+    })();
+  }, []);
+
   // Handler when user triggers an analysis
   const handleAnalyze = (inputData) => {
     // Gate de créditos: sin saldo no se analiza; se abre el upsell.
@@ -221,11 +242,6 @@ export default function App() {
         <UpsellModal
           credits={credits}
           onClose={() => setUpsellOpen(false)}
-          onBuy={(plan) => {
-            addCredits(plan.credits);
-            setCredits(getCredits());
-            setUpsellOpen(false);
-          }}
         />
       )}
 
