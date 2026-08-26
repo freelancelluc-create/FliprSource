@@ -7,13 +7,20 @@ import HistoryView from './components/HistoryView';
 import ActionNegotiateModal from './components/ActionNegotiateModal';
 import ActionListingModal from './components/ActionListingModal';
 import Footer from './components/Footer';
+import UpsellModal from './components/UpsellModal';
 import { PRESET_PRODUCTS } from './data/presetProducts';
+import { findMarketData } from './data/marketCatalog';
 import { calculateFlipScore } from './utils/flipCalculator';
+import { getCredits, spendCredit, hasCredits, addCredits } from './utils/credits';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('hero'); // hero | analyze | result | history | favorites
   const [currentResult, setCurrentResult] = useState(PRESET_PRODUCTS[0]);
   const [initialPresetForForm, setInitialPresetForForm] = useState(null);
+
+  // Monetización: créditos
+  const [credits, setCredits] = useState(getCredits());
+  const [upsellOpen, setUpsellOpen] = useState(false);
 
   // Persistent History & Favorites state
   const [historyList, setHistoryList] = useState(() => {
@@ -53,21 +60,33 @@ export default function App() {
 
   // Handler when user triggers an analysis
   const handleAnalyze = (inputData) => {
+    // Gate de créditos: sin saldo no se analiza; se abre el upsell.
+    if (!hasCredits()) {
+      setUpsellOpen(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    spendCredit();
+    setCredits(getCredits());
+
     let resultObj;
     if (inputData.id) {
       // It's a full preset object
       resultObj = inputData;
     } else {
       // Custom user input calculation
+      const marketData = findMarketData(inputData.customTitle);
       resultObj = calculateFlipScore({
         title: inputData.customTitle,
         buyPrice: inputData.price,
         condition: inputData.condition,
         marketplace: inputData.marketplace,
         category: "Tecnología",
-        accessories: inputData.accessories
+        accessories: inputData.accessories,
+        marketData
       });
       resultObj.imageUrl = inputData.imageUrl;
+      resultObj.marketDataSource = marketData ? 'catalog' : 'heuristic';
     }
 
     setCurrentResult(resultObj);
@@ -118,6 +137,8 @@ export default function App() {
         }}
         historyCount={historyList.length}
         favoritesCount={favoritesList.length}
+        credits={credits}
+        onOpenUpsell={() => setUpsellOpen(true)}
       />
 
       {/* Main Content Router */}
@@ -193,6 +214,18 @@ export default function App() {
         <ActionListingModal
           result={listingModalResult}
           onClose={() => setListingModalResult(null)}
+        />
+      )}
+
+      {upsellOpen && (
+        <UpsellModal
+          credits={credits}
+          onClose={() => setUpsellOpen(false)}
+          onBuy={(plan) => {
+            addCredits(plan.credits);
+            setCredits(getCredits());
+            setUpsellOpen(false);
+          }}
         />
       )}
 

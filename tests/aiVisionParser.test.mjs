@@ -1,0 +1,63 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { normalizePrice, extractPriceFromHtml, parseProductFromImageOrUrl } from '../src/utils/aiVisionParser.js';
+
+test('normalizePrice: formatos españoles y limpieza', () => {
+  assert.equal(normalizePrice('158'), 158);
+  assert.equal(normalizePrice('1.234,56'), 1235);
+  assert.equal(normalizePrice('1.234'), 1234);
+  assert.equal(normalizePrice('1,99'), 2);
+  assert.equal(normalizePrice(' 320 €'), 320);
+  assert.equal(normalizePrice('abc'), null);
+  assert.equal(normalizePrice(''), null);
+  assert.equal(normalizePrice(null), null);
+});
+
+test('extractPriceFromHtml: JSON-LD offers en euros', () => {
+  const html = '<html><head><script type="application/ld+json">{"offers":{"price":158,"priceCurrency":"EUR"}}</script></head></html>';
+  assert.equal(extractPriceFromHtml(html), 158);
+});
+
+test('extractPriceFromHtml: meta product:price:amount', () => {
+  const html = '<html><head><meta property="product:price:amount" content="1234,56"></head></html>';
+  assert.equal(extractPriceFromHtml(html), 1235);
+});
+
+test('extractPriceFromHtml: sin precio -> null', () => {
+  assert.equal(extractPriceFromHtml('<html><body>hola mundo</body></html>'), null);
+});
+
+test('parse: URL con precio en el slug (sin fetch)', async () => {
+  const url = 'https://example.com/item/playstation-5-slim-250-euros-101010';
+  const r = await parseProductFromImageOrUrl({ file: null, imageUrl: null, urlText: url });
+  assert.equal(r.price, 250);
+  assert.equal(r.priceDetected, true);
+  assert.equal(r.priceSource, 'url');
+});
+
+test('parse: Wallapop -> lee precio real del HTML servido por el proxy', async () => {
+  globalThis.fetch = async () => ({
+    ok: true,
+    status: 200,
+    text: async () => '<html><script type="application/ld+json">{"offers":{"price":158,"priceCurrency":"EUR"}}</script></html>',
+  });
+  const url = 'https://es.wallapop.com/item/rieju-mrx-pro-supermotard-negra-1294319358';
+  const r = await parseProductFromImageOrUrl({ file: null, imageUrl: null, urlText: url });
+  assert.equal(r.price, 158);
+  assert.equal(r.priceSource, 'wallapop');
+});
+
+test('parse: Wallapop sin precio en HTML -> honesto (null)', async () => {
+  globalThis.fetch = async () => ({ ok: true, status: 200, text: async () => '<html><body>sin datos</body></html>' });
+  const url = 'https://es.wallapop.com/item/rieju-mrx-pro-supermotard-negra-1294319358';
+  const r = await parseProductFromImageOrUrl({ file: null, imageUrl: null, urlText: url });
+  assert.equal(r.price, null);
+  assert.equal(r.priceDetected, false);
+});
+
+test('parse: captura sin servicio de visión -> no inventa precio', async () => {
+  globalThis.fetch = async () => { throw new Error('network down'); };
+  const r = await parseProductFromImageOrUrl({ file: null, imageUrl: 'data:image/png;base64,xxx', urlText: null });
+  assert.equal(r.price, null);
+  assert.equal(r.priceDetected, false);
+});

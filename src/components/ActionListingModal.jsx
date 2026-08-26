@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { X, Copy, Check, FileText, Sparkles, Tag, TrendingUp } from 'lucide-react';
 
 export default function ActionListingModal({ result, onClose }) {
-  if (!result) return null;
-
   const [copiedTitle, setCopiedTitle] = useState(false);
   const [copiedDesc, setCopiedDesc] = useState(false);
+
+  if (!result) return null;
 
   const title = result.listingTitle || `${result.name} (${result.condition}) - Impecable`;
   

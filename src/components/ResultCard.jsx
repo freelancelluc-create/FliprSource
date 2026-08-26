@@ -136,7 +136,7 @@ export default function ResultCard({
             <div className="inline-flex items-center gap-2 rounded-lg bg-[#090A0F]/60 border border-gray-800 px-3 py-1.5 text-xs text-gray-400">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>Confianza del análisis: <strong className="text-white font-mono">{result.confidence || 94}%</strong></span>
-              <span className="text-[10px] text-gray-400">(Estimaciones de mercado)</span>
+              <span className="text-[10px] text-gray-400">{result.usedMarketData ? "(Datos reales de mercado)" : "(Estimación)"}</span>
             </div>
           </div>
 

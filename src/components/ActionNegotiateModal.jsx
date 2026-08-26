@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { X, Copy, Check, MessageSquareText, Sparkles, DollarSign } from 'lucide-react';
 
 export default function ActionNegotiateModal({ result, onClose }) {
-  if (!result) return null;
-
-  const defaultOffer = result.maxRecommendedBuy || Math.round(result.inputPrice * 0.88);
+  const defaultOffer = result?.maxRecommendedBuy || Math.round((result?.inputPrice || 0) * 0.88);
   const [offerPrice, setOfferPrice] = useState(defaultOffer);
   const [style, setStyle] = useState('direct'); // direct | polite | cash
   const [copied, setCopied] = useState(false);
+
+  if (!result) return null;
 
   // Generate tactical negotiation text based on style & offer price
   const getNegotiationText = () => {

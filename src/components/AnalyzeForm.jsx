@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Upload, DollarSign, Tag, ShoppingBag, Sparkles, Check, Image as ImageIcon, Zap, AlertCircle, Link as LinkIcon, CheckCircle2 } from 'lucide-react';
+import { Upload, Sparkles, Zap, AlertCircle, Link as LinkIcon, CheckCircle2 } from 'lucide-react';
 import { PRESET_PRODUCTS } from '../data/presetProducts';
 import { parseProductFromImageOrUrl } from '../utils/aiVisionParser';
 
@@ -20,6 +20,8 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
   const [isScanning, setIsScanning] = useState(false);
   const [scanStep, setScanStep] = useState("Escaneando ventas de mercado...");
   const [aiNotes, setAiNotes] = useState([]);
+  const [aiPriceWarning, setAiPriceWarning] = useState("");
+
 
   // Preset Selection Handler
   const handleSelectPreset = (preset) => {
@@ -32,6 +34,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
     setAccessories(preset.accessories || []);
     setAiNotes(preset.reasons ? [preset.reasons[0]] : []);
     setAiSuccessMessage("");
+    setAiPriceWarning("");
   };
 
   // Drag & drop or local photo upload
@@ -51,6 +54,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
   const runAiAnalysisOnUpload = async (file, imgData, urlText) => {
     setIsAiParsing(true);
     setAiSuccessMessage("");
+    setAiPriceWarning("");
     try {
       const parsed = await parseProductFromImageOrUrl({ file, imageUrl: imgData, urlText });
       setTitle(parsed.title);
@@ -61,10 +65,16 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
       setAiNotes(parsed.aiVisionNotes);
       setSelectedPresetId(null);
 
-      if (urlText) {
-        setAiSuccessMessage(`✓ ¡Enlace procesado! Título: "${parsed.title}" (${parsed.price} €)`);
+      if (parsed.priceDetected && parsed.price !== null) {
+        setAiPriceWarning("");
+        setAiSuccessMessage(urlText
+          ? `✓ ¡Enlace procesado! Título: "${parsed.title}" (${parsed.price} €)`
+          : "✓ ¡Foto analizada con Visión IA!");
       } else {
-        setAiSuccessMessage("✓ ¡Foto analizada con Visión IA!");
+        setAiSuccessMessage(urlText
+          ? `✓ Enlace procesado: "${parsed.title}"`
+          : "✓ Foto cargada");
+        setAiPriceWarning("⚠️ No hemos podido leer el precio del anuncio. Escríbelo en el campo 'Precio de compra' para continuar.");
       }
     } catch (e) {
       console.error(e);
@@ -95,7 +105,11 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!price || parseFloat(price) <= 0) return;
+    if (!price || parseFloat(price) <= 0) {
+      setAiPriceWarning("⚠️ Indica el precio de compra antes de analizar.");
+      return;
+    }
+    setAiPriceWarning("");
 
     setIsScanning(true);
     setScanStep("Identificando variante y modelo...");
@@ -312,10 +326,21 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                   value={price}
                   onChange={(e) => {
                     setPrice(e.target.value);
+                    setAiPriceWarning("");
                   }}
-                  className="w-full rounded-xl bg-[#090A0F] border border-gray-800 pl-8 pr-4 py-3 text-sm text-white font-mono font-bold focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                  className={`w-full rounded-xl bg-[#090A0F] border pl-8 pr-4 py-3 text-sm text-white font-mono font-bold focus:outline-none focus:ring-1 ${
+                    aiPriceWarning && !price
+                      ? 'border-amber-500/60 focus:border-amber-400 focus:ring-amber-400'
+                      : 'border-gray-800 focus:border-emerald-500 focus:ring-emerald-500'
+                  }`}
                 />
               </div>
+              {aiPriceWarning && (
+                <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 border border-amber-500/30 px-3 py-2 text-[11px] font-mono text-amber-300">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                  <span>{aiPriceWarning}</span>
+                </div>
+              )}
             </div>
 
           </div>

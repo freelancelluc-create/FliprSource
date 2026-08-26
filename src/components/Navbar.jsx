@@ -1,7 +1,7 @@
 import React from 'react';
 import { TrendingUp, ShieldCheck, Zap, Bookmark, History, User, Search } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favoritesCount = 0 }) {
+export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favoritesCount = 0, credits = 3, onOpenUpsell }) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gray-800/80 bg-[#090A0F]/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
@@ -92,15 +92,21 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
           <div className="hidden sm:flex items-center gap-2 rounded-lg bg-[#12151F] border border-gray-800 px-3 py-1.5 text-xs">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span className="font-medium text-gray-300">Créditos:</span>
-            <span className="font-bold text-emerald-400 font-mono">3/3 gratis</span>
+            <span className={`font-bold font-mono ${credits > 0 ? 'text-emerald-400' : 'text-red-400'}`}>{credits}</span>
+            <button
+              onClick={onOpenUpsell}
+              className="ml-1 rounded-md bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-[10px] font-bold text-emerald-400 hover:bg-emerald-500/25"
+            >
+              + Comprar
+            </button>
           </div>
 
           <button
-            onClick={() => setActiveTab('analyze')}
+            onClick={() => (credits > 0 ? setActiveTab('analyze') : onOpenUpsell())}
             className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-4 py-2 text-xs font-bold text-black shadow-lg shadow-emerald-500/25 transition-all hover:scale-105 active:scale-95"
           >
             <Zap className="h-4 w-4 fill-black text-black" />
-            <span className="hidden xs:inline">Analizar gratis</span>
+            <span className="hidden xs:inline">{credits > 0 ? 'Analizar gratis' : 'Comprar créditos'}</span>
           </button>
         </div>
       </div>
