@@ -2,23 +2,17 @@
  * Serverless Function de Vercel — Confirmación del pago
  *
  * Tras pagar en Stripe, el navegador vuelve a la app con ?session_id=... .
- * Esta función consulta a Stripe y, si el pago está pagado, devuelve los
- * créditos del plan comprado (para que el cliente los abone en su saldo).
+ * Consulta a Stripe y, si el pago está pagado, devuelve los créditos comprados.
  */
 
-function json(obj, status = 200) {
-  return new Response(JSON.stringify(obj), {
-    status,
-    headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
-  });
-}
+import { json } from '../lib/http.js';
 
-export default async function handler(request) {
+export default async function handler(req, res) {
   const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) return json({ ok: false, error: "no-stripe" });
+  if (!key) return json(res, { ok: false, error: "no-stripe" }, 503);
 
-  const sessionId = new URL(request.url).searchParams.get("session_id");
-  if (!sessionId) return json({ ok: false, error: "no-session" });
+  const sessionId = new URL(req.url || "/", `http://${(req.headers && req.headers.host) || "x"}`).searchParams.get("session_id");
+  if (!sessionId) return json(res, { ok: false, error: "no-session" }, 400);
 
   try {
     const resp = await fetch(`https://api.stripe.com/v1/checkout/sessions/${sessionId}`, {
@@ -27,11 +21,11 @@ export default async function handler(request) {
     const data = await resp.json();
 
     if (data && data.payment_status === "paid" && data.metadata && data.metadata.credits) {
-      return json({ ok: true, credits: parseInt(data.metadata.credits, 10) });
+      return json(res, { ok: true, credits: parseInt(data.metadata.credits, 10) });
     }
-    return json({ ok: false });
+    return json(res, { ok: false });
   } catch (e) {
     console.log("Stripe confirm error", e);
-    return json({ ok: false, error: "error" });
+    return json(res, { ok: false, error: "error" }, 502);
   }
 }

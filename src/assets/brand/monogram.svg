@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="FLIPR">
+  <title>FLIPR</title>
+  <!-- letra F implícita con la silueta del rayo -->
+  <path d="M34 8 L18 36 H30 L26 56 L46 28 H34 Z" fill="#10B981"/>
+</svg>

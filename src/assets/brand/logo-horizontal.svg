@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" role="img" aria-label="FLIPR SCORE">
+  <title>FLIPR SCORE™</title>
+  <defs>
+    <linearGradient id="hbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+  </defs>
+  <!-- isotipo -->
+  <rect x="10" y="10" width="100" height="100" rx="22" fill="url(#hbg)"/>
+  <path d="M68 26 L36 64 H58 L50 94 L90 56 H68 Z" fill="#090A0F" stroke="#090A0F" stroke-width="2" stroke-linejoin="round"/>
+  <!-- wordmark -->
+  <g font-family="'JetBrains Mono','Plus Jakarta Sans',ui-monospace,monospace" font-weight="800">
+    <text x="132" y="80" font-size="56" fill="#FFFFFF" letter-spacing="-1">FLIPR</text>
+    <!-- sello SCORE -->
+    <rect x="316" y="42" width="138" height="30" rx="6" fill="#10B981" fill-opacity="0.12" stroke="#10B981" stroke-opacity="0.45"/>
+    <text x="385" y="63" font-size="16" fill="#10B981" text-anchor="middle" font-weight="700" letter-spacing="2">SCORE™</text>
+  </g>
+  <!-- claim -->
+  <text x="132" y="102" font-family="'Plus Jakarta Sans',system-ui,sans-serif" font-size="13" fill="#9CA3AF" letter-spacing="3">¿LO COMPRO O NO?</text>
+</svg>

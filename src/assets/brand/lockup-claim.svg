@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img" aria-label="FLIPR — ¿Lo compro o no?">
+  <title>FLIPR</title>
+  <defs>
+    <linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <radialGradient id="hg" cx="0.5" cy="0.4" r="0.6">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#090A0F" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="720" height="220" fill="#090A0F"/>
+  <rect width="720" height="220" fill="url(#hg)"/>
+  <g transform="translate(40 40)">
+    <rect width="140" height="140" rx="30" fill="url(#lbg)"/>
+    <path d="M94 36 L50 92 H82 L70 124 L126 78 H94 Z" fill="#090A0F" stroke="#090A0F" stroke-width="2.5" stroke-linejoin="round"/>
+  </g>
+  <g font-family="'JetBrains Mono','Plus Jakarta Sans',ui-monospace,monospace" font-weight="800">
+    <text x="208" y="118" font-size="64" fill="#FFFFFF" letter-spacing="-1">FLIPR</text>
+    <rect x="396" y="78" width="142" height="32" rx="6" fill="#10B981" fill-opacity="0.12" stroke="#10B981" stroke-opacity="0.45"/>
+    <text x="467" y="100" font-size="17" fill="#10B981" text-anchor="middle" font-weight="700" letter-spacing="3">SCORE™</text>
+  </g>
+  <text x="208" y="158" font-family="'Plus Jakarta Sans',system-ui,sans-serif" font-size="22" font-weight="600" fill="#10B981" letter-spacing="2">¿LO COMPRO O NO?</text>
+  <text x="208" y="184" font-family="'Plus Jakarta Sans',system-ui,sans-serif" font-size="13" fill="#9CA3AF" letter-spacing="0.5">Sistema de decisión para compraventa de segunda mano</text>
+</svg>

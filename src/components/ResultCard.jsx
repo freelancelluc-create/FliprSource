@@ -5,6 +5,15 @@ import {
   Clock, DollarSign, Zap, HelpCircle, Copy, Check 
 } from 'lucide-react';
 import FlipScoreGauge from './FlipScoreGauge';
+import { computeFlipFactors } from '../utils/flipCalculator';
+
+// Clasifica cada razón con un tono visual (verde/ámbar/rojo) según su contenido
+function reasonTone(text) {
+  const t = String(text || '').toLowerCase();
+  if (/(riesgo|réplica|falsificaci|devaluaci|no se recomienda|insuficiente|difícil)/.test(t)) return 'bad';
+  if (/(margen|beneficio|regateo|negocia|estado|comisiones|franja|estimación)/.test(t)) return 'warn';
+  return 'good';
+}
 
 export default function ResultCard({ 
   result, 
@@ -15,9 +24,37 @@ export default function ResultCard({
   onToggleFavorite 
 }) {
   const [copied, setCopied] = useState(false);
+  const [copiedMsg, setCopiedMsg] = useState(false);
   const [priceTracked, setPriceTracked] = useState(false);
+  const [showScoreDetail, setShowScoreDetail] = useState(false);
 
   if (!result) return null;
+
+  // Desglose del FLIP SCORE en 5 factores (para presets antiguos sin factors, se calcula aquí)
+  const factors = result.factors || computeFlipFactors({
+    price: result.inputPrice,
+    marketAvg: (result.marketRangeMin + result.marketRangeMax) / 2,
+    marginMin: result.marginMin,
+    marginMax: result.marginMax,
+    demand: result.demand,
+    risk: result.risk,
+    liquidity: result.liquidity,
+  }).factors;
+
+  // Beneficio si se compra al precio objetivo (para presets antiguos sin estos campos)
+  const avgResell = (result.probableResellMin + result.probableResellMax) / 2;
+  const feesAtTarget = avgResell * 0.05 + 4.5;
+  const profitAtTargetMin = result.profitAtTargetMin ?? Math.max(0, Math.round(result.probableResellMin - result.maxRecommendedBuy - feesAtTarget));
+  const profitAtTargetMax = result.profitAtTargetMax ?? Math.max(0, Math.round(result.probableResellMax - result.maxRecommendedBuy - feesAtTarget));
+  const targetOfferMin = result.targetOfferMin ?? Math.max(1, Math.round(result.maxRecommendedBuy * 0.9));
+
+  const handleCopyMessage = () => {
+    if (navigator.clipboard && result.negociarTemplate) {
+      navigator.clipboard.writeText(result.negociarTemplate);
+      setCopiedMsg(true);
+      setTimeout(() => setCopiedMsg(false), 2500);
+    }
+  };
 
   // Color mapping based on Master Brief
   const isBuy = result.verdict === "COMPRALO";
@@ -147,6 +184,115 @@ export default function ResultCard({
 
         </div>
 
+        {/* 🎯 ZONA DE ACCIÓN: cuánto ofrecer y cuánto ganar */}
+        <div className="space-y-3">
+          {/* Precio actual vs TU PRECIO MÁXIMO vs venta probable */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="rounded-2xl bg-[#090A0F]/70 border border-gray-800 p-4">
+              <span className="text-[10px] font-mono text-gray-400 uppercase block">Precio actual</span>
+              <span className="text-2xl font-black text-white font-mono">{result.inputPrice} €</span>
+            </div>
+            <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/40 p-4">
+              <span className="text-[10px] font-mono text-emerald-400 uppercase block font-bold">🎯 Tu precio máximo</span>
+              <span className="text-2xl font-black text-emerald-400 font-mono">{result.maxRecommendedBuy} €</span>
+              <span className="text-[10px] text-emerald-200/70 block mt-0.5">A partir de aquí la oportunidad deja de ser atractiva.</span>
+            </div>
+            <div className="rounded-2xl bg-[#090A0F]/70 border border-gray-800 p-4">
+              <span className="text-[10px] font-mono text-gray-400 uppercase block">Venta probable</span>
+              <span className="text-2xl font-black text-white font-mono">{result.probableResellMin}–{result.probableResellMax} €</span>
+            </div>
+          </div>
+
+          {/* Beneficio según el precio de compra */}
+          <div className="rounded-2xl bg-[#090A0F]/60 border border-gray-800/70 p-4 space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-mono text-gray-400 uppercase">Beneficio a {result.inputPrice} €</span>
+              <span className="text-sm font-bold text-white font-mono">+{result.estimatedProfitMin} – +{result.estimatedProfitMax} €</span>
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-xs font-mono text-emerald-400 uppercase">Beneficio a {result.maxRecommendedBuy} €</span>
+              <span className="text-sm font-bold text-emerald-400 font-mono">+{profitAtTargetMin} – +{profitAtTargetMax} € 💥</span>
+            </div>
+            <p className="text-[10px] text-gray-500 font-mono">
+              {result.verdict === 'PASA' || result.verdict === 'NEGOCIA'
+                ? `A ${result.inputPrice} € no compensa. A ${result.maxRecommendedBuy} € la jugada cambia por completo.`
+                : `A ${result.inputPrice} € ya compensa; si logras bajar a ${result.maxRecommendedBuy} €, el beneficio se dispara.`}
+            </p>
+          </div>
+
+          {/* PRECIO OBJETIVO + mensaje para el vendedor */}
+          <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/25 p-4 space-y-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <span className="text-xs font-mono font-bold text-emerald-400 uppercase block">🎯 Precio objetivo</span>
+                <span className="text-2xl font-black text-emerald-400 font-mono">{result.maxRecommendedBuy} €</span>
+              </div>
+              <span className="text-[11px] font-mono text-emerald-200/80">
+                Intenta cerrar entre {targetOfferMin}–{result.maxRecommendedBuy} €
+              </span>
+            </div>
+            {result.negociarTemplate && (
+              <button
+                onClick={handleCopyMessage}
+                className="w-full sm:w-auto rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-2.5 text-xs font-bold flex items-center justify-center gap-2 transition-all"
+              >
+                {copiedMsg ? (
+                  <><Check className="w-4 h-4" /> ¡Mensaje copiado!</>
+                ) : (
+                  <><Copy className="w-4 h-4" /> Copiar mensaje para el vendedor</>
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* FLIP SCORE desglosado: 5 factores */}
+        <div className="rounded-2xl bg-[#090A0F]/40 border border-gray-800/60 p-5 space-y-4">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-mono font-bold text-gray-300 uppercase tracking-widest flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+              Basado en 5 factores
+            </span>
+            <button
+              onClick={() => setShowScoreDetail((v) => !v)}
+              className="text-[10px] font-mono text-emerald-400 hover:text-emerald-300 hover:underline whitespace-nowrap"
+            >
+              {showScoreDetail ? 'Ocultar detalle ▲' : '¿Cómo calculamos tu score? ▼'}
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {factors.map((f) => (
+              <div key={f.id}>
+                <div className="flex items-center justify-between text-[11px] font-mono mb-1">
+                  <span className="text-gray-300 font-semibold">{f.label}</span>
+                  <span className="text-gray-400">{f.score}<span className="text-gray-600">/100</span></span>
+                </div>
+                <div className="h-2 rounded-full bg-gray-800 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"
+                    style={{ width: `${f.score}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {showScoreDetail && (
+            <div className="space-y-2 border-t border-gray-800 pt-3 text-[11px] text-gray-400 font-mono">
+              <p>
+                El <strong className="text-white">FLIP SCORE {result.flipScore}/100</strong> es la media
+                ponderada de los 5 factores:
+              </p>
+              {factors.map((f) => (
+                <p key={f.id}>
+                  <strong className="text-white">{f.label} · {f.weight}%</strong> — {f.hint}
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Master Financial Breakdown Grid (Section 6 Example) */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-4 border-t border-gray-800/80">
           
@@ -169,8 +315,8 @@ export default function ResultCard({
           </div>
 
           <div className="rounded-2xl bg-[#090A0F]/90 p-4 border border-gray-800 space-y-1">
-            <span className="text-[10px] font-mono text-gray-400 uppercase block">Beneficio Estimado</span>
-            <span className="text-lg font-black text-emerald-400 font-mono">+{result.estimatedProfitMin} – {result.estimatedProfitMax} €</span>
+            <span className="text-[10px] font-mono text-gray-400 uppercase block">Beneficio a {result.inputPrice} €</span>
+            <span className="text-lg font-black text-emerald-400 font-mono">+{result.estimatedProfitMin} – +{result.estimatedProfitMax} €</span>
             <span className="text-[10px] text-gray-400 block">Neto tras gastos</span>
           </div>
 
@@ -237,16 +383,21 @@ export default function ResultCard({
       <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
         <h3 className="text-lg font-bold text-white flex items-center gap-2 border-b border-gray-800 pb-4">
           <Sparkles className="w-5 h-5 text-emerald-400" />
-          <span>¿Por qué esta recomendación?</span>
+          <span>¿Por qué {result.verdict}?</span>
         </h3>
 
         <div className="space-y-3">
-          {result.reasons && result.reasons.map((reason, idx) => (
-            <div key={idx} className="flex items-start gap-3 text-sm text-gray-300">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-              <span>{reason}</span>
-            </div>
-          ))}
+          {result.reasons && result.reasons.map((reason, idx) => {
+            const tone = reasonTone(reason);
+            const Icon = tone === 'bad' ? XCircle : tone === 'warn' ? AlertTriangle : CheckCircle2;
+            const color = tone === 'bad' ? 'text-red-400' : tone === 'warn' ? 'text-amber-400' : 'text-emerald-400';
+            return (
+              <div key={idx} className="flex items-start gap-3 text-sm text-gray-300">
+                <Icon className={`w-5 h-5 ${color} flex-shrink-0 mt-0.5`} />
+                <span>{reason}</span>
+              </div>
+            );
+          })}
         </div>
 
         {/* Negotiation Angle Box */}

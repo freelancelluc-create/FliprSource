@@ -5,9 +5,10 @@
  * del servidor (process.env.OPENAI_API_KEY). Así la clave NUNCA se expone en el
  * navegador. Devuelve { ok, price, reason }.
  *
- * Nota: para que funcione, configura OPENAI_API_KEY en las variables de entorno
- * de Vercel (no en el código).
+ * Nota: configura OPENAI_API_KEY en las variables de entorno de Vercel.
  */
+
+import { json, readBody } from '../lib/http.js';
 
 function normalizePrice(raw) {
   if (raw === null || raw === undefined) return null;
@@ -27,29 +28,16 @@ function normalizePrice(raw) {
   return null;
 }
 
-function json(obj, status = 200) {
-  return new Response(JSON.stringify(obj), {
-    status,
-    headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
-  });
-}
+export default async function handler(req, res) {
+  const body = await readBody(req);
+  const imageDataUrl = body?.imageDataUrl;
 
-export default async function handler(request) {
-  let imageDataUrl;
-  try {
-    const body = await request.json();
-    imageDataUrl = body && body.imageDataUrl;
-  } catch (e) {
-    imageDataUrl = null;
-  }
-
-  if (!imageDataUrl) return json({ ok: false, reason: "no-image" });
+  if (!imageDataUrl) return json(res, { ok: false, reason: "no-image" }, 400);
 
   const key = process.env.OPENAI_API_KEY;
-  if (!key) return json({ ok: false, reason: "no-key" });
+  if (!key) return json(res, { ok: false, reason: "no-key" }, 503);
 
-  // Límite de tamaño del cuerpo (Vercel ~4.5 MB); protegemos con margen.
-  if (imageDataUrl.length > 6_000_000) return json({ ok: false, reason: "image-too-large" });
+  if (imageDataUrl.length > 6_000_000) return json(res, { ok: false, reason: "image-too-large" }, 413);
 
   try {
     const resp = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -73,16 +61,16 @@ export default async function handler(request) {
       }),
     });
 
-    if (!resp.ok) return json({ ok: false, reason: "api-error:" + resp.status });
+    if (!resp.ok) return json(res, { ok: false, reason: "api-error:" + resp.status }, 502);
 
     const data = await resp.json();
     const content = (data?.choices?.[0]?.message?.content) || "";
-    if (/NO_ENCUENTRO|no encuentro/i.test(content)) return json({ ok: false, reason: "no-price" });
+    if (/NO_ENCUENTRO|no encuentro/i.test(content)) return json(res, { ok: false, reason: "no-price" });
 
     const price = normalizePrice(content);
-    return price ? json({ ok: true, price }) : json({ ok: false, reason: "unparsed" });
+    return price ? json(res, { ok: true, price }) : json(res, { ok: false, reason: "unparsed" });
   } catch (e) {
     console.log("Vision server error", e);
-    return json({ ok: false, reason: "error" });
+    return json(res, { ok: false, reason: "error" }, 502);
   }
 }

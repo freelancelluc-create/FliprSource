@@ -1,7 +1,7 @@
 import React from 'react';
 import { TrendingUp, ShieldCheck, Zap, Bookmark, History, User, Search, Coins } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favoritesCount = 0, credits = 3, onOpenUpsell }) {
+export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favoritesCount = 0, credits = 3, onOpenUpsell, user = null, onOpenAuth, onLogout }) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gray-800/80 bg-[#090A0F]/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
@@ -87,8 +87,47 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
           </button>
         </nav>
 
-        {/* Right side: Free Credits Indicator & CTA */}
+        {/* Right side: Auth + Free Credits Indicator & CTA */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Auth */}
+          {user ? (
+            <>
+              <div className="hidden sm:flex items-center gap-2 rounded-lg bg-[#12151F] border border-gray-800 px-2.5 py-1.5 text-xs" title={user.email}>
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 text-[10px] font-black">
+                  {(user.name || '?').charAt(0).toUpperCase()}
+                </span>
+                <span className="max-w-[90px] truncate font-bold text-white">{user.name}</span>
+                <button onClick={onLogout} className="text-gray-400 hover:text-red-400 font-mono px-0.5" title="Cerrar sesión">×</button>
+              </div>
+              <button
+                onClick={onLogout}
+                title="Cerrar sesión"
+                className="sm:hidden flex h-9 w-9 items-center justify-center rounded-xl bg-[#12151F] border border-gray-800 text-emerald-400"
+              >
+                <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/20 text-[10px] font-black">
+                  {(user.name || '?').charAt(0).toUpperCase()}
+                </span>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={onOpenAuth}
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-[#12151F] border border-gray-800 px-3 py-2 text-xs font-bold text-gray-300 hover:text-white hover:border-gray-700 transition-all"
+              >
+                <User className="w-3.5 h-3.5" />
+                Entrar
+              </button>
+              <button
+                onClick={onOpenAuth}
+                title="Entrar / Crear cuenta"
+                className="sm:hidden flex h-9 w-9 items-center justify-center rounded-xl bg-[#12151F] border border-gray-800 text-gray-300 hover:text-white"
+              >
+                <User className="w-4 h-4" />
+              </button>
+            </>
+          )}
+
           <div className="flex items-center gap-1.5 sm:gap-2 rounded-lg bg-[#12151F] border border-gray-800 px-2 sm:px-3 py-1.5 text-xs">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span className="hidden sm:inline font-medium text-gray-300">Créditos:</span>

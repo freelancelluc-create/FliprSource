@@ -1,11 +1,83 @@
 /**
  * Motor de valoración FLIPR
- * Calcula margen, beneficio neto estimado, recomendación inequívoca y FLIP SCORE™ 0-100
+ * Calcula margen, beneficio neto estimado, recomendación inequívoca y FLIP SCORE™ 0-100.
+ *
+ * FLIP SCORE™ = media ponderada de 5 factores (0-100 cada uno):
+ *   Precio (30%) · Margen (30%) · Demanda (15%) · Riesgo (15%) · Velocidad (10%)
  *
  * Si se pasa `marketData` (de MARKET_CATALOG) se usa el valor de mercado REAL del
  * producto para comparar con el precio de compra. Si no, se cae a una heurística
  * basada en el precio (marcada como estimación).
  */
+
+const DEMANDA_SCORE = { "MUY ALTA": 95, "ALTA": 80, "MEDIA": 55, "BAJA": 30 };
+const RIESGO_SCORE = { "BAJO": 85, "MEDIO": 55, "ALTO": 25 };
+const VELOCIDAD_SCORE = { "FÁCIL": 80, "MEDIA": 60, "DIFÍCIL": 35 };
+
+const WEIGHTS = {
+  precio: 30,
+  margen: 30,
+  demanda: 15,
+  riesgo: 15,
+  velocidad: 10,
+};
+
+/**
+ * Calcula los 5 factores del FLIP SCORE a partir de los datos del análisis.
+ * Cada factor puntúa 0-100 (más alto = mejor para el flipeo).
+ */
+export function computeFlipFactors({ price, marketAvg, marginMin, marginMax, demand, risk, liquidity }) {
+  const safePrice = parseFloat(price) || 0;
+  const safeMarket = parseFloat(marketAvg) || 0;
+  const discountRatio = safeMarket > 0 ? (safeMarket - safePrice) / safeMarket : 0;
+  const avgMargin = ((parseFloat(marginMin) || 0) + (parseFloat(marginMax) || 0)) / 2;
+
+  const clamp = (n) => Math.min(100, Math.max(0, Math.round(n)));
+
+  const factors = [
+    {
+      id: "precio",
+      label: "Precio",
+      score: clamp(discountRatio * 270),
+      weight: WEIGHTS.precio,
+      hint: "Precio de compra frente al valor de mercado (más barato que el mercado = mejor).",
+    },
+    {
+      id: "margen",
+      label: "Margen",
+      score: clamp(avgMargin * 2.5),
+      weight: WEIGHTS.margen,
+      hint: "Beneficio neto estimado sobre el precio de compra, tras comisiones.",
+    },
+    {
+      id: "demanda",
+      label: "Demanda",
+      score: DEMANDA_SCORE[demand] ?? 55,
+      weight: WEIGHTS.demanda,
+      hint: "Interés de los compradores en este tipo de producto.",
+    },
+    {
+      id: "riesgo",
+      label: "Riesgo",
+      score: RIESGO_SCORE[risk] ?? 55,
+      weight: WEIGHTS.riesgo,
+      hint: "A menor riesgo (réplicas, averías, depreciación), mejor puntuación.",
+    },
+    {
+      id: "velocidad",
+      label: "Velocidad",
+      score: VELOCIDAD_SCORE[liquidity] ?? 55,
+      weight: WEIGHTS.velocidad,
+      hint: "Facilidad y rapidez estimada para revender el producto.",
+    },
+  ];
+
+  const weightedScore = Math.round(
+    factors.reduce((acc, f) => acc + f.score * f.weight, 0) / 100
+  );
+
+  return { factors, weightedScore };
+}
 
 export function calculateFlipScore({
   title,
@@ -28,7 +100,7 @@ export function calculateFlipScore({
   };
   const mult = conditionMultipliers[condition] || 1.30;
 
-  // Valor de mercado y rangos: usamos datos reales si reconocemos el producto
+  // Valor de mercado y rangos: datos reales si reconocemos el producto
   let estimatedMarketAvg, marketRangeMin, marketRangeMax;
   let probableResellMin, probableResellMax;
   let demand, risk, liquidity, timeToSell;
@@ -72,38 +144,35 @@ export function calculateFlipScore({
   const avgProfit = (estimatedProfitMin + estimatedProfitMax) / 2;
 
   // Margen % = (Beneficio / Precio compra) * 100 (acotado a 999 para mostrar cifras sanas)
-  const rawMarginMin = Math.round((estimatedProfitMin / price) * 100);
-  const rawMarginMax = Math.round((estimatedProfitMax / price) * 100);
-  const marginMin = Math.min(999, rawMarginMin);
-  const marginMax = Math.min(999, rawMarginMax);
-  const avgMargin = (marginMin + marginMax) / 2;
+  const marginMin = Math.min(999, Math.round((estimatedProfitMin / price) * 100));
+  const marginMax = Math.min(999, Math.round((estimatedProfitMax / price) * 100));
 
   // Precio máximo de compra recomendado para mantener un 20% de margen
   const maxRecommendedBuy = Math.round((avgResell - shippingFee) / 1.25);
 
-  // Algoritmo FLIP SCORE™ 0-100
-  let rawScore = 0;
+  // Beneficio potencial si se compra al precio objetivo (clave para el "flipper")
+  const costAtTarget = maxRecommendedBuy + platformFee + shippingFee;
+  const profitAtTargetMin = Math.max(0, Math.round(probableResellMin - costAtTarget));
+  const profitAtTargetMax = Math.max(0, Math.round(probableResellMax - costAtTarget));
+  const targetOfferMin = Math.max(1, Math.round(maxRecommendedBuy * 0.9));
 
-  // 1. Ratio precio compra vs mercado (50%)
-  const discountRatio = (estimatedMarketAvg - price) / estimatedMarketAvg;
-  rawScore += Math.min(50, Math.max(0, discountRatio * 200));
-
-  // 2. Margen de beneficio (40%)
-  rawScore += Math.min(40, Math.max(0, avgMargin * 1.4));
-
-  // 3. Bonus por accesorios (caja, factura, extras) (10%)
-  if (accessories && accessories.length > 0) {
-    rawScore += Math.min(10, accessories.length * 3.5);
-  }
-
-  // Clamp entre 0 y 99 (100 reservado para chollos extremos)
-  const flipScore = Math.min(99, Math.max(12, Math.round(rawScore)));
+  // FLIP SCORE™ = media ponderada de los 5 factores
+  const { factors, weightedScore } = computeFlipFactors({
+    price,
+    marketAvg: estimatedMarketAvg,
+    marginMin,
+    marginMax,
+    demand,
+    risk,
+    liquidity,
+  });
+  const flipScore = Math.min(99, Math.max(12, weightedScore));
 
   // Determinación de Veredicto inequívoco
   let verdict = "COMPRALO";
   if (flipScore < 60 || avgProfit < 20) {
     verdict = "PASA";
-  } else if (flipScore < 78 || avgMargin < 18) {
+  } else if (flipScore < 68) {
     verdict = "NEGOCIA";
   }
 
@@ -111,7 +180,7 @@ export function calculateFlipScore({
   if (!usingMarketData) {
     if (flipScore < 60) {
       demand = "MEDIA"; risk = "ALTO"; liquidity = "DIFÍCIL"; timeToSell = "10–20 días";
-    } else if (flipScore < 80) {
+    } else if (flipScore < 68) {
       demand = "ALTA"; risk = "MEDIO"; liquidity = "FÁCIL"; timeToSell = "5–10 días";
     }
   }
@@ -136,6 +205,9 @@ export function calculateFlipScore({
     marketRangeMin,
     marketRangeMax,
     maxRecommendedBuy,
+    profitAtTargetMin,
+    profitAtTargetMax,
+    targetOfferMin,
     probableResellMin,
     probableResellMax,
     estimatedProfitMin,
@@ -147,6 +219,7 @@ export function calculateFlipScore({
     liquidity,
     timeToSell,
     confidence,
+    factors,
     reasons: [
       `Precio de compra de ${price} € vs ${marketRef}.`,
       `Margen de beneficio proyectado del ${marginMin}% al ${marginMax}% tras comisiones de ${marketplace}.`,

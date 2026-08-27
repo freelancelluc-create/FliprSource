@@ -1,35 +1,53 @@
 import React, { useState } from 'react';
-import { X, Zap, Check, CreditCard, Sparkles, Lock, AlertCircle } from 'lucide-react';
+import { X, Zap, Check, CreditCard, Sparkles, Lock, AlertCircle, FlaskConical } from 'lucide-react';
 import { PLANS } from '../data/plans';
+import { PAYMENTS_ENABLED } from '../config';
 
-export default function UpsellModal({ credits = 0, onClose }) {
+export default function UpsellModal({ credits = 0, onClose, onBuy }) {
   const [buying, setBuying] = useState(null); // id del plan en proceso
   const [error, setError] = useState('');
 
   const handleBuy = async (plan) => {
     setBuying(plan.id);
     setError('');
+
+    // MODO PRUEBAS: añadir créditos gratis sin cobrar
+    if (!PAYMENTS_ENABLED) {
+      await new Promise((r) => setTimeout(r, 500));
+      if (onBuy) onBuy(plan);
+      setBuying(null);
+      return;
+    }
+
+    // PAGO REAL: Stripe Checkout (Google Pay / Apple Pay según dispositivo)
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000); // 15s límite
     try {
       const resp = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ planId: plan.id }),
+        signal: controller.signal,
       });
       const data = await resp.json().catch(() => null);
       if (data && data.url) {
-        // Redirige a la página de pago de Stripe (Google Pay / Apple Pay según dispositivo)
         window.location.href = data.url;
         return;
       }
-      setError(
-        data && data.error === 'no-stripe'
-          ? 'El pago aún no está configurado en el servidor (falta STRIPE_SECRET_KEY).'
-          : 'No se pudo iniciar el pago. Inténtalo de nuevo.'
-      );
+      if (data && data.error === 'no-stripe') {
+        setError('El pago aún no está configurado en el servidor (falta STRIPE_SECRET_KEY en Vercel).');
+      } else {
+        setError('No se pudo iniciar el pago. ' + ((data && data.detail) || 'Yendo a Stripe falló. Inténtalo de nuevo.'));
+      }
     } catch (e) {
       console.error(e);
-      setError('Error de conexión al iniciar el pago. Inténtalo de nuevo.');
+      setError(
+        e && e.name === 'AbortError'
+          ? 'El servidor de pagos tardó demasiado en responder. Comprueba que STRIPE_SECRET_KEY está configurada en Vercel.'
+          : 'Error de conexión al iniciar el pago. Inténtalo de nuevo.'
+      );
     } finally {
+      clearTimeout(timeout);
       setBuying(null);
     }
   };
@@ -115,6 +133,17 @@ export default function UpsellModal({ credits = 0, onClose }) {
           </div>
         )}
 
+        {/* Modo pruebas */}
+        {!PAYMENTS_ENABLED && (
+          <div className="flex items-start gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/25 px-3 py-2 text-[11px] font-mono text-emerald-300">
+            <FlaskConical className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+            <span>
+              <strong>Modo pruebas:</strong> los créditos se añaden gratis sin cobrar. Cuando actives los pagos en
+              <code className="text-emerald-400"> src/config.js </code>, se cobrarán con Stripe (Google Pay / Apple Pay).
+            </span>
+          </div>
+        )}
+
         {/* Trust / note */}
         <div className="flex items-center justify-center gap-4 text-[11px] text-gray-400 font-mono">
           <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Pago seguro</span>
@@ -123,7 +152,9 @@ export default function UpsellModal({ credits = 0, onClose }) {
         </div>
 
         <p className="text-center text-[10px] text-gray-500 font-mono">
-          Pagos procesados por Stripe. Google Pay y Apple Pay disponibles según tu dispositivo.
+          {PAYMENTS_ENABLED
+            ? 'Pagos procesados por Stripe. Google Pay y Apple Pay disponibles según tu dispositivo.'
+            : 'Fase de pruebas: compra simulada para probar el flujo completo.'}
         </p>
       </div>
     </div>

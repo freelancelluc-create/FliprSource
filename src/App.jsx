@@ -8,15 +8,21 @@ import ActionNegotiateModal from './components/ActionNegotiateModal';
 import ActionListingModal from './components/ActionListingModal';
 import Footer from './components/Footer';
 import UpsellModal from './components/UpsellModal';
+import AuthModal from './components/AuthModal';
 import { PRESET_PRODUCTS } from './data/presetProducts';
 import { findMarketData } from './data/marketCatalog';
 import { calculateFlipScore } from './utils/flipCalculator';
-import { getCredits, spendCredit, hasCredits, addCredits } from './utils/credits';
+import { getCredits, spendCredit, hasCredits, addCredits, setCredits as persistCredits } from './utils/credits';
+import { fetchMe, logout, loadUserData, saveUserData, getStoredUser } from './auth';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('hero'); // hero | analyze | result | history | favorites
   const [currentResult, setCurrentResult] = useState(PRESET_PRODUCTS[0]);
   const [initialPresetForForm, setInitialPresetForForm] = useState(null);
+
+  // Cuenta de usuario
+  const [user, setUser] = useState(() => getStoredUser());
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   // Monetización: créditos
   const [credits, setCredits] = useState(getCredits());
@@ -57,6 +63,45 @@ export default function App() {
       localStorage.setItem('flipr_favorites', JSON.stringify(favoritesList));
     } catch (e) {}
   }, [favoritesList]);
+
+  // Comprobar sesión al cargar la app
+  useEffect(() => {
+    (async () => {
+      const me = await fetchMe();
+      if (me) setUser(me);
+    })();
+  }, []);
+
+  // Tras iniciar sesión, cargar los datos del usuario desde el servidor
+  const handleAuthSuccess = async (u) => {
+    setUser(u);
+    try {
+      const server = await loadUserData();
+      if (server) {
+        if (Array.isArray(server.history) && server.history.length > 0) setHistoryList(server.history);
+        if (Array.isArray(server.favorites) && server.favorites.length > 0) setFavoritesList(server.favorites);
+        if (Number.isFinite(Number(server.credits))) {
+          persistCredits(Number(server.credits));
+          setCredits(getCredits());
+        }
+      }
+      // Si el servidor no tiene datos, el efecto de sync subirá los locales (migración)
+    } catch (e) {}
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setUser(null);
+  };
+
+  // Sincronizar datos con el servidor (solo con sesión activa, con pequeño retardo)
+  useEffect(() => {
+    if (!user) return;
+    const id = setTimeout(() => {
+      saveUserData(historyList, favoritesList, credits).catch(() => {});
+    }, 800);
+    return () => clearTimeout(id);
+  }, [user, historyList, favoritesList, credits]);
 
   // Confirmar pago de Stripe al volver del checkout (?session_id=...)
   useEffect(() => {
@@ -160,6 +205,9 @@ export default function App() {
         favoritesCount={favoritesList.length}
         credits={credits}
         onOpenUpsell={() => setUpsellOpen(true)}
+        user={user}
+        onOpenAuth={() => setAuthModalOpen(true)}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Router */}
@@ -242,6 +290,18 @@ export default function App() {
         <UpsellModal
           credits={credits}
           onClose={() => setUpsellOpen(false)}
+          onBuy={(plan) => {
+            addCredits(plan.credits);
+            setCredits(getCredits());
+            setUpsellOpen(false);
+          }}
+        />
+      )}
+
+      {authModalOpen && (
+        <AuthModal
+          onClose={() => setAuthModalOpen(false)}
+          onSuccess={handleAuthSuccess}
         />
       )}
 

@@ -10,30 +10,17 @@
  */
 
 import { findPlan } from '../src/data/plans.js';
+import { json, readBody, originOf } from '../lib/http.js';
 
-function json(obj, status = 200) {
-  return new Response(JSON.stringify(obj), {
-    status,
-    headers: { "Content-Type": "application/json", "Cache-Control": "no-store" },
-  });
-}
-
-export default async function handler(request) {
+export default async function handler(req, res) {
   const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) return json({ error: "no-stripe" });
+  if (!key) return json(res, { error: "no-stripe" }, 503);
 
-  let planId = "";
-  try {
-    const body = await request.json();
-    planId = (body && body.planId) || "";
-  } catch (e) {
-    planId = "";
-  }
+  const body = await readBody(req);
+  const plan = findPlan(body?.planId);
+  if (!plan) return json(res, { error: "invalid-plan" }, 400);
 
-  const plan = findPlan(planId);
-  if (!plan) return json({ error: "invalid-plan" }, 400);
-
-  const origin = new URL(request.url).origin;
+  const origin = originOf(req);
 
   const params = new URLSearchParams();
   params.set("mode", "payment");
@@ -58,11 +45,11 @@ export default async function handler(request) {
     const data = await resp.json();
     if (!resp.ok || !data.url) {
       console.log("Stripe checkout error", resp.status, data);
-      return json({ error: "stripe-error" });
+      return json(res, { error: "stripe-error", detail: (data && data.error && data.error.message) || ("HTTP " + resp.status) }, 502);
     }
-    return json({ url: data.url });
+    return json(res, { url: data.url });
   } catch (e) {
     console.log("Stripe checkout exception", e);
-    return json({ error: "stripe-error" });
+    return json(res, { error: "stripe-error", detail: e && e.message }, 502);
   }
 }

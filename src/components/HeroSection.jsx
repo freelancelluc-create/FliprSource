@@ -1,45 +1,67 @@
-import React from 'react';
-import { ArrowRight, ShieldCheck, Zap, TrendingUp, CheckCircle2, ChevronRight, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowRight, ShieldCheck, Zap, TrendingUp, CheckCircle2, ChevronRight, Sparkles, Flame } from 'lucide-react';
 import FlipScoreGauge from './FlipScoreGauge';
 
+// Oportunidades de ejemplo que rotan (precios con pequeñas variaciones para sensación de "en vivo")
+const BASE_OPPORTUNITIES = [
+  { name: 'PS5 Slim', price: 250, verdict: 'COMPRALO', extra: '+75 €' },
+  { name: 'iPhone 14 Pro', price: 420, verdict: 'COMPRALO', extra: '+90 €' },
+  { name: 'MacBook Air M1', price: 480, verdict: 'COMPRALO', extra: '+110 €' },
+  { name: 'Switch OLED', price: 200, verdict: 'NEGOCIA', extra: 'Oferta 170 €' },
+  { name: 'AirPods Pro 2', price: 140, verdict: 'PASA', extra: 'Riesgo réplica' },
+  { name: 'RTX 3070', price: 240, verdict: 'COMPRALO', extra: '+70 €' },
+];
+
+const VERDICT_STYLE = {
+  COMPRALO: 'text-emerald-400 font-bold',
+  NEGOCIA: 'text-amber-400 font-bold',
+  PASA: 'text-red-400 font-bold',
+};
+const VERDICT_ICON = { COMPRALO: '🟢', NEGOCIA: '🟡', PASA: '🔴' };
+
 export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
+  const [tick, setTick] = useState(0);
+
+  // Cambia ligeramente los precios cada 4s para que el ticker parezca "en vivo"
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => t + 1), 4000);
+    return () => clearInterval(id);
+  }, []);
+
+  const items = BASE_OPPORTUNITIES.map((op, idx) => ({
+    ...op,
+    displayPrice: op.price + ((tick + idx) % 3 - 1) * 5,
+  }));
+
+  // Duplicamos para que el marquee haga bucle sin cortes
+  const marqueeItems = [...items, ...items];
+
   return (
     <section className="relative overflow-hidden pt-8 pb-16 md:pt-14 md:pb-24">
       {/* Background Neon Grid Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-emerald-500/5 blur-3xl pointer-events-none rounded-full" />
 
-      {/* Marquee Ticker for live trading feel */}
-      <div className="w-full bg-[#12151F] border-y border-gray-800/80 py-2 overflow-hidden mb-10 text-xs font-mono">
-        <div className="animate-marquee whitespace-nowrap flex items-center gap-8 text-gray-400">
-          <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-            PS5 Slim: CÓMPRALO (+75€ beneficio)
-          </span>
-          <span>•</span>
-          <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
-            iPhone 14 Pro: CÓMPRALO (+140€ beneficio)
-          </span>
-          <span>•</span>
-          <span className="flex items-center gap-1.5 text-amber-400 font-bold">
-            Nintendo Switch: NEGOCIA (Ofertar 170€)
-          </span>
-          <span>•</span>
-          <span className="flex items-center gap-1.5 text-red-400 font-bold">
-            AirPods Pro 2: PASA (Riesgo réplica)
-          </span>
-          <span>•</span>
-          <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
-            MacBook Air M1: CÓMPRALO (+120€ beneficio)
-          </span>
-          <span>•</span>
-          {/* Duplicate for seamless marquee loop */}
-          <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
-            PS5 Slim: CÓMPRALO (+75€ beneficio)
-          </span>
-          <span>•</span>
-          <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
-            iPhone 14 Pro: CÓMPRALO (+140€ beneficio)
-          </span>
+      {/* Live Opportunities Ticker */}
+      <div className="mb-10">
+        <div className="w-full bg-[#0D1017] border-y border-gray-800/80 py-1.5 text-[10px] font-mono uppercase tracking-widest">
+          <div className="mx-auto max-w-7xl px-4 flex items-center justify-center gap-2 text-emerald-400 font-bold">
+            <Flame className="w-3.5 h-3.5" />
+            Oportunidades detectadas ahora
+          </div>
+        </div>
+        <div className="w-full bg-[#12151F] border-b border-gray-800/80 py-2 overflow-hidden text-xs font-mono">
+          <div className="animate-marquee whitespace-nowrap flex items-center gap-8 text-gray-400">
+            {marqueeItems.map((op, idx) => (
+              <span key={idx} className="flex items-center gap-1.5">
+                <span className="text-white font-semibold">{op.name}</span>
+                <span>· {op.displayPrice} € →</span>
+                <span className={VERDICT_STYLE[op.verdict]}>
+                  {VERDICT_ICON[op.verdict]} {op.verdict}
+                </span>
+                <span>· {op.extra}</span>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -52,7 +74,7 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
             {/* Top Pill */}
             <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1 text-xs font-semibold text-emerald-400">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Inteligencia de Reventa para Wallapop & Vinted</span>
+              <span>Sistema de decisión para Wallapop & Vinted</span>
             </div>
 
             {/* Main Headline */}
@@ -156,12 +178,12 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
                   </div>
 
                   {/* Circular Score Gauge */}
-                  <FlipScoreGauge score={91} verdict="COMPRALO" size="normal" />
+                  <FlipScoreGauge score={75} verdict="COMPRALO" size="normal" />
 
                   {/* Financial Grid */}
                   <div className="grid grid-cols-2 gap-2 text-left pt-2 border-t border-gray-800">
                     <div className="bg-[#090A0F]/80 p-2.5 rounded-lg border border-gray-800">
-                      <span className="text-[10px] text-gray-400 font-mono uppercase block">Beneficio estimado</span>
+                      <span className="text-[10px] text-gray-400 font-mono uppercase block">Beneficio a 250 €</span>
                       <span className="text-sm font-bold text-emerald-400 font-mono">+55 € a +85 €</span>
                     </div>
 

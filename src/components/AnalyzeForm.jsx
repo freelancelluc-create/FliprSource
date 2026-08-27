@@ -69,7 +69,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
         setAiPriceWarning("");
         setAiSuccessMessage(urlText
           ? `✓ ¡Enlace procesado! Título: "${parsed.title}" (${parsed.price} €)`
-          : "✓ ¡Foto analizada con Visión IA!");
+          : "✓ ¡Foto analizada!");
       } else {
         setAiSuccessMessage(urlText
           ? `✓ Enlace procesado: "${parsed.title}"`
@@ -156,7 +156,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
               <span>Analizar oportunidad de compra</span>
             </h2>
             <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-mono font-bold text-emerald-400">
-              Wallapop & Vinted IA Parser
+              Wallapop & Vinted · Decisión en 5 segundos
             </span>
           </div>
           <p className="text-sm text-gray-400">
@@ -180,7 +180,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                 <img src={imageUrl} alt="Subida" className="w-16 h-16 rounded-xl object-cover border border-emerald-500/50" />
                 <div className="text-left text-xs font-mono">
                   <span className="text-emerald-400 font-bold block">✓ Imagen cargada</span>
-                  <span className="text-gray-400">Visión computacional lista</span>
+                  <span className="text-gray-400">Análisis de la captura listo</span>
                   <span className="text-[10px] text-gray-500 block underline mt-1">Haz clic para cambiar</span>
                 </div>
               </div>
