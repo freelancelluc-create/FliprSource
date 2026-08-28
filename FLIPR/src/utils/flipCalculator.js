@@ -141,7 +141,12 @@ export function calculateFlipScore({
 
   // Detecta problemas en la descripción del vendedor (para ajustar el análisis)
   const desc = String(description || "").toLowerCase();
-  const riskyKeywords = ["a reparar", "reparar", "no funciona", "roto", "averi", "siniestro", "accidente", "accidentado", "horquilla", "cambiar", "chapa", "golpe", "pintura", "desperfecto", "pieza", "falta", "golpeado", "revision pendiente"];
+  const riskyKeywords = [
+    "a reparar", "reparar", "no funciona", "roto", "averi", "siniestro", "accidente", 
+    "accidentado", "horquilla", "cambiar", "chapa", "golpe", "pintura", "desperfecto", 
+    "pieza rota", "falta una pieza", "le falta", "hundido", "abollado", "rayado", 
+    "arranazo", "roto", "tachado", "accidentado", "siniestro", "agua", "salado"
+  ];
   const hasRiskyDesc = riskyKeywords.some((k) => desc.includes(k));
   // Detecta el kilometraje (argumento km o de la descripción) y si es alto según el tipo
   const lowerTitle = String(title || "").toLowerCase();
@@ -150,7 +155,7 @@ export function calculateFlipScore({
     ? Math.round(Number(km))
     : (descKm ? parseInt(descKm[1].replace(/[\s.,]/g, ""), 10) : null);
   const isMoto = /motocicleta|moto|scooter|maxi|xmax|vespa|125\s*cc|150\s*cc|250\s*cc/i.test(lowerTitle);
-  const isVehicle = isMoto || /coche|turismo|bmw|audi|seat|renault|volkswagen|\bvw\b|opel|peugeot|fiat|ford|citroen|kia|hyundai|toyota|nissan|mercedes|yamaha|honda|suzuki|kawasaki/i.test(lowerTitle);
+  const isVehicle = isMoto || /coche|turismo|bmw|audi|seat|renault|volkswagen|\bvw\b|opel|peugeot|fiat|ford|citroen|kia|hyundai|toyota|nissan|mercedes|yamaha|honda|suzuki|kawasaki|lexus|jeep|ram|dodge/i.test(lowerTitle);
   const kmThreshold = isMoto ? 20000 : isVehicle ? 150000 : 100000;
   const highKm = kmVal !== null && kmVal >= kmThreshold;
 
