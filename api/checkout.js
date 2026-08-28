@@ -10,15 +10,29 @@
  */
 
 import { findPlan } from '../src/data/plans.js';
-import { json, readBody, originOf } from '../lib/http.js';
+import { json, readBody, originOf, bearer } from '../lib/http.js';
+import { kvGet } from '../lib/kv.js';
 
 export default async function handler(req, res) {
+  // Solo POST
+  if (req.method && req.method !== 'POST') {
+    return json(res, { error: "method-not-allowed" }, 405);
+  }
+
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) return json(res, { error: "no-stripe" }, 503);
 
   const body = await readBody(req);
   const plan = findPlan(body?.planId);
   if (!plan) return json(res, { error: "invalid-plan" }, 400);
+
+  // Validación de sesión opcional: si hay token, verificamos que existe en KV
+  // (evita crear sesiones de Stripe para tokens de sesión falsos)
+  const token = bearer(req);
+  if (token) {
+    const session = await kvGet(`session:${token}`).catch(() => null);
+    if (!session) return json(res, { error: "unauthorized" }, 401);
+  }
 
   const origin = originOf(req);
 

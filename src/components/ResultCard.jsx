@@ -21,11 +21,12 @@ export default function ResultCard({
   onOpenNegotiate, 
   onOpenListing, 
   isFavorite = false, 
-  onToggleFavorite 
+  onToggleFavorite,
+  isFollowed = false,
+  onToggleFollow
 }) {
   const [copied, setCopied] = useState(false);
   const [copiedMsg, setCopiedMsg] = useState(false);
-  const [priceTracked, setPriceTracked] = useState(false);
   const [showScoreDetail, setShowScoreDetail] = useState(false);
 
   if (!result) return null;
@@ -246,6 +247,14 @@ export default function ResultCard({
           </div>
         </div>
 
+        {/* Detalles del anuncio (descripción del vendedor) */}
+        {result.description && (
+          <div className="rounded-2xl bg-[#090A0F]/50 border border-gray-800/70 p-4">
+            <span className="text-[10px] font-mono text-gray-400 uppercase block mb-1.5">📋 Detalles del anuncio</span>
+            <p className="text-sm text-gray-300 leading-relaxed">{result.description}</p>
+          </div>
+        )}
+
         {/* FLIP SCORE desglosado: 5 factores */}
         <div className="rounded-2xl bg-[#090A0F]/40 border border-gray-800/60 p-5 space-y-4">
           <div className="flex items-center justify-between gap-2">
@@ -456,13 +465,13 @@ export default function ResultCard({
 
         {/* Action 3: 🔔 SEGUIR PRECIO */}
         <button
-          onClick={() => setPriceTracked(!priceTracked)}
+          onClick={() => onToggleFollow && onToggleFollow(result)}
           className={`glass-panel-interactive rounded-2xl p-5 text-left space-y-3 group border ${
-            priceTracked ? 'border-emerald-500 bg-emerald-500/10' : 'border-gray-800'
+            isFollowed ? 'border-emerald-500 bg-emerald-500/10' : 'border-gray-800'
           }`}
         >
           <div className={`h-10 w-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${
-            priceTracked ? 'bg-emerald-500 text-black' : 'bg-gray-800 text-gray-300'
+            isFollowed ? 'bg-emerald-500 text-black' : 'bg-gray-800 text-gray-300'
           }`}>
             <Bell className="w-5 h-5" />
           </div>
@@ -470,12 +479,19 @@ export default function ResultCard({
             <h4 className="text-base font-bold text-white flex items-center justify-between">
               <span>■ SEGUIR PRECIO</span>
               <span className="text-xs font-mono text-gray-400">
-                {priceTracked ? 'Siguiendo ✓' : 'Activar'}
+                {isFollowed ? 'Siguiendo ✓' : 'Activar'}
               </span>
             </h4>
             <p className="text-xs text-gray-400 mt-1">
-              {priceTracked ? 'Alerta activa si baja de precio.' : 'Recibe alerta si el producto baja de precio.'}
+              {isFollowed
+                ? 'Guardado en tu panel. Las alertas automáticas llegan próximamente.'
+                : 'Guárdalo en tu panel con su precio objetivo y beneficio estimado.'}
             </p>
+            {!isFollowed && (
+              <span className="inline-block text-[10px] font-mono bg-gray-800/80 text-gray-500 rounded px-1.5 py-0.5 mt-0.5">
+                Alertas push · Próximamente
+              </span>
+            )}
           </div>
         </button>
 

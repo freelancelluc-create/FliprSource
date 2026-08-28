@@ -43,7 +43,11 @@ async function api(path, { method = "GET", body } = {}) {
 }
 
 export async function register(name, email, password) {
-  const r = await api("/api/auth/register", { method: "POST", body: { name, email, password } });
+  // Recoge el ?ref= de la URL (referido) y lo pasa al servidor
+  let ref = "";
+  try { ref = new URLSearchParams(window.location.search).get("ref") || ""; } catch (e) {}
+  if (ref && (ref.endsWith("@") === false)) ref = ref.toLowerCase();
+  const r = await api("/api/auth/register", { method: "POST", body: { name, email, password, ref } });
   if (r.ok && r.data && r.data.token) {
     setStoredToken(r.data.token);
     setStoredUser(r.data.user);
@@ -74,11 +78,27 @@ export async function fetchMe() {
   return user;
 }
 
-export async function saveUserData(history, favorites, credits) {
-  return api("/api/user/save", { method: "POST", body: { history, favorites, credits } });
+export async function saveUserData(history, favorites, credits, watchlist) {
+  return api("/api/user/save", { method: "POST", body: { history, favorites, credits, watchlist } });
 }
 
 export async function loadUserData() {
   const r = await api("/api/user/load");
   return r.ok && r.data ? r.data : null;
+}
+
+/**
+ * Solicita un token de reset de contraseña para el email dado.
+ * Devuelve { ok, sent, token? } — token solo disponible hasta que se configure SMTP.
+ */
+export async function requestPasswordReset(email) {
+  return api("/api/auth/reset-password", { method: "POST", body: { email } });
+}
+
+/**
+ * Aplica el nuevo password usando el token recibido.
+ * Devuelve { ok } o { error }.
+ */
+export async function confirmPasswordReset(token, newPassword) {
+  return api("/api/auth/reset-password", { method: "POST", body: { token, newPassword } });
 }
