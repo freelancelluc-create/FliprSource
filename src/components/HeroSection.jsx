@@ -69,7 +69,7 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
           {/* Left Column: Hero Text & Value Proposition */}
-          <div className="lg:col-span-7 text-left space-y-6">
+          <div className="lg:col-span-7 text-center md:text-left space-y-6">
             
             {/* Top Pill */}
             <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1 text-xs font-semibold text-emerald-400">
@@ -86,7 +86,7 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
             </h1>
 
             {/* Subtitle */}
-            <p className="text-lg text-gray-300 max-w-2xl font-normal leading-relaxed">
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto md:mx-0 font-normal leading-relaxed">
               Descubre al instante si ese producto de segunda mano es una verdadera oportunidad de reventa antes de gastar tu dinero.
             </p>
 
@@ -118,10 +118,10 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
             </div>
 
             {/* CTA Group */}
-            <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <div className="pt-4 flex flex-col sm:flex-row items-center sm:items-center gap-4">
               <button
                 onClick={onStartAnalyze}
-                className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-8 py-4 text-base font-bold text-black shadow-xl shadow-emerald-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
+                className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-8 py-4 text-base font-bold text-black shadow-xl shadow-emerald-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
               >
                 <span>Analizar producto</span>
                 <ArrowRight className="w-5 h-5" />

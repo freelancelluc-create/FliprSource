@@ -14,6 +14,8 @@
  * con la clave OPENAI_API_KEY; aquí solo llamamos al endpoint.
  */
 
+import { inferConditionFromDescription } from './flipCalculator.js';
+
 /** Normaliza una cifra extraída (admite "1.234,56", "1234", "1,99"…). */
 export function normalizePrice(raw) {
   if (raw === null || raw === undefined) return null;
@@ -59,23 +61,65 @@ export function extractPriceFromHtml(html) {
   return null;
 }
 
-/** Fetch del precio real de una página de Wallapop a través del proxy de Vite. */
-async function fetchWallapopPrice(itemPath) {
+/** Extrae la descripción del anuncio del HTML (JSON-LD description, meta description, og:description). */
+export function extractDescriptionFromHtml(html) {
+  if (!html) return "";
+  const tries = [
+    /"description"\s*:\s*"([^"]{10,1200})"/i,
+    /<meta[^>]+name=["']description["'][^>]+content=["']([^"']{10,1200})/i,
+    /<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']{10,1200})/i,
+  ];
+  for (const re of tries) {
+    const m = html.match(re);
+    if (m && m[1]) {
+      const d = m[1].replace(/\\n/g, " ").replace(/\\"/g, '"').trim();
+      if (d.length >= 10) return d.slice(0, 1200);
+    }
+  }
+  return "";
+}
+
+/** Extrae el kilometraje (km) del HTML de un vehículo (JSON estructurado de Wallapop). */
+export function extractKmFromHtml(html) {
+  if (!html) return null;
+  const tries = [
+    /"km"\s*:\s*\{\s*"value"\s*:\s*"(\d+)"/i,
+    /"value"\s*:\s*"(\d{2,5})\s*km"/i,
+    /(\d{2,5})\s*km\s*[·|]/i,
+    /(\d{2,5})\s*km\b/i,
+  ];
+  for (const re of tries) {
+    const m = html.match(re);
+    if (m && m[1]) {
+      const n = parseInt(String(m[1]).replace(/[\s.,]/g, ""), 10);
+      if (Number.isFinite(n) && n > 0 && n < 2000000) return n;
+    }
+  }
+  return null;
+}
+
+/** Fetch del precio + descripción + km de una página de Wallapop a través del proxy (?url=...). */
+async function fetchWallapopInfo(itemPath) {
   if (!itemPath) return null;
   try {
-    const resp = await fetch(`/api/wallapop${itemPath}`, {
+    const target = "https://es.wallapop.com" + itemPath;
+    const resp = await fetch(`/api/wallapop?url=${encodeURIComponent(target)}`, {
       headers: { "Accept": "text/html,application/xhtml+xml,application/json" },
     });
     if (!resp.ok) return null;
     const text = await resp.text();
-    return extractPriceFromHtml(text);
+    return {
+      price: extractPriceFromHtml(text),
+      description: extractDescriptionFromHtml(text),
+      km: extractKmFromHtml(text),
+    };
   } catch (e) {
     console.log("Wallapop fetch fallback", e);
     return null;
   }
 }
 
-/** Intenta leer el precio de una imagen/captura mediante la Visión IA del servidor. */
+/** Intenta leer el precio + descripción de una imagen/captura mediante la Visión IA del servidor. */
 export async function readPriceFromImage(imageDataUrl) {
   try {
     const resp = await fetch("/api/vision", {
@@ -84,11 +128,38 @@ export async function readPriceFromImage(imageDataUrl) {
       body: JSON.stringify({ imageDataUrl }),
     });
     const data = await resp.json().catch(() => null);
-    if (data && data.ok && data.price) return { ok: true, price: data.price };
-    return { ok: false, price: null, reason: (data && data.reason) || "error" };
+    if (data && data.ok) {
+      return {
+        ok: true,
+        price: data.price || null,
+        title: data.title || null,
+        condition: data.condition || null,
+        description: data.description || "",
+        reason: data.reason || null,
+      };
+    }
+    return { ok: false, price: null, title: null, condition: null, description: "", reason: (data && data.reason) || "error" };
   } catch (e) {
     console.log("Vision read fallback", e);
-    return { ok: false, price: null, reason: "error" };
+    return { ok: false, price: null, title: null, condition: null, description: "", reason: "error" };
+  }
+}
+
+/** Pide a la IA que razone sobre el título+descripción y devuelva estado/desperfectos/km. */
+async function analyzeDescription(title, description) {
+  if (!description || String(description).trim().length < 8) return null;
+  try {
+    const resp = await fetch("/api/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: String(title || ""), description: String(description).slice(0, 2500) }),
+    });
+    const data = await resp.json().catch(() => null);
+    if (data && data.ok && data.condition) return data;
+    return null;
+  } catch (e) {
+    console.log("Analyze fallback", e);
+    return null;
   }
 }
 
@@ -107,6 +178,8 @@ export async function parseProductFromImageOrUrl({ file, imageUrl, urlText }) {
     let priceSource = null; // 'url' | 'wallapop' | 'keyword' | null
     let cleanedSlug = "";
     let itemPath = "";
+    let extractedDescription = "";
+    let extractedKm = null;
 
     try {
       const urlObj = new URL(cleanUrl.startsWith('http') ? cleanUrl : `https://${cleanUrl}`);
@@ -117,8 +190,11 @@ export async function parseProductFromImageOrUrl({ file, imageUrl, urlText }) {
       if (lastSegment) {
         cleanedSlug = lastSegment.replace(/-\d{6,}$/g, '');
 
-        // Precio explícito en el slug (raro en Wallapop, común en otros)
-        const priceMatch = cleanedSlug.match(/-(\d+)-(?:euros?|eur|e)$/i) || cleanedSlug.match(/-(\d+)$/);
+        // Precio explícito en el slug SÓLO si lleva sufijo "euros/eur/e" (raro en Wallapop).
+        // IMPORTANTE: un número final suelto NO se trata como precio: en Wallapop el
+        // final suele ser el id del anuncio y un número de 4 cifras puede ser el AÑO
+        // (ej. "bmw-serie-5-1998-1295286335" → el "1998" es el año, no el precio).
+        const priceMatch = cleanedSlug.match(/-(\d+)-(?:euros?|eur|e)$/i);
         if (priceMatch && priceMatch[1]) {
           const possiblePrice = parseInt(priceMatch[1], 10);
           if (possiblePrice > 5 && possiblePrice < 5000) {
@@ -129,9 +205,13 @@ export async function parseProductFromImageOrUrl({ file, imageUrl, urlText }) {
           }
         }
 
+        // Título: quitamos ids largos y años (4 cifras entre 1900-2030), pero
+        // CONSERVAMOS los números de modelo cortos (ej. "Serie 5", "iPhone 14").
         extractedTitle = cleanedSlug
           .split('-')
-          .filter(w => w.length > 0 && !/^\d+$/.test(w))
+          .filter(w => w.length > 0)
+          .filter(w => !/^\d{6,}$/.test(w))
+          .filter(w => !(/^\d{4}$/.test(w) && +w >= 1900 && +w <= 2030))
           .map(word => word.charAt(0).toUpperCase() + word.slice(1))
           .join(' ');
       }
@@ -143,13 +223,17 @@ export async function parseProductFromImageOrUrl({ file, imageUrl, urlText }) {
       extractedTitle = "Producto de " + (isWallapop ? "Wallapop" : isVinted ? "Vinted" : "Marketplace");
     }
 
-    // 2) Precio real de Wallapop vía proxy server-side
-    if (isWallapop && !priceDetected && itemPath) {
-      const realPrice = await fetchWallapopPrice(itemPath);
-      if (realPrice) {
-        extractedPrice = realPrice;
-        priceDetected = true;
-        priceSource = 'wallapop';
+    // 2) Precio + descripción reales de Wallapop vía proxy server-side
+    if (isWallapop && itemPath) {
+      const info = await fetchWallapopInfo(itemPath);
+      if (info) {
+        if (!priceDetected && info.price) {
+          extractedPrice = info.price;
+          priceDetected = true;
+          priceSource = 'wallapop';
+        }
+        extractedDescription = info.description;
+        extractedKm = info.km || null;
       }
     }
 
@@ -195,12 +279,20 @@ export async function parseProductFromImageOrUrl({ file, imageUrl, urlText }) {
       );
     }
 
+    let aiAnalysis = null;
+    if (extractedDescription) aiAnalysis = await analyzeDescription(extractedTitle, extractedDescription);
+    const inferredConditionUrl = (aiAnalysis && aiAnalysis.condition) || inferConditionFromDescription(extractedTitle + " " + extractedDescription) || "Muy buen estado";
+    if (!extractedKm && aiAnalysis && aiAnalysis.km) extractedKm = aiAnalysis.km;
+    if (aiAnalysis && aiAnalysis.summary) notes.push(`🔎 ${aiAnalysis.summary}`);
+
     return {
       title: extractedTitle,
       price: extractedPrice,
       priceDetected,
       priceSource,
-      condition: "Muy buen estado",
+      description: extractedDescription,
+      km: extractedKm,
+      condition: inferredConditionUrl,
       marketplace: marketplaceName,
       accessories: ["Caja original", "Accesorios según anuncio"],
       aiVisionNotes: notes
@@ -210,34 +302,50 @@ export async function parseProductFromImageOrUrl({ file, imageUrl, urlText }) {
   // Si es una foto/captura: intentamos leer el precio con visión IA
   if (imageUrl) {
     const vision = await readPriceFromImage(imageUrl);
+    const descFromVision = (vision && vision.description) || "";
+    const titleFromVision = ((vision && vision.title) || "").trim() || "Producto Detectado por Visión IA";
+    const aiFromVision = descFromVision ? await analyzeDescription(titleFromVision, descFromVision) : null;
+    const conditionFromVision = (aiFromVision && aiFromVision.condition) || inferConditionFromDescription(titleFromVision + " " + descFromVision) || (vision && vision.condition) || "Muy buen estado";
     if (vision.ok && vision.price) {
       return {
-        title: "Producto Detectado por Visión IA",
+        title: titleFromVision,
         price: vision.price,
         priceDetected: true,
         priceSource: 'vision',
-        condition: "Muy buen estado",
+        description: descFromVision,
+        condition: conditionFromVision,
         marketplace: "Wallapop",
         accessories: ["Según captura"],
         aiVisionNotes: [
           "Captura analizada por Visión IA.",
-          `Precio leído de la imagen: ${vision.price} €.`
-        ]
+          `Precio leído de la imagen: ${vision.price} €.`,
+          descFromVision ? `Descripción leída: ${descFromVision}` : ""
+        ].filter(Boolean)
       };
     }
+    const reason = vision.reason || "";
+    const isApiError = /api-error|429|402|quota|credit|insufficient/i.test(reason);
+    const aiPriceWarning = isApiError
+      ? "⚠️ El servicio de IA del servidor está sin saldo o con límite (error HTTP de OpenRouter/OpenAI, p. ej. 402 sin saldo o 429 límite). Recarga saldo en tu proveedor de IA (OpenRouter) o usa la vía pegando el enlace del anuncio, que no necesita IA. Escribe el precio manualmente."
+      : reason === 'no-key'
+        ? "⚠️ La lectura por visión no está activada en el servidor (falta OPENAI_API_KEY). Escríbelo manualmente."
+        : reason === 'year-confusion'
+          ? "⚠️ La IA leyó el AÑO del producto (ej. 1998) como precio y lo hemos descartado para no engañarte. Escribe el precio real (ej. 5500)."
+          : "⚠️ No se ha podido leer el precio de la imagen. Escríbelo manualmente antes de analizar.";
+
     return {
-      title: "Producto Detectado por Visión IA",
+      title: titleFromVision,
       price: null,
       priceDetected: false,
       priceSource: null,
-      condition: "Muy buen estado",
+      aiPriceWarning,
+      description: descFromVision,
+      condition: conditionFromVision,
       marketplace: "Wallapop",
       accessories: ["Según captura"],
       aiVisionNotes: [
         "Captura analizada.",
-        vision.reason === 'no-key'
-          ? "ℹ️ La lectura por visión no está activada en el servidor (falta OPENAI_API_KEY). Escríbelo manualmente."
-          : "⚠️ No se ha podido leer el precio de la imagen. Escríbelo manualmente antes de analizar."
+        aiPriceWarning
       ]
     };
   }

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--
+  Abre este archivo en Chrome, ajusta el zoom al 100%,
+  y haz captura de la zona exacta de 1200×630px.
+  O usa Ctrl+Shift+P → "Capture screenshot" en DevTools con
+  el viewport a 1200×630.
+-->
+<html>
+<head>
+<meta charset="UTF-8"/>
+<style>
+  * { margin: 0; padding: 0; }
+  body { width: 1200px; height: 630px; overflow: hidden; background: #090A0F; }
+  svg { display: block; width: 1200px; height: 630px; }
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0D1117"/>
+      <stop offset="100%" stop-color="#090A0F"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="glow-grad" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="18" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft-glow">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <line x1="0" y1="210" x2="1200" y2="210" stroke="#1F2937" stroke-width="1"/>
+  <line x1="0" y1="420" x2="1200" y2="420" stroke="#1F2937" stroke-width="1"/>
+  <line x1="400" y1="0" x2="400" y2="630" stroke="#1F2937" stroke-width="1"/>
+  <line x1="800" y1="0" x2="800" y2="630" stroke="#1F2937" stroke-width="1"/>
+  <ellipse cx="600" cy="315" rx="380" ry="200" fill="url(#glow-grad)"/>
+
+  <!-- Isotipo -->
+  <g transform="translate(510, 80)">
+    <rect width="180" height="180" rx="38" fill="url(#accent)" filter="url(#glow)"/>
+    <path d="M122 44 L64 116 H104 L90 166 L162 94 H122 Z" fill="#090A0F" stroke="#090A0F" stroke-width="3" stroke-linejoin="round"/>
+  </g>
+
+  <!-- FLIPR -->
+  <text x="600" y="340" font-family="'JetBrains Mono','Courier New',monospace" font-weight="900" font-size="120" fill="#FFFFFF" text-anchor="middle" letter-spacing="-3" filter="url(#soft-glow)">FLIPR</text>
+
+  <!-- SCORE™ badge -->
+  <rect x="718" y="300" width="164" height="34" rx="8" fill="#10B981" fill-opacity="0.12" stroke="#10B981" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text x="800" y="323" font-family="'JetBrains Mono',monospace" font-size="18" fill="#10B981" text-anchor="middle" font-weight="700" letter-spacing="3">SCORE™</text>
+
+  <!-- Claim -->
+  <text x="600" y="400" font-family="system-ui,sans-serif" font-size="28" fill="#9CA3AF" text-anchor="middle" letter-spacing="6" font-weight="500">¿LO COMPRO O NO?</text>
+
+  <!-- Verdicts -->
+  <g transform="translate(190, 470)">
+    <rect width="220" height="52" rx="12" fill="#10B981" fill-opacity="0.15" stroke="#10B981" stroke-opacity="0.4" stroke-width="1.5"/>
+    <text x="110" y="33" font-family="monospace" font-size="18" fill="#34D399" text-anchor="middle" font-weight="800" letter-spacing="1">■ CÓMPRALO</text>
+  </g>
+  <g transform="translate(490, 470)">
+    <rect width="220" height="52" rx="12" fill="#F59E0B" fill-opacity="0.15" stroke="#F59E0B" stroke-opacity="0.4" stroke-width="1.5"/>
+    <text x="110" y="33" font-family="monospace" font-size="18" fill="#FBBF24" text-anchor="middle" font-weight="800" letter-spacing="1">■ NEGOCIA</text>
+  </g>
+  <g transform="translate(790, 470)">
+    <rect width="220" height="52" rx="12" fill="#EF4444" fill-opacity="0.15" stroke="#EF4444" stroke-opacity="0.4" stroke-width="1.5"/>
+    <text x="110" y="33" font-family="monospace" font-size="18" fill="#F87171" text-anchor="middle" font-weight="800" letter-spacing="1">■ PASA</text>
+  </g>
+
+  <text x="600" y="590" font-family="monospace" font-size="18" fill="#4B5563" text-anchor="middle" letter-spacing="2">fliprscore.com</text>
+</svg>
+
+<script>
+// Auto-descarga como PNG usando canvas
+window.onload = () => {
+  const svg = document.querySelector('svg');
+  const canvas = document.createElement('canvas');
+  canvas.width = 1200; canvas.height = 630;
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  const svgBlob = new Blob([svg.outerHTML], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
+    const a = document.createElement('a');
+    a.download = 'og-image.png';
+    a.href = canvas.toDataURL('image/png');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    document.body.insertAdjacentHTML('afterbegin',
+      '<div style="position:fixed;top:0;left:0;right:0;background:#10B981;color:#000;padding:12px;font-family:monospace;font-weight:bold;text-align:center;z-index:999">✓ og-image.png descargada — súbela a public/brand/og-image.png</div>'
+    );
+  };
+  img.src = url;
+};
+</script>
+</body>
+</html>

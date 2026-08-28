@@ -102,4 +102,9 @@ test('flujo completo: register -> me -> login (con KV simulado)', async () => {
   // Email repetido -> 409
   const r5 = await call(register, { name: 'Ana2', email: 'ana@test.com', password: 'clave123' });
   assert.equal(r5.status, 409);
+
+  // Referido: al registrar con ?ref, el que invitó recibe +5 créditos
+  await call(register, { name: 'Luis', email: 'luis@test.com', password: 'clave123', ref: 'ana@test.com' });
+  const anaData = JSON.parse(store.get('data:ana@test.com'));
+  assert.equal(anaData.credits, 5, 'el que invita recibe +5 créditos');
 });

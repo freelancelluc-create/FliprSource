@@ -17,6 +17,7 @@ export default async function handler(req, res) {
   const data = {
     history: Array.isArray(body?.history) ? body.history : [],
     favorites: Array.isArray(body?.favorites) ? body.favorites : [],
+    watchlist: Array.isArray(body?.watchlist) ? body.watchlist : [],
     credits: Number.isFinite(Number(body?.credits)) ? Number(body.credits) : null,
   };
 

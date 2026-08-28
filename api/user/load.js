@@ -17,6 +17,7 @@ export default async function handler(req, res) {
   return json(res, {
     history: Array.isArray(data.history) ? data.history : [],
     favorites: Array.isArray(data.favorites) ? data.favorites : [],
+    watchlist: Array.isArray(data.watchlist) ? data.watchlist : [],
     credits: Number.isFinite(Number(data.credits)) ? data.credits : null,
   });
 }

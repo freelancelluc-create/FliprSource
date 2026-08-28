@@ -35,6 +35,15 @@ test('parse: URL con precio en el slug (sin fetch)', async () => {
   assert.equal(r.priceSource, 'url');
 });
 
+test('parse: Wallapop -> el AÑO del slug NO se trata como precio', async () => {
+  globalThis.fetch = async () => ({ ok: true, status: 200, text: async () => '<html><body>sin datos</body></html>' });
+  const url = 'https://es.wallapop.com/item/bmw-serie-5-1998-1295286335';
+  const r = await parseProductFromImageOrUrl({ file: null, imageUrl: null, urlText: url });
+  assert.equal(r.price, null);       // 1998 es el año, no el precio
+  assert.equal(r.priceDetected, false);
+  assert.equal(r.title, 'Bmw Serie 5'); // conserva el número de modelo "5"
+});
+
 test('parse: Wallapop -> lee precio real del HTML servido por el proxy', async () => {
   globalThis.fetch = async () => ({
     ok: true,

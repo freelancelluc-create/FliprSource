@@ -91,3 +91,11 @@ test('calcula el beneficio al precio objetivo (profitAtTarget)', () => {
   // Al bajar del precio actual (300 €) al objetivo (276 €), el beneficio sube
   assert.ok(r.profitAtTargetMin > r.estimatedProfitMin);
 });
+
+test('la descripción con problemas (a reparar) baja el score y marca riesgo alto', () => {
+  const md = { marketAvg: 1250, marketRangeMin: 1050, marketRangeMax: 1450, probableResellMin: 1150, probableResellMax: 1350, demand: 'MEDIA', risk: 'MEDIO', liquidity: 'MEDIA', timeToSell: '15-30 días' };
+  const sin = calculateFlipScore({ title: 'Rieju', buyPrice: 800, condition: 'Muy buen estado', marketData: md });
+  const con = calculateFlipScore({ title: 'Rieju', buyPrice: 800, condition: 'Muy buen estado', marketData: md, description: 'La moto está a reparar, no arranca y le falta una pieza' });
+  assert.ok(con.flipScore < sin.flipScore, 'debe penalizar el score');
+  assert.equal(con.risk, 'ALTO');
+});

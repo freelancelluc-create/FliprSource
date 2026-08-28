@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Upload, Sparkles, Zap, AlertCircle, Link as LinkIcon, CheckCircle2 } from 'lucide-react';
 import { PRESET_PRODUCTS } from '../data/presetProducts';
 import { parseProductFromImageOrUrl } from '../utils/aiVisionParser';
+import { prepareImageForVision } from '../utils/imageUtils';
 
 export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
   const [selectedPresetId, setSelectedPresetId] = useState(initialPreset ? initialPreset.id : null);
@@ -21,6 +22,8 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
   const [scanStep, setScanStep] = useState("Escaneando ventas de mercado...");
   const [aiNotes, setAiNotes] = useState([]);
   const [aiPriceWarning, setAiPriceWarning] = useState("");
+  const [description, setDescription] = useState("");
+  const [km, setKm] = useState(null);
 
 
   // Preset Selection Handler
@@ -38,13 +41,21 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
   };
 
   // Drag & drop or local photo upload
-  const handlePhotoUpload = (e) => {
+  const handlePhotoUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         setImageUrl(reader.result);
-        runAiAnalysisOnUpload(file, reader.result, null);
+        // Optimizamos la captura antes de enviarla a la Visión IA:
+        // evita el error 413 (imagen demasiado grande) y mejora la lectura del precio.
+        let visionSrc = reader.result;
+        try {
+          visionSrc = await prepareImageForVision(reader.result);
+        } catch (err) {
+          console.warn("No se pudo optimizar la imagen; se enviará la original.", err);
+        }
+        runAiAnalysisOnUpload(file, visionSrc, null);
       };
       reader.readAsDataURL(file);
     }
@@ -63,6 +74,8 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
       setMarketplace(parsed.marketplace);
       setAccessories(parsed.accessories);
       setAiNotes(parsed.aiVisionNotes);
+      setDescription(parsed.description || "");
+      setKm(parsed.km || null);
       setSelectedPresetId(null);
 
       if (parsed.priceDetected && parsed.price !== null) {
@@ -74,7 +87,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
         setAiSuccessMessage(urlText
           ? `✓ Enlace procesado: "${parsed.title}"`
           : "✓ Foto cargada");
-        setAiPriceWarning("⚠️ No hemos podido leer el precio del anuncio. Escríbelo en el campo 'Precio de compra' para continuar.");
+        setAiPriceWarning(parsed.aiPriceWarning || "⚠️ No hemos podido leer el precio del anuncio. Escríbelo en el campo 'Precio de compra' para continuar.");
       }
     } catch (e) {
       console.error(e);
@@ -136,7 +149,9 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
           marketplace,
           imageUrl: imageUrl || "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=600&auto=format&fit=crop&q=80",
           accessories,
-          aiNotes
+          aiNotes,
+          description,
+          km
         });
       }
     }, 1800);
@@ -362,6 +377,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                 <option value="Muy buen estado">Muy buen estado (Leve uso)</option>
                 <option value="Buen estado">Buen estado (Marcas normales)</option>
                 <option value="Aceptable">Aceptable (Desgaste notable)</option>
+                <option value="A reparar">A reparar / Necesita arreglo</option>
               </select>
             </div>
 
@@ -427,6 +443,23 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Descripción del anuncio (opcional): se rellena sola si se detecta, o puedes pegar la del vendedor */}
+          <div className="space-y-2">
+            <label className="text-xs font-mono font-semibold text-gray-300 uppercase tracking-wider block">
+              Descripción del anuncio (mejora el análisis)
+            </label>
+            <textarea
+              rows={3}
+              placeholder="Ej: Seat Ibiza 2009, 150.000 km, le falta un faro y hay que cambiar el embrague..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full rounded-xl bg-[#090A0F] border border-gray-800 px-4 py-3 text-xs text-white focus:border-emerald-500 focus:outline-none resize-y"
+            />
+            <p className="text-[10px] text-gray-500 font-mono">
+              Si pegas la descripción del vendedor (año, km, desperfectos...), el análisis lo tiene en cuenta.
+            </p>
           </div>
 
           {/* Submit Button */}

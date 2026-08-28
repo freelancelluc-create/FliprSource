@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import AnalyzeForm from './components/AnalyzeForm';
@@ -9,6 +10,7 @@ import ActionListingModal from './components/ActionListingModal';
 import Footer from './components/Footer';
 import UpsellModal from './components/UpsellModal';
 import AuthModal from './components/AuthModal';
+import DashboardView from './components/DashboardView';
 import { PRESET_PRODUCTS } from './data/presetProducts';
 import { findMarketData } from './data/marketCatalog';
 import { calculateFlipScore } from './utils/flipCalculator';
@@ -47,6 +49,16 @@ export default function App() {
     }
   });
 
+  // Seguimiento / watchlist
+  const [watchlist, setWatchlist] = useState(() => {
+    try {
+      const saved = localStorage.getItem('flipr_watchlist');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
   // Active Modals
   const [negotiateModalResult, setNegotiateModalResult] = useState(null);
   const [listingModalResult, setListingModalResult] = useState(null);
@@ -64,11 +76,27 @@ export default function App() {
     } catch (e) {}
   }, [favoritesList]);
 
-  // Comprobar sesión al cargar la app
+  useEffect(() => {
+    try {
+      localStorage.setItem('flipr_watchlist', JSON.stringify(watchlist));
+    } catch (e) {}
+  }, [watchlist]);
+
+  // Comprobar sesión al cargar la app y cargar el saldo del servidor
   useEffect(() => {
     (async () => {
       const me = await fetchMe();
       if (me) setUser(me);
+      // El saldo del servidor es la fuente estable: lo aplicamos (sin reducir
+      // nunca el saldo local por debajo del que ya había en este dispositivo).
+      try {
+        const server = await loadUserData();
+        if (server && Number.isFinite(Number(server.credits)) && Number(server.credits) >= 0) {
+          const next = Math.max(Number(server.credits), getCredits());
+          persistCredits(next);
+          setCredits(getCredits());
+        }
+      } catch (e) {}
     })();
   }, []);
 
@@ -80,6 +108,7 @@ export default function App() {
       if (server) {
         if (Array.isArray(server.history) && server.history.length > 0) setHistoryList(server.history);
         if (Array.isArray(server.favorites) && server.favorites.length > 0) setFavoritesList(server.favorites);
+        if (Array.isArray(server.watchlist)) setWatchlist(server.watchlist);
         if (Number.isFinite(Number(server.credits))) {
           persistCredits(Number(server.credits));
           setCredits(getCredits());
@@ -98,10 +127,10 @@ export default function App() {
   useEffect(() => {
     if (!user) return;
     const id = setTimeout(() => {
-      saveUserData(historyList, favoritesList, credits).catch(() => {});
+      saveUserData(historyList, favoritesList, credits, watchlist).catch(() => {});
     }, 800);
     return () => clearTimeout(id);
-  }, [user, historyList, favoritesList, credits]);
+  }, [user, historyList, favoritesList, credits, watchlist]);
 
   // Confirmar pago de Stripe al volver del checkout (?session_id=...)
   useEffect(() => {
@@ -149,7 +178,9 @@ export default function App() {
         marketplace: inputData.marketplace,
         category: "Tecnología",
         accessories: inputData.accessories,
-        marketData
+        marketData,
+        km: inputData.km,
+        description: inputData.description || ""
       });
       resultObj.imageUrl = inputData.imageUrl;
       resultObj.marketDataSource = marketData ? 'catalog' : 'heuristic';
@@ -183,6 +214,16 @@ export default function App() {
     }
   };
 
+  // Seguir / dejar de seguir un producto (watchlist)
+  const handleToggleFollow = (item) => {
+    const exists = watchlist.some(f => f.id === item.id);
+    if (exists) {
+      setWatchlist(watchlist.filter(f => f.id !== item.id));
+    } else {
+      setWatchlist([item, ...watchlist]);
+    }
+  };
+
   const handleDeleteHistoryItem = (itemId) => {
     setHistoryList(historyList.filter(i => i.id !== itemId));
   };
@@ -193,6 +234,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#090A0F] text-gray-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
+      <Analytics />
       
       {/* Top Navbar */}
       <Navbar
@@ -237,6 +279,8 @@ export default function App() {
             onOpenListing={(res) => setListingModalResult(res)}
             isFavorite={favoritesList.some(f => f.id === currentResult?.id)}
             onToggleFavorite={handleToggleFavorite}
+            isFollowed={watchlist.some(f => f.id === currentResult?.id)}
+            onToggleFollow={handleToggleFollow}
           />
         )}
 
@@ -261,6 +305,20 @@ export default function App() {
               setActiveTab('result');
             }}
             onDeleteItem={handleDeleteFavoriteItem}
+          />
+        )}
+
+        {activeTab === 'panel' && (
+          <DashboardView
+            historyList={historyList}
+            watchlist={watchlist}
+            onToggleFollow={handleToggleFollow}
+            user={user}
+            onSelectResult={(res) => {
+              setCurrentResult(res);
+              setActiveTab('result');
+            }}
+            onOpenAuth={() => setAuthModalOpen(true)}
           />
         )}
       </main>

@@ -1,15 +1,15 @@
 import React from 'react';
-import { TrendingUp, ShieldCheck, Zap, Bookmark, History, User, Search, Coins } from 'lucide-react';
+import { TrendingUp, ShieldCheck, Zap, Bookmark, History, User, Search, Coins, LayoutDashboard } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favoritesCount = 0, credits = 3, onOpenUpsell, user = null, onOpenAuth, onLogout }) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gray-800/80 bg-[#090A0F]/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 sm:gap-6 px-4 py-3 sm:px-6">
         
         {/* Brand / Logo */}
         <div 
           onClick={() => setActiveTab('hero')}
-          className="flex cursor-pointer items-center gap-3 transition-opacity hover:opacity-90"
+          className="flex cursor-pointer items-center gap-3 transition-opacity hover:opacity-90 shrink-0"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-black font-black shadow-lg shadow-emerald-500/20">
             <Zap className="h-6 w-6 fill-black text-black stroke-[2.5]" />
@@ -23,15 +23,15 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
                 SCORE™
               </span>
             </div>
-            <p className="text-[10px] font-medium text-gray-400 tracking-wide uppercase">¿LO COMPRO O NO?</p>
+            <p className="hidden lg:block text-[10px] font-medium text-gray-400 tracking-wide uppercase">¿LO COMPRO O NO?</p>
           </div>
         </div>
 
         {/* Center Nav Links - Responsive */}
-        <nav className="hidden md:flex items-center gap-1 bg-[#12151F] p-1.5 rounded-full border border-gray-800">
+        <nav className="hidden md:flex items-center gap-0.5 bg-[#12151F] p-1.5 rounded-full border border-gray-800">
           <button
             onClick={() => setActiveTab('hero')}
-            className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all ${
+            className={`px-2.5 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all ${
               activeTab === 'hero'
                 ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/20 font-bold'
                 : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
@@ -42,7 +42,7 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
           
           <button
             onClick={() => setActiveTab('analyze')}
-            className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 ${
               activeTab === 'analyze' || activeTab === 'result'
                 ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/20 font-bold'
                 : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
@@ -54,7 +54,7 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
 
           <button
             onClick={() => setActiveTab('history')}
-            className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 ${
               activeTab === 'history'
                 ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/20 font-bold'
                 : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
@@ -71,7 +71,7 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
 
           <button
             onClick={() => setActiveTab('favorites')}
-            className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all flex items-center gap-1.5 ${
+            className={`px-2.5 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 ${
               activeTab === 'favorites'
                 ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/20 font-bold'
                 : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
@@ -85,10 +85,22 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
               </span>
             )}
           </button>
+
+          <button
+            onClick={() => setActiveTab('panel')}
+            className={`px-2.5 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 ${
+              activeTab === 'panel'
+                ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/20 font-bold'
+                : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+            }`}
+          >
+            <LayoutDashboard className="w-3.5 h-3.5" />
+            Panel
+          </button>
         </nav>
 
         {/* Right side: Auth + Free Credits Indicator & CTA */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Auth */}
           {user ? (
             <>
@@ -192,6 +204,16 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
         >
           <Bookmark className="w-4 h-4" />
           <span>Favoritos</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('panel')}
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded-lg ${
+            activeTab === 'panel' ? 'text-emerald-400 font-bold' : 'text-gray-400'
+          }`}
+        >
+          <LayoutDashboard className="w-4 h-4" />
+          <span>Panel</span>
         </button>
 
         <button

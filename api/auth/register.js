@@ -17,6 +17,7 @@ export default async function handler(req, res) {
   const name = String(body?.name || "").trim();
   const email = String(body?.email || "").trim().toLowerCase();
   const password = String(body?.password || "");
+  const ref = String(body?.ref || "").trim().toLowerCase();
 
   if (!name || name.length < 2) return json(res, { error: "invalid-name" }, 400);
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json(res, { error: "invalid-email" }, 400);
@@ -33,6 +34,16 @@ export default async function handler(req, res) {
   const stored = await kvGet(`user:${email}`);
   if (!savedUser || !stored) {
     return json(res, { error: "db-error" }, 500);
+  }
+
+  // Referidos: si el nuevo usuario viene de un enlace, abonar +5 al que invitó
+  if (ref && ref !== email) {
+    const refUser = await kvGet(`user:${ref}`);
+    if (refUser) {
+      const refData = (await kvGet(`data:${ref}`)) || {};
+      const bonus = (parseInt(refData.credits, 10) || 0) + 5;
+      await kvSet(`data:${ref}`, { ...refData, credits: bonus });
+    }
   }
 
   const token = newToken();
