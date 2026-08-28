@@ -125,7 +125,7 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
             <>
               <button
                 onClick={onOpenAuth}
-                className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-[#12151F] border border-gray-800 px-3 py-2 text-xs font-bold text-gray-300 hover:text-white hover:border-gray-700 transition-all"
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-xl bg-[#12151F] border border-gray-800 px-3 py-2 text-xs font-bold text-gray-300 hover:text-white hover:border-gray-700 transition-colors"
               >
                 <User className="w-3.5 h-3.5" />
                 Entrar
@@ -156,7 +156,7 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
 
           <button
             onClick={() => (credits > 0 ? setActiveTab('analyze') : onOpenUpsell())}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-3 sm:px-4 py-2 text-xs font-bold text-black shadow-lg shadow-emerald-500/25 transition-all hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-3 sm:px-4 py-2 text-xs font-bold text-black shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/35"
           >
             <Zap className="h-4 w-4 fill-black text-black" />
             <span className="hidden sm:inline">{credits > 0 ? 'Analizar gratis' : 'Comprar créditos'}</span>
