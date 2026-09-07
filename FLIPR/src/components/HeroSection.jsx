@@ -37,13 +37,13 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
   const marqueeItems = [...items, ...items];
 
   return (
-    <section className="relative overflow-hidden pt-8 pb-16 md:pt-14 md:pb-24">
+    <section className="relative overflow-hidden pb-16 md:pb-24">
       {/* Background Neon Grid Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-emerald-500/5 blur-3xl pointer-events-none rounded-full" />
 
       {/* Live Opportunities Ticker */}
       <div className="mb-10">
-        <div className="w-full bg-[#0D1017] border-y border-gray-800/80 py-1.5 text-[10px] font-mono uppercase tracking-widest">
+        <div className="w-full bg-[#0D1017] border-b border-gray-800/80 py-1.5 text-[10px] font-mono uppercase tracking-widest">
           <div className="mx-auto max-w-7xl px-4 flex items-center justify-center gap-2 text-emerald-400 font-bold">
             <Flame className="w-3.5 h-3.5" />
             Oportunidades detectadas ahora
@@ -123,14 +123,26 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
                 onClick={onStartAnalyze}
                 className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-8 py-4 text-base font-bold text-black shadow-xl shadow-emerald-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
               >
-                <span>Analizar producto</span>
+                <span>Analizar producto gratis</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
 
               <div className="flex items-center justify-center gap-2 text-xs text-gray-400 font-medium px-2 py-1">
                 <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                <span>3 análisis gratis cada mes • Sin registro previo</span>
+                <span>3 análisis gratis al empezar • Sin registro previo</span>
               </div>
+            </div>
+
+            {/* Secondary: enlace a contenido SEO / viral */}
+            <div className="pt-2 flex items-center justify-center md:justify-start gap-2">
+              <a
+                href="/oportunidad-del-dia"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors"
+              >
+                <Flame className="w-3.5 h-3.5" />
+                Ver la oportunidad del día
+                <ChevronRight className="w-3.5 h-3.5" />
+              </a>
             </div>
 
           </div>

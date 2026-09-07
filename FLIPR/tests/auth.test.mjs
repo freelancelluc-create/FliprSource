@@ -57,9 +57,7 @@ test('flujo completo: register -> me -> login (con KV simulado)', async () => {
     throw new Error('Unexpected fetch: ' + u);
   };
 
-  const { default: register } = await import('../api/auth/register.js');
-  const { default: login } = await import('../api/auth/login.js');
-  const { default: me } = await import('../api/auth/me.js');
+  const { default: authHandler } = await import('../api/auth.js');
 
   // Mock req/res (firma clásica `(req, res)`)
   const mockRes = () => {
@@ -68,43 +66,44 @@ test('flujo completo: register -> me -> login (con KV simulado)', async () => {
     res.end = (d) => { res.body = d; };
     return res;
   };
-  const mockReq = (body, token) => ({
+  const mockReq = (action, body, token) => ({
     headers: { host: 'x.test', ...(token ? { authorization: `Bearer ${token}` } : {}) },
     body, // readBody devuelve esto directamente
-    url: '/',
+    url: `/?action=${action}`,
+    query: { action },
     method: body ? 'POST' : 'GET',
   });
-  const call = async (fn, body, token) => {
+  const call = async (action, body, token) => {
     const res = mockRes();
-    await fn(mockReq(body, token), res);
+    await authHandler(mockReq(action, body, token), res);
     return { status: res.statusCode, data: JSON.parse(res.body || '{}') };
   };
 
   // Registro
-  const r1 = await call(register, { name: 'Ana', email: 'ana@test.com', password: 'clave123' });
+  const r1 = await call('register', { name: 'Ana', email: 'ana@test.com', password: 'clave123' });
   assert.equal(r1.status, 200);
   assert.ok(r1.data.token, 'registro devuelve token');
   assert.equal(r1.data.user.email, 'ana@test.com');
 
   // me con el token de sesión
-  const r2 = await call(me, null, r1.data.token);
+  const r2 = await call('me', null, r1.data.token);
   assert.equal(r2.data.user.email, 'ana@test.com');
 
   // Login correcto
-  const r3 = await call(login, { email: 'ana@test.com', password: 'clave123' });
+  const r3 = await call('login', { email: 'ana@test.com', password: 'clave123' });
   assert.equal(r3.status, 200);
   assert.ok(r3.data.token);
 
   // Login con contraseña incorrecta -> 401
-  const r4 = await call(login, { email: 'ana@test.com', password: 'mala' });
+  const r4 = await call('login', { email: 'ana@test.com', password: 'mala' });
   assert.equal(r4.status, 401);
 
   // Email repetido -> 409
-  const r5 = await call(register, { name: 'Ana2', email: 'ana@test.com', password: 'clave123' });
+  const r5 = await call('register', { name: 'Ana2', email: 'ana@test.com', password: 'clave123' });
   assert.equal(r5.status, 409);
 
   // Referido: al registrar con ?ref, el que invitó recibe +5 créditos
-  await call(register, { name: 'Luis', email: 'luis@test.com', password: 'clave123', ref: 'ana@test.com' });
+  await call('register', { name: 'Luis', email: 'luis@test.com', password: 'clave123', ref: 'ana@test.com' });
   const anaData = JSON.parse(store.get('data:ana@test.com'));
   assert.equal(anaData.credits, 5, 'el que invita recibe +5 créditos');
 });

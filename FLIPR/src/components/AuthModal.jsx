@@ -19,8 +19,8 @@ const ERRORS = {
 };
 
 // Modos del modal: login | register | forgot | reset
-export default function AuthModal({ onClose, onSuccess }) {
-  const [mode, setMode] = useState('login');
+export default function AuthModal({ initialMode = 'login', onClose, onSuccess }) {
+  const [mode, setMode] = useState(initialMode);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -42,7 +42,7 @@ export default function AuthModal({ onClose, onSuccess }) {
         ? await register(name, email, password)
         : await login(email, password);
       if (r.ok && r.data && r.data.user) {
-        onSuccess(r.data.user);
+        onSuccess(r.data.user, mode);
         onClose();
         return;
       }

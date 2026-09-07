@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, ShieldCheck, Zap, Bookmark, History, User, Search, Coins, LayoutDashboard } from 'lucide-react';
+import { TrendingUp, ShieldCheck, Zap, Bookmark, History, User, Search, Coins, LayoutDashboard, Calculator, Columns3 } from 'lucide-react';
 
 export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favoritesCount = 0, credits = 3, onOpenUpsell, user = null, onOpenAuth, onLogout }) {
   return (
@@ -50,6 +50,30 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
           >
             <Search className="w-3.5 h-3.5" />
             Analizar producto
+          </button>
+
+          <button
+            onClick={() => setActiveTab('calculadora')}
+            className={`px-2.5 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 ${
+              activeTab === 'calculadora'
+                ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/20 font-bold'
+                : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+            }`}
+          >
+            <Calculator className="w-3.5 h-3.5" />
+            Calculadora
+          </button>
+
+          <button
+            onClick={() => setActiveTab('comparar')}
+            className={`px-2.5 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 ${
+              activeTab === 'comparar'
+                ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/20 font-bold'
+                : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
+            }`}
+          >
+            <Columns3 className="w-3.5 h-3.5" />
+            Comparar
           </button>
 
           <button
@@ -214,6 +238,26 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
         >
           <LayoutDashboard className="w-4 h-4" />
           <span>Panel</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('calculadora')}
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded-lg ${
+            activeTab === 'calculadora' ? 'text-emerald-400 font-bold' : 'text-gray-400'
+          }`}
+        >
+          <Calculator className="w-4 h-4" />
+          <span>Calcular</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('comparar')}
+          className={`flex flex-col items-center gap-1 px-3 py-1 rounded-lg ${
+            activeTab === 'comparar' ? 'text-emerald-400 font-bold' : 'text-gray-400'
+          }`}
+        >
+          <Columns3 className="w-4 h-4" />
+          <span>Comparar</span>
         </button>
 
         <button

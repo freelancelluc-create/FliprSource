@@ -37,6 +37,32 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <!-- Datos estructurados (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "FLIPR",
+          "alternateName": "FliprScore",
+          "url": "https://www.fliprscore.com/",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web",
+          "inLanguage": "es",
+          "description": "Analiza un anuncio de segunda mano y obtén en segundos un veredicto claro: CÓMPRALO, NEGOCIA o PASA, con FLIP SCORE, margen estimado y precio máximo de compra.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+        },
+        {
+          "@type": "Organization",
+          "name": "FLIPR",
+          "url": "https://www.fliprscore.com/",
+          "logo": "https://www.fliprscore.com/brand/logo-horizontal.svg"
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { 
   CheckCircle2, AlertTriangle, XCircle, ArrowLeft, MessageSquareText, 
   FileText, Bell, Bookmark, Share2, Sparkles, TrendingUp, ShieldCheck, 
-  Clock, DollarSign, Zap, HelpCircle, Copy, Check 
+  Clock, DollarSign, Zap, HelpCircle, Copy, Check, Columns3 
 } from 'lucide-react';
 import FlipScoreGauge from './FlipScoreGauge';
+import ShareModal from './ShareModal';
 import { computeFlipFactors } from '../utils/flipCalculator';
+import { trackEvent } from '../utils/analytics';
+import { createShareLink } from '../utils/share';
 
 // Clasifica cada razón con un tono visual (verde/ámbar/rojo) según su contenido
 function reasonTone(text) {
@@ -23,11 +26,13 @@ export default function ResultCard({
   isFavorite = false, 
   onToggleFavorite,
   isFollowed = false,
-  onToggleFollow
+  onToggleFollow,
+  isCompared = false,
+  onToggleCompare
 }) {
-  const [copied, setCopied] = useState(false);
   const [copiedMsg, setCopiedMsg] = useState(false);
   const [showScoreDetail, setShowScoreDetail] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   if (!result) return null;
 
@@ -80,13 +85,8 @@ export default function ResultCard({
   }
 
   const handleShare = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(
-        `Veredicto FLIPR: ${result.name} - ${result.verdict} (FLIP SCORE ${result.flipScore}/100). Beneficio est: ${result.estimatedProfitMin}-${result.estimatedProfitMax}€`
-      );
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+    trackEvent('share_clicked', { verdict: result.verdict, score: result.flipScore, name: result.name });
+    setShareModalOpen(true);
   };
 
   return (
@@ -116,11 +116,24 @@ export default function ResultCard({
           </button>
 
           <button
-            onClick={handleShare}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#12151F] border border-gray-800 px-3 py-2 text-xs font-bold text-gray-300 hover:text-white transition-all"
+            onClick={() => onToggleCompare(result)}
+            className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition-all ${
+              isCompared
+                ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
+                : 'bg-[#12151F] border-gray-800 text-gray-400 hover:text-white'
+            }`}
           >
-            {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
-            <span className="hidden sm:inline">{copied ? 'Copiado!' : 'Compartir'}</span>
+            <Columns3 className={`w-4 h-4 ${isCompared ? 'text-emerald-400' : ''}`} />
+            <span className="hidden sm:inline">{isCompared ? 'En comparador' : 'Comparar'}</span>
+          </button>
+
+          <button
+            onClick={handleShare}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#12151F] border border-gray-800 px-3 py-2 text-xs font-bold text-gray-300 hover:text-white hover:border-emerald-500/40 hover:bg-emerald-500/10 transition-all"
+            title="Compartir en WhatsApp, Telegram, X o copiar enlace"
+          >
+            <Share2 className="w-4 h-4 text-emerald-400" />
+            <span className="hidden sm:inline">Compartir</span>
           </button>
         </div>
       </div>
@@ -496,6 +509,13 @@ export default function ResultCard({
         </button>
 
       </div>
+
+      {shareModalOpen && (
+        <ShareModal 
+          result={result} 
+          onClose={() => setShareModalOpen(false)} 
+        />
+      )}
 
     </div>
   );

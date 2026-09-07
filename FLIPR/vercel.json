@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    { "source": "/a/:id", "destination": "/api/analisis?id=:id&format=html" },
+    { "source": "/api/og", "destination": "/api/analisis?format=og" },
+    { "source": "/calculadora", "destination": "/index.html" },
+    { "source": "/api/auth/login", "destination": "/api/auth?action=login" },
+    { "source": "/api/auth/register", "destination": "/api/auth?action=register" },
+    { "source": "/api/auth/logout", "destination": "/api/auth?action=logout" },
+    { "source": "/api/auth/me", "destination": "/api/auth?action=me" },
+    { "source": "/api/auth/reset-password", "destination": "/api/auth?action=reset-password" },
+    { "source": "/api/user/load", "destination": "/api/user?action=load" },
+    { "source": "/api/user/save", "destination": "/api/user?action=save" }
+  ],
+  "crons": [
+    {
+      "path": "/api/alerts",
+      "schedule": "0 9 * * *"
+    }
+  ]
+}

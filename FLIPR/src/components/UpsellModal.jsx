@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X, Zap, Check, CreditCard, Sparkles, Lock, AlertCircle, FlaskConical } from 'lucide-react';
 import { PLANS } from '../data/plans';
 import { PAYMENTS_ENABLED } from '../config';
+import { trackEvent } from '../utils/analytics';
 
 export default function UpsellModal({ credits = 0, onClose, onBuy }) {
   const [buying, setBuying] = useState(null); // id del plan en proceso
@@ -31,6 +32,7 @@ export default function UpsellModal({ credits = 0, onClose, onBuy }) {
       });
       const data = await resp.json().catch(() => null);
       if (data && data.url) {
+        trackEvent('checkout_started', { planId: plan.id });
         window.location.href = data.url;
         return;
       }

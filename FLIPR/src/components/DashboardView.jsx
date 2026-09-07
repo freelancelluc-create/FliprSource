@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { TrendingUp, ShieldCheck, Zap, Clock, Copy, Check, Trash2, Users, Gift, Target, CheckCircle2, XCircle, AlertTriangle, BarChart3, Bell, PencilLine, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { TrendingUp, ShieldCheck, Zap, Clock, Copy, Check, Trash2, Users, Gift, Target, CheckCircle2, XCircle, AlertTriangle, BarChart3, Bell, BellOff, PencilLine, X, Mail, Loader2 } from 'lucide-react';
 
 function VerdictBadge({ verdict }) {
   const map = {
@@ -31,6 +31,73 @@ export default function DashboardView({
   });
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [noteInput, setNoteInput] = useState('');
+
+  // ── Alertas ──────────────────────────────────────────────────────────────
+  const [alertsEnabled, setAlertsEnabled] = useState(false);
+  const [alertEmail, setAlertEmail] = useState('');
+  const [alertEmailInput, setAlertEmailInput] = useState('');
+  const [alertsLoading, setAlertsLoading] = useState(false);
+  const [alertsSaved, setAlertsSaved] = useState(false);
+  const [alertsError, setAlertsError] = useState('');
+  const [showEmailInput, setShowEmailInput] = useState(false);
+
+  // Cargar prefs de alertas al montar si hay sesión
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      try {
+        const token = localStorage.getItem('flipr_token');
+        if (!token) return;
+        const resp = await fetch('/api/alert-prefs', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        setAlertsEnabled(!!data.enabled);
+        setAlertEmail(data.notifyEmail || user.email || '');
+        setAlertEmailInput(data.notifyEmail || user.email || '');
+      } catch (_) {}
+    })();
+  }, [user]);
+
+  const saveAlertPrefs = async (enabled, email) => {
+    setAlertsLoading(true);
+    setAlertsError('');
+    try {
+      const token = localStorage.getItem('flipr_token');
+      if (!token) throw new Error('no-session');
+      const resp = await fetch('/api/alert-prefs', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ enabled, notifyEmail: email }),
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.error || 'error');
+      setAlertsEnabled(enabled);
+      setAlertEmail(email);
+      setAlertsSaved(true);
+      setShowEmailInput(false);
+      setTimeout(() => setAlertsSaved(false), 2500);
+    } catch (e) {
+      setAlertsError('No se pudo guardar. Inténtalo de nuevo.');
+    } finally {
+      setAlertsLoading(false);
+    }
+  };
+
+  const handleToggleAlerts = () => {
+    if (!user) { onOpenAuth('login'); return; }
+    if (!alertsEnabled) {
+      // Activar: mostrar input de email para confirmar
+      setShowEmailInput(true);
+    } else {
+      // Desactivar directamente
+      saveAlertPrefs(false, alertEmail);
+    }
+  };
 
   const saveNote = (id) => {
     const next = { ...notes, [id]: noteInput.trim() };
@@ -113,13 +180,77 @@ export default function DashboardView({
         <h2 className="text-sm font-mono font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
           <Target className="w-4 h-4 text-emerald-400" /> En seguimiento ({watchlist.length})
         </h2>
-        {/* Aviso honesto: las alertas automáticas aún no están activas */}
-        <div className="flex items-start gap-2 rounded-xl bg-amber-500/10 border border-amber-500/20 px-3 py-2 text-[11px] text-amber-300 font-mono">
-          <Bell className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
-          <span>
-            <strong>Alertas automáticas de precio · Próximamente.</strong>{' '}
-            Por ahora guarda aquí tus productos favoritos con su precio objetivo y beneficio estimado para no perderlos de vista.
-          </span>
+
+        {/* Panel de alertas automáticas */}
+        <div className={`rounded-xl border px-4 py-3 space-y-3 transition-colors ${alertsEnabled ? 'bg-emerald-500/10 border-emerald-500/25' : 'bg-[#12151F]/80 border-gray-800'}`}>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              {alertsEnabled
+                ? <Bell className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                : <BellOff className="w-4 h-4 text-gray-500 flex-shrink-0" />
+              }
+              <div>
+                <p className={`text-xs font-bold ${alertsEnabled ? 'text-emerald-300' : 'text-gray-300'}`}>
+                  Alertas automáticas de precio
+                </p>
+                {alertsEnabled
+                  ? <p className="text-[11px] text-emerald-400/80 font-mono">Activas · Notificando a {alertEmail}</p>
+                  : <p className="text-[11px] text-gray-500 font-mono">Recibe un email cuando el precio baje de tu objetivo</p>
+                }
+              </div>
+            </div>
+            <button
+              onClick={handleToggleAlerts}
+              disabled={alertsLoading}
+              className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors focus:outline-none ${
+                alertsEnabled ? 'bg-emerald-500' : 'bg-gray-700'
+              } ${alertsLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              aria-label={alertsEnabled ? 'Desactivar alertas' : 'Activar alertas'}
+            >
+              <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${alertsEnabled ? 'translate-x-5' : 'translate-x-0'}`} />
+            </button>
+          </div>
+
+          {/* Input de email al activar */}
+          {showEmailInput && (
+            <div className="flex gap-2 pt-1">
+              <div className="flex-1 flex items-center gap-2 rounded-xl bg-[#090A0F] border border-gray-700 focus-within:border-emerald-500 px-3 py-1.5">
+                <Mail className="w-3.5 h-3.5 text-gray-500 flex-shrink-0" />
+                <input
+                  autoFocus
+                  type="email"
+                  value={alertEmailInput}
+                  onChange={(e) => setAlertEmailInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') saveAlertPrefs(true, alertEmailInput);
+                    if (e.key === 'Escape') setShowEmailInput(false);
+                  }}
+                  placeholder="tu@email.com"
+                  className="flex-1 bg-transparent text-xs text-white focus:outline-none"
+                />
+              </div>
+              <button
+                onClick={() => saveAlertPrefs(true, alertEmailInput)}
+                disabled={alertsLoading || !alertEmailInput.includes('@')}
+                className="rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-black px-3 py-1.5 text-xs font-bold flex items-center gap-1"
+              >
+                {alertsLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                Activar
+              </button>
+              <button onClick={() => setShowEmailInput(false)} className="rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-400 px-2.5 py-1.5 text-xs">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
+
+          {alertsSaved && (
+            <p className="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
+              <Check className="w-3 h-3" /> Guardado correctamente
+            </p>
+          )}
+          {alertsError && (
+            <p className="text-[11px] text-red-400 font-mono">{alertsError}</p>
+          )}
         </div>
         {watchlist.length === 0 ? (
           <p className="text-sm text-gray-400">
