@@ -1,6 +1,31 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizePrice, extractPriceFromHtml, parseProductFromImageOrUrl } from '../src/utils/aiVisionParser.js';
+import { normalizePrice, extractPriceFromHtml, parseProductFromImageOrUrl, extractUrlFromShareText } from '../src/utils/aiVisionParser.js';
+
+test('extractUrlFromShareText: extrae URL limpia de texto compartido en Wallapop móvil', () => {
+  const raw = '¡Echa un vistazo a este producto en Wallapop! iPhone 13 Pro 128GB: https://es.wallapop.com/item/iphone-13-pro-128gb-10394829';
+  const res = extractUrlFromShareText(raw);
+  assert.equal(res.url, 'https://es.wallapop.com/item/iphone-13-pro-128gb-10394829');
+  assert.equal(res.titleFromText, 'iPhone 13 Pro 128GB');
+});
+
+test('extractUrlFromShareText: extrae URL de Vinted o texto con emojis y saltos', () => {
+  const raw = 'Mira lo que vende @user en Vinted ✨ \n https://www.vinted.es/items/3948294-abrigo-zara.';
+  const res = extractUrlFromShareText(raw);
+  assert.equal(res.url, 'https://www.vinted.es/items/3948294-abrigo-zara');
+});
+
+test('parse: texto compartido con prefijo móvil es procesado sin errores', async () => {
+  globalThis.fetch = async () => ({
+    ok: true,
+    status: 200,
+    text: async () => '<html><script type="application/ld+json">{"offers":{"price":450,"priceCurrency":"EUR"}}</script></html>',
+  });
+  const raw = '¡Echa un vistazo a este producto en Wallapop! iPhone 13 Pro 128GB: https://es.wallapop.com/item/iphone-13-pro-128gb-10394829';
+  const r = await parseProductFromImageOrUrl({ file: null, imageUrl: null, urlText: raw });
+  assert.equal(r.price, 450);
+  assert.equal(r.title, 'Iphone 13 Pro 128gb');
+});
 
 test('normalizePrice: formatos españoles y limpieza', () => {
   assert.equal(normalizePrice('158'), 158);

@@ -163,12 +163,53 @@ async function analyzeDescription(title, description) {
   }
 }
 
+/**
+ * Extrae la URL limpia y el posible título a partir de texto compartido desde apps móviles.
+ * Ejemplo:
+ * "¡Echa un vistazo a este producto en Wallapop! iPhone 13 Pro 128GB: https://es.wallapop.com/item/iphone-13-pro-128gb-10394829"
+ * -> { url: "https://es.wallapop.com/item/iphone-13-pro-128gb-10394829", titleFromText: "iPhone 13 Pro 128GB" }
+ */
+export function extractUrlFromShareText(rawText) {
+  if (!rawText || typeof rawText !== 'string') return { url: '', titleFromText: '' };
+  const text = rawText.trim();
+
+  // 1) Buscar URL en el texto (http(s)://... o dominio/item/...)
+  const match = text.match(/(https?:\/\/[^\s\)\],>"']+)/i) 
+    || text.match(/((?:www\.)?(?:es\.)?(?:wallapop\.com|vinted\.[a-z.]+|milanuncios\.com|facebook\.com\/marketplace)[^\s\)\],>"']*)/i);
+
+  if (!match) {
+    return { url: text, titleFromText: '' };
+  }
+
+  let url = match[1].trim();
+  // Limpiar puntuación sobrante al final del link
+  url = url.replace(/[.,;!?:]+$/, '');
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = `https://${url}`;
+  }
+
+  // 2) Intentar extraer el título del texto antes de la URL
+  let titleFromText = '';
+  try {
+    const textBeforeUrl = text.split(match[0])[0].trim();
+    if (textBeforeUrl) {
+      titleFromText = textBeforeUrl
+        .replace(/^[¡!¿?]+/, '')
+        .replace(/^(?:echa un vistazo a este producto en wallapop|mira lo que he encontrado en wallapop|mira lo que encontré en wallapop|mira esta oferta en wallapop|mira lo que vende [^:]+ en vinted|echa un vistazo a este anuncio)[!:\s-]*/i, '')
+        .replace(/[:\-–—]+$/, '')
+        .trim();
+    }
+  } catch (_) {}
+
+  return { url, titleFromText };
+}
+
 export async function parseProductFromImageOrUrl({ file, imageUrl, urlText }) {
   // Pequeña espera para mantener el feedback de "leyendo"
   await new Promise((r) => setTimeout(r, 250));
 
   if (urlText && urlText.trim().length > 0) {
-    const cleanUrl = urlText.trim();
+    const { url: cleanUrl, titleFromText } = extractUrlFromShareText(urlText);
     const isWallapop = cleanUrl.includes('wallapop');
     const isVinted = cleanUrl.includes('vinted');
 
@@ -219,7 +260,10 @@ export async function parseProductFromImageOrUrl({ file, imageUrl, urlText }) {
       console.log("Parsing fallback for URL", e);
     }
 
-    if (!extractedTitle || extractedTitle.length < 3) {
+    // Si el título del slug es muy genérico o vacío pero teníamos texto compartido, usarlo
+    if ((!extractedTitle || extractedTitle.length < 3) && titleFromText) {
+      extractedTitle = titleFromText;
+    } else if (!extractedTitle || extractedTitle.length < 3) {
       extractedTitle = "Producto de " + (isWallapop ? "Wallapop" : isVinted ? "Vinted" : "Marketplace");
     }
 

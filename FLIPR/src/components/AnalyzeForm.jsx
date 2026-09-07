@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Upload, Sparkles, Zap, AlertCircle, Link as LinkIcon, CheckCircle2 } from 'lucide-react';
 import { PRESET_PRODUCTS } from '../data/presetProducts';
-import { parseProductFromImageOrUrl } from '../utils/aiVisionParser';
+import { parseProductFromImageOrUrl, extractUrlFromShareText } from '../utils/aiVisionParser';
 import { prepareImageForVision } from '../utils/imageUtils';
 
 export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
@@ -36,8 +36,10 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
     setImageUrl(preset.imageUrl);
     setAccessories(preset.accessories || []);
     setAiNotes(preset.reasons ? [preset.reasons[0]] : []);
-    setAiSuccessMessage("");
+    setAiSuccessMessage(`Demo cargada: ${preset.name}`);
     setAiPriceWarning("");
+    setDescription("");
+    setKm(preset.km || null);
   };
 
   // Drag & drop or local photo upload
@@ -99,7 +101,23 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
   const handleUrlAiExtract = (e) => {
     if (e) e.preventDefault();
     if (!urlInput.trim()) return;
-    runAiAnalysisOnUpload(null, null, urlInput);
+    const { url } = extractUrlFromShareText(urlInput);
+    if (url && url !== urlInput) {
+      setUrlInput(url);
+    }
+    runAiAnalysisOnUpload(null, null, url || urlInput);
+  };
+
+  const handleUrlPaste = (e) => {
+    const pasted = e.clipboardData?.getData('text') || '';
+    if (pasted) {
+      const { url } = extractUrlFromShareText(pasted);
+      if (url) {
+        e.preventDefault();
+        setUrlInput(url);
+        runAiAnalysisOnUpload(null, null, url);
+      }
+    }
   };
 
   const handleAddAccessory = (e) => {
@@ -226,6 +244,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                 placeholder="Ej: https://es.wallapop.com/item/..."
                 value={urlInput}
                 onChange={(e) => setUrlInput(e.target.value)}
+                onPaste={handleUrlPaste}
                 onBlur={() => { if (urlInput.trim()) handleUrlAiExtract(); }}
                 className="flex-1 rounded-xl bg-[#12151F] border border-gray-800 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none font-mono"
               />
