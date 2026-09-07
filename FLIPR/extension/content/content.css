@@ -1,0 +1,231 @@
+/* FLIPR In-Page Floating Widget CSS (Isolated) */
+#flipr-floating-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #090A0F 0%, #121824 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  border-radius: 9999px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.7), 0 0 15px rgba(16, 185, 129, 0.3);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+#flipr-floating-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  border-color: #10B981;
+  box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.8), 0 0 25px rgba(16, 185, 129, 0.6);
+}
+
+#flipr-floating-btn svg {
+  width: 18px;
+  height: 18px;
+  color: #10B981;
+  filter: drop-shadow(0 0 4px #10B981);
+}
+
+#flipr-floating-btn .flipr-badge-pulse {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background: #10B981;
+  border-radius: 50%;
+  animation: flipr-pulse 2s infinite;
+}
+
+@keyframes flipr-pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Modal In-Page Overlay */
+#flipr-inpage-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 9999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#flipr-inpage-modal-backdrop.flipr-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#flipr-inpage-modal-card {
+  width: 90%;
+  max-width: 440px;
+  background: #090A0F;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 20px;
+  padding: 24px;
+  color: #F3F4F6;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 30px rgba(16, 185, 129, 0.2);
+  transform: translateY(20px) scale(0.96);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#flipr-inpage-modal-backdrop.flipr-visible #flipr-inpage-modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.flipr-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #1F2937;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.flipr-brand-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 15px;
+  color: #FFFFFF;
+}
+
+.flipr-brand-tag span {
+  color: #10B981;
+}
+
+.flipr-modal-close {
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.flipr-modal-close:hover {
+  color: #FFFFFF;
+  background: #1F2937;
+}
+
+.flipr-item-info {
+  margin-bottom: 16px;
+}
+
+.flipr-item-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #E5E7EB;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.flipr-item-price-tag {
+  font-size: 13px;
+  color: #9CA3AF;
+}
+
+.flipr-item-price-tag strong {
+  color: #10B981;
+  font-size: 16px;
+}
+
+.flipr-score-banner {
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.flipr-score-val {
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.flipr-verdict-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.flipr-pill-buy { background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.4); }
+.flipr-pill-negotiate { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
+.flipr-pill-pass { background: rgba(239, 68, 68, 0.2); color: #F87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+
+.flipr-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.flipr-metric-box {
+  background: #111827;
+  border: 1px solid #1F2937;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+}
+
+.flipr-metric-label {
+  font-size: 11px;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.flipr-metric-val {
+  font-size: 15px;
+  font-weight: 700;
+  color: #F3F4F6;
+}
+
+.flipr-modal-action-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background: #10B981;
+  color: #090A0F;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  transition: background 0.2s ease;
+  box-sizing: border-box;
+}
+
+.flipr-modal-action-btn:hover {
+  background: #34D399;
+}

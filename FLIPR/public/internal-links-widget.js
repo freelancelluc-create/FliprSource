@@ -10,6 +10,7 @@
   const current = (script && script.dataset.current) || "";
 
   const PAGES = [
+    { href: "/extension",                         label: "Extensión Navegador",  emoji: "🧩" },
     { href: "/herramienta-reventa",              label: "Herramienta Reventa",  emoji: "⚡" },
     { href: "/calculadora-beneficio-reventa",     label: "Calculadora Margen",   emoji: "🧮" },
     { href: "/blog",                              label: "Blog de Reventa",      emoji: "📚" },

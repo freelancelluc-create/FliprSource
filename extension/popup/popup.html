@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>FLIPR - Tasador & Reventa</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="brand">
+        <svg class="bolt-icon" viewBox="0 0 24 24" fill="#10B981">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+        <div class="brand-text">
+          <span class="brand-title">FLIPR</span>
+          <span class="brand-sub">EXTENSIÓN</span>
+        </div>
+      </div>
+      <a href="https://www.fliprscore.com" target="_blank" class="web-link" title="Abrir fliprscore.com">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+      </a>
+    </header>
+
+    <!-- Active Tab Detection -->
+    <div id="detected-card" class="card detected-card hidden">
+      <div class="detected-badge">🟢 Anuncio Detectado</div>
+      <div id="detected-title" class="item-title">Cargando anuncio...</div>
+      <button id="btn-analyze-current" class="btn-primary">
+        ⚡ Analizar Oportunidad
+      </button>
+    </div>
+
+    <!-- Quick Search Input -->
+    <div class="card search-card">
+      <label class="input-label">Pegar Enlace o Producto</label>
+      <div class="search-box">
+        <input type="text" id="input-query" placeholder="Ej: iPhone 13 Pro o link de Wallapop..." />
+        <button id="btn-search" class="btn-icon">⚡</button>
+      </div>
+    </div>
+
+    <!-- Quick Mini Calculator -->
+    <div class="card calc-card">
+      <div class="card-header">
+        <span class="card-title">🧮 Margen Rápido</span>
+        <select id="calc-platform" class="select-sm">
+          <option value="wallapop">Wallapop (Protección ~5%)</option>
+          <option value="vinted">Vinted (Tarifa 5% + 0.70€)</option>
+          <option value="mano">En Mano (0% comisión)</option>
+        </select>
+      </div>
+      <div class="calc-row">
+        <div class="input-group">
+          <span class="field-label">Compro a:</span>
+          <div class="price-input-wrap">
+            <input type="number" id="calc-buy" value="100" min="0" />
+            <span class="curr">€</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <span class="field-label">Vendo a:</span>
+          <div class="price-input-wrap">
+            <input type="number" id="calc-sell" value="160" min="0" />
+            <span class="curr">€</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-result">
+        <div class="result-box">
+          <span class="res-label">Beneficio Neto</span>
+          <span id="res-profit" class="res-val green">+52 €</span>
+        </div>
+        <div class="result-box">
+          <span class="res-label">ROI Rentabilidad</span>
+          <span id="res-roi" class="res-val green">+52%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Shortcuts -->
+    <footer class="popup-footer">
+      <a href="https://www.fliprscore.com/herramienta-reventa" target="_blank" class="footer-link">Herramienta Reventa</a>
+      <span>•</span>
+      <a href="https://www.fliprscore.com/calculadora-beneficio-reventa" target="_blank" class="footer-link">Calculadora</a>
+      <span>•</span>
+      <a href="https://www.fliprscore.com/blog/guia-reventa-wallapop-flipping" target="_blank" class="footer-link">Guía Flipping</a>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

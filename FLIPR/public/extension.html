@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extensión de Navegador FLIPR | Tasador en Wallapop & Vinted</title>
+  <meta name="description" content="Descarga la extensión oficial de FLIPR para Chrome, Edge y Brave. Analiza oportunidades de reventa, calcula el margen y tasación directamente dentro de Wallapop y Vinted.">
+  <meta name="keywords" content="extension wallapop, extension vinted, tasador wallapop chrome, plugin flipping wallapop, herramienta reventa chrome">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Extensión FLIPR para Chrome, Edge y Brave | Tasador de Wallapop y Vinted">
+  <meta property="og:description" content="Calcula márgenes y rentabilidad directamente en Wallapop y Vinted con 1 clic.">
+  <meta property="og:url" content="https://www.fliprscore.com/extension">
+  <meta property="og:image" content="https://www.fliprscore.com/brand/og-image.png">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #06080E;
+      color: #E2E8F0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    
+    /* Header */
+    header {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(6, 8, 14, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding: 16px 0;
+    }
+    .nav-wrap { display: flex; align-items: center; justify-content: space-between; }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 20px;
+      color: #FFFFFF;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: #10B981; }
+    .nav-links { display: flex; align-items: center; gap: 20px; }
+    .nav-link { color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.2s; }
+    .nav-link:hover { color: #10B981; }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+      position: relative;
+    }
+    .hero-glow {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 500px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(6, 8, 14, 0) 70%);
+      pointer-events: none;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34D399;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 18px;
+      color: #94A3B8;
+      max-width: 680px;
+      margin: 0 auto 36px;
+    }
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #10B981;
+      color: #06080E;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+      transition: all 0.25s ease;
+    }
+    .btn-download:hover {
+      background: #34D399;
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.6);
+    }
+    .supported-browsers {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      color: #64748B;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Steps Section */
+    .section-title {
+      text-align: center;
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .section-sub {
+      text-align: center;
+      color: #94A3B8;
+      margin-bottom: 48px;
+      font-size: 16px;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+    .step-card {
+      background: #0E131F;
+      border: 1px solid #1E293B;
+      border-radius: 16px;
+      padding: 28px;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+    .step-card:hover {
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .step-num {
+      width: 36px;
+      height: 36px;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+    .step-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #F8FAFC;
+    }
+    .step-card p {
+      font-size: 14px;
+      color: #94A3B8;
+    }
+    .step-card code {
+      background: #1E293B;
+      color: #34D399;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+    .feat-card {
+      background: linear-gradient(180deg, #0E131F 0%, #080C14 100%);
+      border: 1px solid #1E293B;
+      border-radius: 16px;
+      padding: 28px;
+    }
+    .feat-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+    .feat-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #F8FAFC;
+    }
+    .feat-card p {
+      font-size: 14px;
+      color: #94A3B8;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid #1E293B;
+      padding: 40px 0;
+      text-align: center;
+      color: #64748B;
+      font-size: 14px;
+    }
+    footer a { color: #94A3B8; text-decoration: none; margin: 0 10px; }
+    footer a:hover { color: #10B981; }
+
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 32px; }
+      .hero p { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav-wrap">
+      <a href="/" class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#10B981"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        FLIPR <span>SCORE</span>
+      </a>
+      <div class="nav-links">
+        <a href="/herramienta-reventa" class="nav-link">Herramienta Reventa</a>
+        <a href="/calculadora-beneficio-reventa" class="nav-link">Calculadora Margen</a>
+        <a href="/blog/guia-reventa-wallapop-flipping" class="nav-link">Guía Flipping</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-glow"></div>
+      <div class="container">
+        <div class="badge">⚡ Extensión Oficial Manifest V3</div>
+        <h1>Tasa y analiza chollos directamente en <span>Wallapop & Vinted</span></h1>
+        <p>Añade un botón inteligente en cada anuncio para conocer al instante el Flip Score, precio de mercado y beneficio neto estimado sin salir de la tienda.</p>
+        
+        <div class="cta-group">
+          <a href="/downloads/flipr-extension.zip" class="btn-download" download>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Descargar Extensión (.ZIP)
+          </a>
+        </div>
+
+        <div class="supported-browsers">
+          <span>✓ Google Chrome</span>
+          <span>✓ Microsoft Edge</span>
+          <span>✓ Brave</span>
+          <span>✓ Opera</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Installation Steps -->
+    <section class="container">
+      <h2 class="section-title">Cómo instalar en 30 segundos</h2>
+      <p class="section-sub">Fácil instalación mediante el modo desarrollador de tu navegador.</p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <h3>Descarga y Descomprime</h3>
+          <p>Descarga el archivo <code>flipr-extension.zip</code> y descomprímelo en una carpeta de tu ordenador.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <h3>Abre Extensiones</h3>
+          <p>Escribe <code>chrome://extensions</code> (o <code>edge://extensions</code> en Edge) en la barra de URL y activa el <strong>"Modo de desarrollador"</strong>.</p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <h3>Cargar Descomprimida</h3>
+          <p>Haz clic en <strong>"Cargar descomprimida"</strong> y selecciona la carpeta descomprimida. ¡Listo para usar!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="container">
+      <h2 class="section-title">Diseñada para cazadores de chollos</h2>
+      <p class="section-sub">Todo lo que necesitas para cerrar mejores tratos en tiempo récord.</p>
+
+      <div class="features-grid">
+        <div class="feat-card">
+          <div class="feat-icon">⚡</div>
+          <h3>Botón Flotante en Ficha de Producto</h3>
+          <p>Aparece automáticamente en cualquier producto de Wallapop o Vinted con una insignia animada y veredicto instantáneo.</p>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon">🧮</div>
+          <h3>Calculadora Rápida de Margen</h3>
+          <p>Calcula comisiones oficiales de Wallapop Envíos y Vinted, costes de envío y ROI real desde el popup.</p>
+        </div>
+
+        <div class="feat-card">
+          <div class="feat-icon">🖱️</div>
+          <h3>Menú Clic Derecho</h3>
+          <p>Selecciona cualquier nombre de producto o haz clic derecho en un enlace para tasarlo al vuelo en FLIPR.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 FLIPR - Herramienta de Reventa & Flipping en España.</p>
+      <div style="margin-top: 12px;">
+        <a href="/">Inicio</a>
+        <a href="/herramienta-reventa">Herramienta Reventa</a>
+        <a href="/calculadora-beneficio-reventa">Calculadora</a>
+        <a href="/blog/guia-reventa-wallapop-flipping">Blog Guía</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/internal-links-widget.js"></script>
+</body>
+</html>

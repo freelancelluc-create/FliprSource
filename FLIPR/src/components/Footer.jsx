@@ -35,16 +35,18 @@ export default function Footer({ onNavigate }) {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-800/80 pt-6 text-[11px] font-mono">
           <p>© 2026 FLIPR Technologies Inc. Todos los derechos reservados.</p>
           
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <button onClick={() => onNavigate('hero')} className="hover:text-emerald-400">Inicio</button>
             <span>•</span>
             <button onClick={() => onNavigate('analyze')} className="hover:text-emerald-400">Analizar</button>
             <span>•</span>
             <button onClick={() => onNavigate('calculadora')} className="hover:text-emerald-400">Calculadora</button>
             <span>•</span>
-            <button onClick={() => onNavigate('comparar')} className="hover:text-emerald-400">Comparar</button>
+            <a href="/extension" className="hover:text-emerald-400 text-emerald-400/90 font-bold">Extensión</a>
             <span>•</span>
-            <button onClick={() => onNavigate('history')} className="hover:text-emerald-400">Historial</button>
+            <a href="/herramienta-reventa" className="hover:text-emerald-400">Reventa</a>
+            <span>•</span>
+            <a href="/blog/guia-reventa-wallapop-flipping" className="hover:text-emerald-400">Guía Blog</a>
           </div>
         </div>
 

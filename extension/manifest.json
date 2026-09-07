@@ -1,0 +1,53 @@
+{
+  "manifest_version": 3,
+  "name": "FLIPR - Tasador & Reventa Wallapop/Vinted",
+  "version": "1.0.0",
+  "description": "Calcula el Flip Score, margen de beneficio y precio de mercado en Wallapop, Vinted y Milanuncios con 1 clic.",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    },
+    "default_title": "FLIPR - Tasar Producto"
+  },
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.wallapop.com/item/*",
+        "*://es.wallapop.com/item/*",
+        "*://*.vinted.es/items/*",
+        "*://*.vinted.com/items/*",
+        "*://*.vinted.fr/items/*",
+        "*://*.vinted.it/items/*",
+        "*://*.milanuncios.com/anuncios/*"
+      ],
+      "js": ["content/content.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "contextMenus"
+  ],
+  "host_permissions": [
+    "*://*.wallapop.com/*",
+    "*://*.vinted.es/*",
+    "*://*.vinted.com/*",
+    "*://*.vinted.fr/*",
+    "*://*.vinted.it/*",
+    "*://*.milanuncios.com/*",
+    "https://www.fliprscore.com/*"
+  ]
+}
