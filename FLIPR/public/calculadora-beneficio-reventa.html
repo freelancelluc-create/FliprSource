@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Beneficio de Reventa en Wallapop y Vinted — FLIPR</title>
+  <meta name="description" content="Calcula tu beneficio neto exacto al revender productos en Wallapop, Vinted y Milanuncios. Descuenta comisiones de pasarela, gastos de envío y obtén tu margen real." />
+  <meta name="keywords" content="calculadora beneficio reventa, calculadora comisiones wallapop, calcular ganancia segunda mano, margen reventa vinted, simulador reventa" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.fliprscore.com/calculadora-beneficio-reventa" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #090A0F; color: #e5e7eb; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 56px; }
+    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .brand .mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#34d399,#10b981); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; font-size: 18px; }
+    .brand .name { font-size: 18px; font-weight: 800; letter-spacing: .02em; color: #fff; }
+    .brand .tag { font-size: 10px; color: #34d399; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
+    h1 { font-size: 32px; line-height: 1.2; font-weight: 900; margin: 20px 0 12px; color: #fff; letter-spacing: -0.02em; }
+    .subtle { color: #9ca3af; font-size: 16px; margin-bottom: 26px; }
+    .calc-box { background: #12151F; border: 1px solid #262a36; border-radius: 20px; padding: 26px; margin-bottom: 24px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    .field label { display: block; font-size: 12px; font-family: monospace; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 6px; }
+    .field input, .field select { width: 100%; background: #090A0F; border: 1px solid #262a36; border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 15px; font-family: monospace; font-weight: 700; outline: none; }
+    .field input:focus, .field select:focus { border-color: #34d399; }
+    .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
+    @media (max-width: 600px) { .res-grid { grid-template-columns: 1fr; } }
+    .res-card { background: #090A0F; border: 1px solid #262a36; border-radius: 14px; padding: 16px; text-align: center; }
+    .res-card .k { font-size: 11px; font-family: monospace; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; }
+    .res-card .v { font-size: 24px; font-family: 'JetBrains Mono', monospace; font-weight: 900; color: #34d399; }
+    .res-card .v.muted { color: #fff; }
+    .card { background: #12151F; border: 1px solid #262a36; border-radius: 20px; padding: 24px; margin-bottom: 22px; }
+    .card h2 { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 14px; }
+    .cta { display: block; text-align: center; background: linear-gradient(135deg,#34d399,#10b981); color: #000; font-weight: 800; font-size: 17px; padding: 16px; border-radius: 16px; text-decoration: none; margin: 28px 0 12px; box-shadow: 0 10px 30px rgba(52,211,153,0.25); transition: transform 0.15s ease; }
+    .cta:hover { transform: scale(1.02); }
+    .cta small { display: block; font-weight: 600; font-size: 12px; opacity: .85; margin-top: 4px; }
+  </style>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.fliprscore.com/calculadora-beneficio-reventa" />
+  <meta property="og:title" content="Calculadora de Beneficio de Reventa en Wallapop y Vinted — FLIPR" />
+  <meta property="og:description" content="Calcula tu margen neto exacto al revender productos en Wallapop y Vinted. Descuenta comisiones y envíos con FLIPR." />
+  <meta property="og:image" content="https://www.fliprscore.com/brand/og-image.png" />
+  <meta property="og:site_name" content="FLIPR" />
+  <meta property="og:locale" content="es_ES" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://www.fliprscore.com/calculadora-beneficio-reventa" />
+  <meta name="twitter:title" content="Calculadora de Beneficio de Reventa — FLIPR" />
+  <meta name="twitter:description" content="Calcula el margen limpio de reventa descontando comisiones y envíos." />
+  <meta name="twitter:image" content="https://www.fliprscore.com/brand/og-image.png" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="mark">⚡</div>
+      <div>
+        <div class="name">FLIPR</div>
+        <div class="tag">Calculadora de Reventa & Margen Neto</div>
+      </div>
+    </div>
+
+    <h1>Calculadora de Beneficio y Margen de Reventa</h1>
+    <p class="subtle">
+      Introduce el precio al que compras y el precio previsto de venta. Descontamos comisiones y envíos de Wallapop y Vinted para darte el <strong>beneficio neto en tu bolsillo</strong>.
+    </p>
+
+    <!-- Interactive JS Calculator Box -->
+    <div class="calc-box">
+      <div class="form-grid">
+        <div class="field">
+          <label>Precio de Compra (€)</label>
+          <input type="number" id="buyPrice" value="200" min="0" step="5" />
+        </div>
+        <div class="field">
+          <label>Precio de Venta Estimado (€)</label>
+          <input type="number" id="sellPrice" value="290" min="0" step="5" />
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Plataforma de Venta</label>
+          <select id="platform">
+            <option value="wallapop">Wallapop (Envíos + Protección)</option>
+            <option value="vinted">Vinted</option>
+            <option value="mano">En mano / Milanuncios (0% comisiones)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Gastos extra (Envío / Pila / Reparación €)</label>
+          <input type="number" id="extraFees" value="0" min="0" step="1" />
+        </div>
+      </div>
+
+      <div class="res-grid">
+        <div class="res-card">
+          <div class="k">Beneficio Neto</div>
+          <div class="v" id="resProfit">+75 €</div>
+        </div>
+        <div class="res-card">
+          <div class="k">Margen Limpio</div>
+          <div class="v" id="resMargin">27%</div>
+        </div>
+        <div class="res-card">
+          <div class="k">Comisiones Estimadas</div>
+          <div class="v muted" id="resFees">14.50 €</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function calculate() {
+        const buy = parseFloat(document.getElementById('buyPrice').value) || 0;
+        const sell = parseFloat(document.getElementById('sellPrice').value) || 0;
+        const extra = parseFloat(document.getElementById('extraFees').value) || 0;
+        const platform = document.getElementById('platform').value;
+
+        let fees = 0;
+        if (platform === 'wallapop') {
+          fees = Math.round(sell * 0.05 + 4.5); // comisión estándar aproximada
+        } else if (platform === 'vinted') {
+          fees = Math.round(sell * 0.05 + 0.70);
+        } else {
+          fees = 0;
+        }
+
+        const netProfit = Math.round(sell - buy - fees - extra);
+        const marginPct = buy > 0 ? Math.round((netProfit / buy) * 100) : 0;
+
+        document.getElementById('resProfit').textContent = (netProfit >= 0 ? '+' : '') + netProfit + ' €';
+        document.getElementById('resProfit').style.color = netProfit >= 25 ? '#34d399' : netProfit > 0 ? '#fbbf24' : '#ef4444';
+        document.getElementById('resMargin').textContent = marginPct + '%';
+        document.getElementById('resFees').textContent = fees + ' €';
+      }
+
+      document.getElementById('buyPrice').addEventListener('input', calculate);
+      document.getElementById('sellPrice').addEventListener('input', calculate);
+      document.getElementById('extraFees').addEventListener('input', calculate);
+      document.getElementById('platform').addEventListener('change', calculate);
+      calculate();
+    </script>
+
+    <div class="card">
+      <h2>¿Cómo saber si una oportunidad de reventa es rentable?</h2>
+      <p style="font-size: 14px; color: #d1d5db; line-height: 1.6;">
+        En la reventa de segunda mano, los expertos recomiendan buscar un <strong>margen mínimo del 25% al 35%</strong> sobre el dinero invertido. Esto te protege ante imprevistos como regateos del comprador final, comisiones de plataforma o pequeños costes de envío.
+      </p>
+    </div>
+
+    <a href="/?go=analizar" class="cta">
+      Analizar un Anuncio Real en FLIPR
+      <small>Pega el enlace de Wallapop y calculamos el margen automáticamente</small>
+    </a>
+
+    <!-- Widget de enlaces internos -->
+    <div id="flipr-internal-links"></div>
+    <script src="/internal-links-widget.js"></script>
+  </div>
+</body>
+</html>

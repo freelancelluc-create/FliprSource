@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Herramienta para Reventa y Flipping en Wallapop y Vinted — FLIPR</title>
+  <meta name="description" content="La herramienta de reventa y flipping nº1 para Wallapop, Vinted y Milanuncios. Calcula margen neto, comisiones, valor real de mercado y velocidad de venta en segundos." />
+  <meta name="keywords" content="herramienta para reventa, flipping segunda mano, software revendedores wallapop, calcular margen reventa, app flipping espana, ganar dinero reventa wallapop" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.fliprscore.com/herramienta-reventa" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #090A0F; color: #e5e7eb; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 56px; }
+    .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .brand .mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#34d399,#10b981); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; font-size: 18px; }
+    .brand .name { font-size: 18px; font-weight: 800; letter-spacing: .02em; color: #fff; }
+    .brand .tag { font-size: 10px; color: #34d399; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
+    h1 { font-size: 32px; line-height: 1.2; font-weight: 900; margin: 20px 0 12px; color: #fff; letter-spacing: -0.02em; }
+    .subtle { color: #9ca3af; font-size: 16px; margin-bottom: 26px; }
+    .card { background: #12151F; border: 1px solid #262a36; border-radius: 20px; padding: 24px; margin-bottom: 22px; }
+    .card h2 { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 14px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .feature { background: #090A0F; border: 1px solid #262a36; border-radius: 14px; padding: 16px; }
+    .feature .icon { font-size: 24px; margin-bottom: 8px; }
+    .feature h3 { font-size: 14px; font-weight: 800; color: #34d399; margin-bottom: 6px; }
+    .feature p { font-size: 12px; color: #9ca3af; line-height: 1.5; }
+    .callout { background: rgba(52, 211, 153, 0.08); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 18px; padding: 20px; margin: 24px 0; color: #d1fae5; }
+    .callout strong { color: #fff; }
+    .callout .big { font-size: 28px; font-weight: 900; color: #34d399; font-family: 'JetBrains Mono', monospace; }
+    ul.check { list-style: none; margin: 0; }
+    ul.check li { padding: 10px 0 10px 32px; position: relative; color: #d1d5db; border-bottom: 1px solid #1f232d; font-size: 14px; }
+    ul.check li:last-child { border-bottom: none; }
+    ul.check li::before { content: "✔"; color: #34d399; position: absolute; left: 0; font-weight: 800; }
+    .cta { display: block; text-align: center; background: linear-gradient(135deg,#34d399,#10b981); color: #000; font-weight: 800; font-size: 17px; padding: 16px; border-radius: 16px; text-decoration: none; margin: 28px 0 12px; box-shadow: 0 10px 30px rgba(52,211,153,0.25); transition: transform 0.15s ease; }
+    .cta:hover { transform: scale(1.02); }
+    .cta small { display: block; font-weight: 600; font-size: 12px; opacity: .85; margin-top: 4px; }
+    .table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+    .table th, .table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #262a36; }
+    .table th { color: #9ca3af; font-family: monospace; font-size: 11px; text-transform: uppercase; }
+    .table td { color: #e5e7eb; }
+    .table td.profit { color: #34d399; font-weight: 800; font-family: monospace; }
+  </style>
+
+  <!-- Open Graph (WhatsApp, Telegram, Facebook, LinkedIn) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.fliprscore.com/herramienta-reventa" />
+  <meta property="og:title" content="Herramienta para Reventa y Flipping en Wallapop y Vinted — FLIPR" />
+  <meta property="og:description" content="La herramienta de reventa y flipping nº1 para Wallapop y Vinted. Calcula márgenes limpios, comisiones y detecta oportunidades en segundos." />
+  <meta property="og:image" content="https://www.fliprscore.com/brand/og-image.png" />
+  <meta property="og:site_name" content="FLIPR" />
+  <meta property="og:locale" content="es_ES" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://www.fliprscore.com/herramienta-reventa" />
+  <meta name="twitter:title" content="Herramienta para Reventa y Flipping en Wallapop y Vinted — FLIPR" />
+  <meta name="twitter:description" content="Calcula márgenes netos, comisiones y detecta chollos de reventa con FLIPR." />
+  <meta name="twitter:image" content="https://www.fliprscore.com/brand/og-image.png" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "FLIPR — Herramienta para Reventa",
+    "url": "https://www.fliprscore.com/herramienta-reventa",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "Herramienta especializada para revendedores y flippers de segunda mano en Wallapop, Vinted y Milanuncios.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" }
+  }
+  </script>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand">
+      <div class="mark">⚡</div>
+      <div>
+        <div class="name">FLIPR</div>
+        <div class="tag">Herramienta para Reventa & Flipping</div>
+      </div>
+    </div>
+
+    <h1>Herramienta para Reventa en Wallapop, Vinted y Milanuncios</h1>
+    <p class="subtle">
+      FLIPR es el software diseñado específicamente para <strong>revendedores, compradores inteligentes y flippers</strong> de segunda mano en España. Evalúa cualquier anuncio en 5 segundos.
+    </p>
+
+    <div class="card">
+      <h2>¿Por qué los mejores revendedores usan FLIPR?</h2>
+      <div class="grid-3">
+        <div class="feature">
+          <div class="icon">⚡</div>
+          <h3>Decisión en 5 Segundos</h3>
+          <p>Pega el enlace o sube una foto. Recibe un veredicto matemático inmediato: <strong>CÓMPRALO, NEGOCIA o PASA</strong>.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">💰</div>
+          <h3>Cálculo de Margen Limpio</h3>
+          <p>Resta comisiones de plataforma (Wallapop Envíos, protección de pago) para mostrarte el <strong>beneficio neto exacto</strong> en euros.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🛡️</div>
+          <h3>Filtro Anti-Trampas</h3>
+          <p>Detecta riesgos de réplicas, productos con averías típicas y modelos que se devalúan rápido.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Regla de oro de la reventa:</strong>
+      <div class="big">El beneficio se hace en la compra, no en la venta.</div>
+      <p style="margin-top:6px; font-size:13px; color:#a7f3d0;">
+        Si compras al precio adecuado con colchón suficiente, la venta siempre es rentable. FLIPR calcula tu precio máximo de compra para asegurar tu margen.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Nichos más rentables para revender en España (2025/2026)</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Categoría</th>
+            <th>Margen habitual</th>
+            <th>Tiempo medio de venta</th>
+            <th>Liquidez</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Consolas & Gaming</strong> (PS5, Switch, Steam Deck)</td>
+            <td class="profit">+40 € a +85 €</td>
+            <td>2 a 6 días</td>
+            <td>🔥 Muy Alta</td>
+          </tr>
+          <tr>
+            <td><strong>Apple & Móviles</strong> (iPhone 13/14, MacBook M1)</td>
+            <td class="profit">+50 € a +120 €</td>
+            <td>3 a 8 días</td>
+            <td>🔥 Muy Alta</td>
+          </tr>
+          <tr>
+            <td><strong>Cámaras & Drones</strong> (GoPro, Sony Alpha)</td>
+            <td class="profit">+60 € a +140 €</td>
+            <td>7 a 15 días</td>
+            <td>⚡ Alta</td>
+          </tr>
+          <tr>
+            <td><strong>Sneakers & Ropa Vinted</strong> (Jordan, Dunk, Abrigos)</td>
+            <td class="profit">+25 € a +60 €</td>
+            <td>5 a 12 días</td>
+            <td>⚡ Alta</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Todo lo que incluye la herramienta de reventa FLIPR</h2>
+      <ul class="check">
+        <li><strong>FLIP SCORE™ (0-100):</strong> Puntuación algorítmica ponderada según precio, liquidez, demanda y riesgo.</li>
+        <li><strong>Precio Máximo de Compra:</strong> El tope que puedes pagar si quieres asegurar al menos un 20% de ganancia.</li>
+        <li><strong>Mensaje de negociación generado con IA:</strong> Argumentos sólidos y educados listos para copiar y pegar en el chat del vendedor.</li>
+        <li><strong>Calculadora de comisiones y envíos:</strong> Conoce al céntimo cuánto te queda en mano tras la venta.</li>
+        <li><strong>Historial y comparador de oportunidades:</strong> Guarda anuncios y compáralos uno al lado de otro.</li>
+      </ul>
+    </div>
+
+    <a href="/?go=analizar" class="cta">
+      Probar la Herramienta de Reventa Gratis
+      <small>3 análisis gratis de bienvenida · Sin registrar tarjeta</small>
+    </a>
+
+    <!-- Widget de enlaces internos -->
+    <div id="flipr-internal-links"></div>
+    <script src="/internal-links-widget.js"></script>
+  </div>
+</body>
+</html>

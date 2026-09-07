@@ -10,6 +10,9 @@
   const current = (script && script.dataset.current) || "";
 
   const PAGES = [
+    { href: "/herramienta-reventa",              label: "Herramienta Reventa",  emoji: "⚡" },
+    { href: "/calculadora-beneficio-reventa",     label: "Calculadora Margen",   emoji: "🧮" },
+    { href: "/blog",                              label: "Blog de Reventa",      emoji: "📚" },
     { href: "/ps5-segunda-mano",                  label: "PS5",                  emoji: "🎮" },
     { href: "/iphone-segunda-mano",               label: "iPhone",               emoji: "📱" },
     { href: "/macbook-segunda-mano",              label: "MacBook",              emoji: "💻" },
