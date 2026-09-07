@@ -1,5 +1,8 @@
 {
+  "cleanUrls": true,
   "rewrites": [
+    { "source": "/herramienta-reventa", "destination": "/herramienta-reventa.html" },
+    { "source": "/calculadora-beneficio-reventa", "destination": "/calculadora-beneficio-reventa.html" },
     { "source": "/a/:id", "destination": "/api/analisis?id=:id&format=html" },
     { "source": "/api/og", "destination": "/api/analisis?format=og" },
     { "source": "/calculadora", "destination": "/index.html" },
