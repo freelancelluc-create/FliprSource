@@ -482,7 +482,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
           </div>
 
           {/* Submit Button */}
-          <div className="pt-4">
+          <div className="pt-4 space-y-3">
             <button
               type="submit"
               disabled={isScanning}
@@ -500,6 +500,17 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                 </>
               )}
             </button>
+
+            {/* Trust & Privacy Guarantee strip */}
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-gray-400 font-mono text-center pt-1">
+              <span className="flex items-center gap-1 text-gray-300">
+                <span className="text-emerald-400">🔒</span> 100% Privado y Seguro
+              </span>
+              <span>·</span>
+              <span>Sin pedir contraseñas</span>
+              <span>·</span>
+              <span className="text-emerald-400 font-bold">Algoritmo neutral</span>
+            </div>
           </div>
 
         </form>

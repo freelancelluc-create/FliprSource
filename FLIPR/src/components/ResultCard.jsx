@@ -183,6 +183,11 @@ export default function ResultCard({
               {verdictDesc}
             </p>
 
+            <div className="flex items-center justify-center md:justify-start gap-2 text-[11px] font-mono text-gray-400 pt-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>Valoración contrastada con histórico de mercado · Algoritmo neutral</span>
+            </div>
+
             {/* Confidence indicator according to Section 6 of brief */}
             <div className="inline-flex items-center gap-2 rounded-lg bg-[#090A0F]/60 border border-gray-800 px-3 py-1.5 text-xs text-gray-400">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />

@@ -18,13 +18,17 @@ export default function Footer({ onNavigate }) {
               </span>
             </div>
             <p className="text-gray-400 text-xs max-w-md">
-              Herramienta de inteligencia simplificada para compraventa y reventa de segunda mano.
+              Herramienta independiente de valoración y cálculo de precio justo para Wallapop, Vinted y Milanuncios.
+            </p>
+            <p className="text-[11px] text-gray-500 flex items-center gap-1 pt-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>100% Privado: sin acceso a tus contraseñas ni cuentas personales.</span>
             </p>
           </div>
 
           <div className="rounded-2xl bg-[#12151F] border border-gray-800 p-4 font-mono text-center md:text-right">
-            <span className="text-[10px] uppercase text-emerald-400 font-bold block tracking-wider">Principio Fundamental</span>
-            <span className="text-sm font-black text-white">«NO VENDER IA. VENDER DECISIONES.»</span>
+            <span className="text-[10px] uppercase text-emerald-400 font-bold block tracking-wider">Compromiso de Fiabilidad</span>
+            <span className="text-sm font-black text-white">«DATOS DE MERCADO REALES. CERO HUMO.»</span>
           </div>
         </div>
 
