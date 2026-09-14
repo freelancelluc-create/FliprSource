@@ -56,7 +56,7 @@ export default function CompareView({ items = [], onRemove, onSelectResult, onAn
         </div>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-gray-800 bg-[#12151F]">
+      <div className="overflow-x-auto rounded-2xl border border-gray-800 bg-[#12151F]">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-gray-800 bg-[#0A0D14]/80 text-[11px] uppercase tracking-wider text-gray-400 font-mono">
