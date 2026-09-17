@@ -1,0 +1,572 @@
+/**
+ * Acceso centralizado al catálogo de mercado de FLIPR.
+ *
+ * FASE 1 de la migración de catálogo (ampliar cobertura sin redeploy):
+ * la fuente de verdad pasa a ser Vercel KV / Upstash, bajo la clave
+ * `flipr:market-catalog`. Si KV no está configurado, no responde, o aún
+ * no se ha ejecutado la migración (`scripts/migrate-catalog-to-kv.mjs`),
+ * se usa SEED_CATALOG como red de seguridad — el análisis nunca se rompe
+ * por un fallo de KV.
+ *
+ * SEED_CATALOG es una copia exacta de los 32 productos que antes vivían
+ * hardcodeados (y duplicados) en src/data/marketCatalog.js y en
+ * api/market-price.js. A partir de ahora esos 32 solo son el punto de
+ * partida; el catálogo real crece en KV sin tocar código ni redeploy.
+ *
+ * Nota: src/data/marketCatalog.js se mantiene tal cual en el cliente como
+ * catálogo de respaldo offline (ver src/utils/catalogApi.js) y para la
+ * calculadora gratuita (src/utils/priceEstimator.js), que deliberadamente
+ * no hace llamadas al servidor. Esto deja SEED_CATALOG duplicado una vez
+ * más — es un trade-off consciente de la Fase 1, documentado aquí para que
+ * no sorprenda en una futura revisión.
+ */
+
+import { kvGet, kvSet } from './kv.js';
+
+const CATALOG_KEY = 'flipr:market-catalog';
+
+export const SEED_CATALOG = [
+  {
+    id: "rieju-mrx-pro",
+    name: "Rieju MRX Pro / MRX Supermotard",
+    category: "Motocicletas",
+    keywords: ["rieju", "mrx pro", "mrx", "supermotard"],
+    marketAvg: 1250,
+    marketRangeMin: 1050,
+    marketRangeMax: 1450,
+    probableResellMin: 1150,
+    probableResellMax: 1350,
+    demand: "MEDIA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "15–30 días"
+  },
+  {
+    id: "ps5-slim",
+    name: "PlayStation 5 Slim / PS5",
+    category: "Consolas",
+    keywords: ["ps5", "playstation 5", "playstation5"],
+    marketAvg: 350,
+    marketRangeMin: 330,
+    marketRangeMax: 370,
+    probableResellMin: 340,
+    probableResellMax: 360,
+    demand: "ALTA",
+    risk: "BAJO",
+    liquidity: "FÁCIL",
+    timeToSell: "3–7 días"
+  },
+  {
+    id: "iphone-14-pro",
+    name: "iPhone 14 Pro",
+    category: "Smartphones",
+    keywords: ["iphone 14"],
+    marketAvg: 700,
+    marketRangeMin: 680,
+    marketRangeMax: 740,
+    probableResellMin: 700,
+    probableResellMax: 720,
+    demand: "MUY ALTA",
+    risk: "BAJO",
+    liquidity: "FÁCIL",
+    timeToSell: "2–5 días"
+  },
+  {
+    id: "iphone-13",
+    name: "iPhone 13",
+    category: "Smartphones",
+    keywords: ["iphone 13"],
+    marketAvg: 430,
+    marketRangeMin: 410,
+    marketRangeMax: 450,
+    probableResellMin: 420,
+    probableResellMax: 440,
+    demand: "ALTA",
+    risk: "BAJO",
+    liquidity: "FÁCIL",
+    timeToSell: "3–6 días"
+  },
+  {
+    id: "switch-oled",
+    name: "Nintendo Switch OLED",
+    category: "Consolas",
+    keywords: ["switch", "nintendo"],
+    marketAvg: 245,
+    marketRangeMin: 230,
+    marketRangeMax: 260,
+    probableResellMin: 240,
+    probableResellMax: 255,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "FÁCIL",
+    timeToSell: "5–10 días"
+  },
+  {
+    id: "macbook-air-m1",
+    name: "MacBook Air M1",
+    category: "Ordenadores",
+    keywords: ["macbook", "macbook air", "m1"],
+    marketAvg: 645,
+    marketRangeMin: 620,
+    marketRangeMax: 670,
+    probableResellMin: 630,
+    probableResellMax: 655,
+    demand: "ALTA",
+    risk: "BAJO",
+    liquidity: "MEDIA",
+    timeToSell: "4–8 días"
+  },
+  {
+    id: "airpods-pro",
+    name: "AirPods Pro",
+    category: "Audio",
+    keywords: ["airpods", "airpods pro"],
+    marketAvg: 170,
+    marketRangeMin: 160,
+    marketRangeMax: 180,
+    probableResellMin: 165,
+    probableResellMax: 175,
+    demand: "ALTA",
+    risk: "ALTO",
+    liquidity: "DIFÍCIL",
+    timeToSell: "7–14 días"
+  },
+  {
+    id: "rtx-3070",
+    name: "Tarjeta Gráfica RTX 3070",
+    category: "Componentes PC",
+    keywords: ["rtx 3070", "rtx3070", "rtx", "grafica", "gpu"],
+    marketAvg: 330,
+    marketRangeMin: 310,
+    marketRangeMax: 350,
+    probableResellMin: 320,
+    probableResellMax: 340,
+    demand: "MEDIA",
+    risk: "MEDIO",
+    liquidity: "FÁCIL",
+    timeToSell: "3–7 días"
+  },
+  {
+    id: "iphone-12",
+    name: "iPhone 12 / iPhone 12 Pro",
+    category: "Smartphones",
+    keywords: ["iphone 12"],
+    marketAvg: 350,
+    marketRangeMin: 330,
+    marketRangeMax: 380,
+    probableResellMin: 345,
+    probableResellMax: 365,
+    demand: "MUY ALTA",
+    risk: "BAJO",
+    liquidity: "FÁCIL",
+    timeToSell: "2–5 días"
+  },
+  {
+    id: "samsung-galaxy",
+    name: "Samsung Galaxy S23 / S22",
+    category: "Smartphones",
+    keywords: ["samsung", "galaxy s23", "galaxy s22", "galaxy"],
+    marketAvg: 430,
+    marketRangeMin: 400,
+    marketRangeMax: 470,
+    probableResellMin: 420,
+    probableResellMax: 445,
+    demand: "ALTA",
+    risk: "BAJO",
+    liquidity: "FÁCIL",
+    timeToSell: "3–6 días"
+  },
+  {
+    id: "ipad",
+    name: "iPad / iPad Air",
+    category: "Tablets",
+    keywords: ["ipad"],
+    marketAvg: 430,
+    marketRangeMin: 400,
+    marketRangeMax: 470,
+    probableResellMin: 420,
+    probableResellMax: 445,
+    demand: "ALTA",
+    risk: "BAJO",
+    liquidity: "FÁCIL",
+    timeToSell: "4–8 días"
+  },
+  {
+    id: "apple-watch",
+    name: "Apple Watch",
+    category: "Wearables",
+    keywords: ["apple watch", "watch"],
+    marketAvg: 250,
+    marketRangeMin: 220,
+    marketRangeMax: 280,
+    probableResellMin: 240,
+    probableResellMax: 260,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "5–10 días"
+  },
+  {
+    id: "switch-lite",
+    name: "Nintendo Switch Lite",
+    category: "Consolas",
+    keywords: ["switch lite"],
+    marketAvg: 175,
+    marketRangeMin: 160,
+    marketRangeMax: 190,
+    probableResellMin: 170,
+    probableResellMax: 180,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "FÁCIL",
+    timeToSell: "4–8 días"
+  },
+  {
+    id: "playstation-4",
+    name: "PlayStation 4 / PS4",
+    category: "Consolas",
+    keywords: ["ps4", "playstation 4"],
+    marketAvg: 160,
+    marketRangeMin: 145,
+    marketRangeMax: 180,
+    probableResellMin: 155,
+    probableResellMax: 170,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "FÁCIL",
+    timeToSell: "5–10 días"
+  },
+  {
+    id: "xbox-series-s",
+    name: "Xbox Series S",
+    category: "Consolas",
+    keywords: ["xbox series s", "xbox", "series s"],
+    marketAvg: 220,
+    marketRangeMin: 205,
+    marketRangeMax: 240,
+    probableResellMin: 215,
+    probableResellMax: 230,
+    demand: "ALTA",
+    risk: "BAJO",
+    liquidity: "FÁCIL",
+    timeToSell: "3–7 días"
+  },
+  {
+    id: "steam-deck",
+    name: "Steam Deck",
+    category: "Consolas",
+    keywords: ["steam deck", "steamdeck"],
+    marketAvg: 450,
+    marketRangeMin: 410,
+    marketRangeMax: 500,
+    probableResellMin: 440,
+    probableResellMax: 470,
+    demand: "ALTA",
+    risk: "BAJO",
+    liquidity: "FÁCIL",
+    timeToSell: "3–7 días"
+  },
+  {
+    id: "gopro",
+    name: "GoPro / Cámara de acción",
+    category: "Cámaras",
+    keywords: ["gopro", "cámara de acción", "camara de accion"],
+    marketAvg: 180,
+    marketRangeMin: 160,
+    marketRangeMax: 200,
+    probableResellMin: 175,
+    probableResellMax: 190,
+    demand: "MEDIA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "7–15 días"
+  },
+  {
+    id: "sony-wh-1000xm4",
+    name: "Auriculares Sony WH-1000XM4",
+    category: "Audio",
+    keywords: ["wh-1000", "sony wh", "xm4", "auriculares"],
+    marketAvg: 200,
+    marketRangeMin: 185,
+    marketRangeMax: 220,
+    probableResellMin: 195,
+    probableResellMax: 210,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "FÁCIL",
+    timeToSell: "5–10 días"
+  },
+  {
+    id: "zapatillas",
+    name: "Zapatillas / Sneakers",
+    category: "Moda",
+    keywords: ["zapatillas", "sneakers", "jordan", "air force", "nike"],
+    marketAvg: 80,
+    marketRangeMin: 60,
+    marketRangeMax: 120,
+    probableResellMin: 70,
+    probableResellMax: 100,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "FÁCIL",
+    timeToSell: "3–7 días"
+  },
+  {
+    id: "silla-gaming",
+    name: "Silla Gaming",
+    category: "Mobiliario",
+    keywords: ["silla gaming", "gaming chair"],
+    marketAvg: 130,
+    marketRangeMin: 100,
+    marketRangeMax: 160,
+    probableResellMin: 120,
+    probableResellMax: 145,
+    demand: "MEDIA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "7–15 días"
+  },
+  {
+    id: "monitor",
+    name: "Monitor Gaming",
+    category: "Componentes PC",
+    keywords: ["monitor", "gaming monitor"],
+    marketAvg: 190,
+    marketRangeMin: 165,
+    marketRangeMax: 220,
+    probableResellMin: 180,
+    probableResellMax: 200,
+    demand: "ALTA",
+    risk: "BAJO",
+    liquidity: "FÁCIL",
+    timeToSell: "3–7 días"
+  },
+  // ===== VEHÍCULOS (coches y motos) — nicho de reventa =====
+  {
+    id: "coche-generico",
+    name: "Coche usado",
+    category: "Vehículos",
+    keywords: ["coche", "turismo", "utilitario"],
+    marketAvg: 4500,
+    marketRangeMin: 3500,
+    marketRangeMax: 6000,
+    probableResellMin: 4200,
+    probableResellMax: 5200,
+    demand: "ALTA",
+    risk: "ALTO",
+    liquidity: "DIFÍCIL",
+    timeToSell: "20–50 días"
+  },
+  {
+    id: "moto-generica",
+    name: "Moto usada",
+    category: "Vehículos",
+    keywords: ["moto", "motocicleta", "motorbike"],
+    marketAvg: 1800,
+    marketRangeMin: 1200,
+    marketRangeMax: 2600,
+    probableResellMin: 1600,
+    probableResellMax: 2100,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "15–35 días"
+  },
+  {
+    id: "seat-ibiza",
+    name: "Seat Ibiza",
+    category: "Vehículos",
+    keywords: ["seat ibiza", "ibiza"],
+    marketAvg: 4200,
+    marketRangeMin: 3500,
+    marketRangeMax: 5000,
+    probableResellMin: 4000,
+    probableResellMax: 4600,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "15–35 días"
+  },
+  {
+    id: "seat-leon",
+    name: "Seat León",
+    category: "Vehículos",
+    keywords: ["seat leon", "león"],
+    marketAvg: 6500,
+    marketRangeMin: 5500,
+    marketRangeMax: 7800,
+    probableResellMin: 6200,
+    probableResellMax: 7000,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "20–40 días"
+  },
+  {
+    id: "vw-golf",
+    name: "Volkswagen Golf",
+    category: "Vehículos",
+    keywords: ["vw golf", "golf"],
+    marketAvg: 7500,
+    marketRangeMin: 6200,
+    marketRangeMax: 9000,
+    probableResellMin: 7000,
+    probableResellMax: 8000,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "20–45 días"
+  },
+  {
+    id: "renault-clio",
+    name: "Renault Clio",
+    category: "Vehículos",
+    keywords: ["renault clio", "clio"],
+    marketAvg: 4500,
+    marketRangeMin: 3800,
+    marketRangeMax: 5500,
+    probableResellMin: 4300,
+    probableResellMax: 4900,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "15–35 días"
+  },
+  {
+    id: "peugeot-208",
+    name: "Peugeot 208",
+    category: "Vehículos",
+    keywords: ["peugeot 208", "208"],
+    marketAvg: 5500,
+    marketRangeMin: 4600,
+    marketRangeMax: 6500,
+    probableResellMin: 5200,
+    probableResellMax: 5900,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "15–35 días"
+  },
+  {
+    id: "opel-corsa",
+    name: "Opel Corsa",
+    category: "Vehículos",
+    keywords: ["opel corsa", "corsa"],
+    marketAvg: 3800,
+    marketRangeMin: 3200,
+    marketRangeMax: 4600,
+    probableResellMin: 3600,
+    probableResellMax: 4200,
+    demand: "ALTA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "15–35 días"
+  },
+  {
+    id: "fiat-500",
+    name: "Fiat 500",
+    category: "Vehículos",
+    keywords: ["fiat 500", "fiat cinquecento"],
+    marketAvg: 5200,
+    marketRangeMin: 4400,
+    marketRangeMax: 6200,
+    probableResellMin: 5000,
+    probableResellMax: 5600,
+    demand: "MUY ALTA",
+    risk: "MEDIO",
+    liquidity: "MEDIA",
+    timeToSell: "12–30 días"
+  },
+  {
+    id: "bmw-serie-3",
+    name: "BMW Serie 3",
+    category: "Vehículos",
+    keywords: ["bmw serie 3", "bmw 3"],
+    marketAvg: 9500,
+    marketRangeMin: 8000,
+    marketRangeMax: 11500,
+    probableResellMin: 9000,
+    probableResellMax: 10200,
+    demand: "ALTA",
+    risk: "ALTO",
+    liquidity: "MEDIA",
+    timeToSell: "20–50 días"
+  },
+  {
+    id: "audi-a3",
+    name: "Audi A3",
+    category: "Vehículos",
+    keywords: ["audi a3", "a3"],
+    marketAvg: 8500,
+    marketRangeMin: 7200,
+    marketRangeMax: 10000,
+    probableResellMin: 8000,
+    probableResellMax: 9200,
+    demand: "ALTA",
+    risk: "ALTO",
+    liquidity: "MEDIA",
+    timeToSell: "20–50 días"
+  }
+];
+
+// Caché en memoria del proceso (dura mientras viva la instancia serverless;
+// se pierde en cada cold start). Solo para no golpear KV en cada request de
+// una misma instancia caliente — no es una fuente de verdad.
+let memoryCache = null;
+let memoryCacheAt = 0;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 min
+
+/**
+ * Devuelve el catálogo vigente: el de KV si existe y no está vacío,
+ * si no, SEED_CATALOG como red de seguridad.
+ */
+export async function getCatalog() {
+  const now = Date.now();
+  if (memoryCache && (now - memoryCacheAt) < CACHE_TTL_MS) {
+    return memoryCache;
+  }
+  let stored = null;
+  try {
+    stored = await kvGet(CATALOG_KEY);
+  } catch (e) {
+    console.log('catalog: kvGet falló, usando SEED_CATALOG', e && e.message);
+  }
+  const catalog = Array.isArray(stored) && stored.length > 0 ? stored : SEED_CATALOG;
+  memoryCache = catalog;
+  memoryCacheAt = now;
+  return catalog;
+}
+
+/**
+ * Sobrescribe el catálogo completo en KV. Usado por el script de migración
+ * y, en el futuro, por cualquier panel/endpoint de edición del catálogo.
+ */
+export async function saveCatalog(catalog) {
+  if (!Array.isArray(catalog)) throw new Error('catalog debe ser un array');
+  const ok = await kvSet(CATALOG_KEY, catalog);
+  if (ok) {
+    memoryCache = catalog;
+    memoryCacheAt = Date.now();
+  }
+  return ok;
+}
+
+/**
+ * Busca en un catálogo (el que sea) el producto que mejor coincide con la
+ * query, priorizando la palabra clave más larga (más específica).
+ */
+export function findInCatalog(catalog, query) {
+  if (!query) return null;
+  const lower = String(query).toLowerCase();
+  let best = null;
+  let bestLen = 0;
+  for (const entry of catalog) {
+    for (const kw of entry.keywords || []) {
+      if (lower.includes(kw) && kw.length > bestLen) {
+        best = entry;
+        bestLen = kw.length;
+      }
+    }
+  }
+  return best;
+}
