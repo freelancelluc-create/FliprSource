@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, Sparkles, Zap, AlertCircle, Link as LinkIcon, CheckCircle2 } from 'lucide-react';
 import { PRESET_PRODUCTS } from '../data/presetProducts';
 import { parseProductFromImageOrUrl, extractUrlFromShareText } from '../utils/aiVisionParser';
@@ -7,7 +7,7 @@ import { prepareImageForVision } from '../utils/imageUtils';
 export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
   const [selectedPresetId, setSelectedPresetId] = useState(initialPreset ? initialPreset.id : null);
   const [title, setTitle] = useState(initialPreset ? initialPreset.name : "");
-  const [price, setPrice] = useState(initialPreset ? initialPreset.inputPrice : "");
+  const [price, setPrice] = useState(initialPreset ? (initialPreset.inputPrice !== undefined ? initialPreset.inputPrice : initialPreset.price) : "");
   const [condition, setCondition] = useState(initialPreset ? initialPreset.condition : "Muy buen estado");
   const [marketplace, setMarketplace] = useState(initialPreset ? initialPreset.marketplace : "Wallapop");
   const [imageUrl, setImageUrl] = useState(initialPreset ? initialPreset.imageUrl : "");
@@ -24,6 +24,20 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
   const [aiPriceWarning, setAiPriceWarning] = useState("");
   const [description, setDescription] = useState("");
   const [km, setKm] = useState(null);
+
+  useEffect(() => {
+    if (initialPreset) {
+      setSelectedPresetId(initialPreset.id || null);
+      if (initialPreset.name) setTitle(initialPreset.name);
+      if (initialPreset.inputPrice !== undefined || initialPreset.price !== undefined) {
+        setPrice(initialPreset.inputPrice !== undefined ? initialPreset.inputPrice : initialPreset.price);
+      }
+      if (initialPreset.condition) setCondition(initialPreset.condition);
+      if (initialPreset.marketplace) setMarketplace(initialPreset.marketplace);
+      if (initialPreset.imageUrl) setImageUrl(initialPreset.imageUrl);
+      if (initialPreset.accessories) setAccessories(initialPreset.accessories);
+    }
+  }, [initialPreset]);
 
 
   // Preset Selection Handler

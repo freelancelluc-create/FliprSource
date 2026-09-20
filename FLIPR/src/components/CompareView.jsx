@@ -13,25 +13,43 @@ function riskTone(risk) {
   return 'text-red-400';
 }
 
-export default function CompareView({ items = [], onRemove, onSelectResult, onAnalyze }) {
+export default function CompareView({ items = [], onRemove, onSelectResult, onAnalyze, onLoadSampleCompare }) {
   if (!items || items.length === 0) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-16 text-center space-y-5">
-        <div className="mx-auto h-14 w-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-          <Columns3 className="w-7 h-7" />
+      <div className="mx-auto max-w-4xl px-4 py-16 text-center space-y-6">
+        <div className="mx-auto h-16 w-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <Columns3 className="w-8 h-8" />
         </div>
-        <h1 className="text-2xl font-extrabold text-white">Compara oportunidades</h1>
-        <p className="text-sm text-gray-400 max-w-md mx-auto">
-          Analiza varios productos y compáralos lado a lado para elegir el mejor chollo.
+        <div className="space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Compara oportunidades de compra</h1>
+          <p className="text-sm text-gray-400 max-w-md mx-auto">
+            Analiza varios anuncios y compáralos frente a frente para saber cuál deja más beneficio con menor riesgo.
+          </p>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <button
+            onClick={onAnalyze}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-6 py-3.5 text-sm font-bold text-black shadow-lg shadow-emerald-500/25 hover:scale-[1.02] transition-all"
+          >
+            <Sparkles className="w-4 h-4 fill-black" />
+            <span>Analizar un producto</span>
+          </button>
+
+          {onLoadSampleCompare && (
+            <button
+              onClick={onLoadSampleCompare}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-[#12151F] hover:bg-gray-800 border border-gray-800 px-5 py-3.5 text-sm font-bold text-white transition-all"
+            >
+              <Trophy className="w-4 h-4 text-amber-400" />
+              <span>Ver comparativa de ejemplo</span>
+            </button>
+          )}
+        </div>
+
+        <p className="text-[11px] text-gray-500 font-mono">
+          Consejo: cuando analices cualquier producto, pulsa «Añadir a comparar» para contrastarlo.
         </p>
-        <button
-          onClick={onAnalyze}
-          className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-6 py-3.5 text-sm font-bold text-black shadow-lg shadow-emerald-500/25 hover:scale-[1.02] transition-all"
-        >
-          <Sparkles className="w-4 h-4 fill-black" />
-          Analizar un producto
-        </button>
-        <p className="text-[11px] text-gray-500 font-mono">Consejo: cuando veas un resultado, pulsa «Añadir a comparar».</p>
       </div>
     );
   }

@@ -4,7 +4,7 @@ import { X, Copy, Check, MessageSquareText, Sparkles, DollarSign } from 'lucide-
 export default function ActionNegotiateModal({ result, onClose }) {
   const defaultOffer = result?.maxRecommendedBuy || Math.round((result?.inputPrice || 0) * 0.88);
   const [offerPrice, setOfferPrice] = useState(defaultOffer);
-  const [style, setStyle] = useState('direct'); // direct | polite | cash
+  const [style, setStyle] = useState('direct'); // direct | polite | cash | data
   const [copied, setCopied] = useState(false);
 
   if (!result) return null;
@@ -13,8 +13,13 @@ export default function ActionNegotiateModal({ result, onClose }) {
   const getNegotiationText = () => {
     const diff = result.inputPrice - offerPrice;
     
+    if (style === 'data') {
+      const marketAvg = result.marketAvg || Math.round(result.inputPrice * 1.15);
+      return `¡Hola! He visto tu ${result.name}. Tras comprobar ventas recientes de mercado (la media suele estar sobre ${marketAvg} €), veo que por ${offerPrice} € tiene sentido tanto para ti como para mí. Si estás de acuerdo, te confirmo el pago y recogida rápida. ¡Un saludo!`;
+    }
+
     if (style === 'cash') {
-      return `¡Buenas! Me interesa ${result.name}. Te ofrezco ${offerPrice} € en mano y me desplazo hoy mismo a buscarlo donde me digas para cerrarlo ya. ¿Te encaja?`;
+      return `¡Buenas! Me interesa ${result.name}. Te ofrezco ${offerPrice} € en mano y me desplazo hoy mismo a buscarlo donde me digas para cerrarlo ya sin esperas. ¿Te encaja?`;
     }
     
     if (style === 'polite') {
@@ -83,13 +88,13 @@ export default function ActionNegotiateModal({ result, onClose }) {
 
           {/* Style Selector */}
           <div className="space-y-2">
-            <label className="text-xs font-mono font-bold text-gray-300 uppercase">Estilo de mensaje:</label>
-            <div className="grid grid-cols-3 gap-2">
+            <label className="text-xs font-mono font-bold text-gray-300 uppercase">Estilo de negociación:</label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               <button
                 type="button"
                 onClick={() => setStyle('direct')}
-                className={`px-3 py-2 text-xs font-bold rounded-xl border transition-all ${
-                  style === 'direct' ? 'bg-amber-500 text-black border-amber-500 font-mono' : 'bg-[#090A0F] text-gray-400 border-gray-800'
+                className={`px-2.5 py-2 text-xs font-bold rounded-xl border transition-all ${
+                  style === 'direct' ? 'bg-amber-500 text-black border-amber-500 font-mono shadow-md' : 'bg-[#090A0F] text-gray-400 border-gray-800 hover:text-white'
                 }`}
               >
                 Directo Rápido
@@ -97,17 +102,26 @@ export default function ActionNegotiateModal({ result, onClose }) {
               <button
                 type="button"
                 onClick={() => setStyle('cash')}
-                className={`px-3 py-2 text-xs font-bold rounded-xl border transition-all ${
-                  style === 'cash' ? 'bg-amber-500 text-black border-amber-500 font-mono' : 'bg-[#090A0F] text-gray-400 border-gray-800'
+                className={`px-2.5 py-2 text-xs font-bold rounded-xl border transition-all ${
+                  style === 'cash' ? 'bg-amber-500 text-black border-amber-500 font-mono shadow-md' : 'bg-[#090A0F] text-gray-400 border-gray-800 hover:text-white'
                 }`}
               >
                 En Mano / Hoy
               </button>
               <button
                 type="button"
+                onClick={() => setStyle('data')}
+                className={`px-2.5 py-2 text-xs font-bold rounded-xl border transition-all ${
+                  style === 'data' ? 'bg-amber-500 text-black border-amber-500 font-mono shadow-md' : 'bg-[#090A0F] text-gray-400 border-gray-800 hover:text-white'
+                }`}
+              >
+                📊 Con Datos
+              </button>
+              <button
+                type="button"
                 onClick={() => setStyle('polite')}
-                className={`px-3 py-2 text-xs font-bold rounded-xl border transition-all ${
-                  style === 'polite' ? 'bg-amber-500 text-black border-amber-500 font-mono' : 'bg-[#090A0F] text-gray-400 border-gray-800'
+                className={`px-2.5 py-2 text-xs font-bold rounded-xl border transition-all ${
+                  style === 'polite' ? 'bg-amber-500 text-black border-amber-500 font-mono shadow-md' : 'bg-[#090A0F] text-gray-400 border-gray-800 hover:text-white'
                 }`}
               >
                 Educado
