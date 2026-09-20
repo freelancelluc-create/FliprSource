@@ -23,6 +23,7 @@ export default function ResultCard({
   onBack, 
   onOpenNegotiate, 
   onOpenListing, 
+  onOpenAlertModal,
   isFavorite = false, 
   onToggleFavorite,
   isFollowed = false,
@@ -483,7 +484,13 @@ export default function ResultCard({
 
         {/* Action 3: 🔔 SEGUIR PRECIO */}
         <button
-          onClick={() => onToggleFollow && onToggleFollow(result)}
+          onClick={() => {
+            if (onOpenAlertModal) {
+              onOpenAlertModal(result);
+            } else if (onToggleFollow) {
+              onToggleFollow(result);
+            }
+          }}
           className={`glass-panel-interactive rounded-2xl p-5 text-left space-y-3 group border ${
             isFollowed ? 'border-emerald-500 bg-emerald-500/10' : 'border-gray-800'
           }`}
@@ -495,21 +502,19 @@ export default function ResultCard({
           </div>
           <div>
             <h4 className="text-base font-bold text-white flex items-center justify-between">
-              <span>■ SEGUIR PRECIO</span>
-              <span className="text-xs font-mono text-gray-400">
-                {isFollowed ? 'Siguiendo ✓' : 'Activar'}
+              <span>■ CREAR ALERTA</span>
+              <span className="text-xs font-mono text-emerald-400">
+                {isFollowed ? 'Configurada ✓' : 'Configurar →'}
               </span>
             </h4>
             <p className="text-xs text-gray-400 mt-1">
               {isFollowed
-                ? 'Guardado en tu panel. Las alertas automáticas llegan próximamente.'
-                : 'Guárdalo en tu panel con su precio objetivo y beneficio estimado.'}
+                ? 'Guardado en tu panel. Recibirás alertas cuando baje de precio.'
+                : 'Configura tu precio objetivo para recibir un email si baja de precio.'}
             </p>
-            {!isFollowed && (
-              <span className="inline-block text-[10px] font-mono bg-gray-800/80 text-gray-500 rounded px-1.5 py-0.5 mt-0.5">
-                Alertas push · Próximamente
-              </span>
-            )}
+            <span className="inline-block text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded px-1.5 py-0.5 mt-0.5">
+              {isFollowed ? 'Activo en tu Watchlist' : 'Alertas automáticas gratuitas'}
+            </span>
           </div>
         </button>
 

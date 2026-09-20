@@ -1,7 +1,7 @@
 import React from 'react';
 import { TrendingUp, ShieldCheck, Zap, Bookmark, History, User, Search, Coins, LayoutDashboard, Calculator, Columns3 } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favoritesCount = 0, credits = 3, onOpenUpsell, user = null, onOpenAuth, onLogout }) {
+export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favoritesCount = 0, credits = 3, onOpenUpsell, user = null, onOpenAuth, onLogout, onOpenExtensionModal }) {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gray-800/80 bg-[#090A0F]/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 sm:gap-6 px-4 py-3 sm:px-6">
@@ -122,13 +122,14 @@ export default function Navbar({ activeTab, setActiveTab, historyCount = 0, favo
             Panel
           </button>
 
-          <a
-            href="/extension"
-            className="px-2.5 py-1.5 text-xs font-bold rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30"
+          <button
+            type="button"
+            onClick={onOpenExtensionModal || (() => { window.location.href = '/extension'; })}
+            className="px-2.5 py-1.5 text-xs font-bold rounded-full whitespace-nowrap transition-all flex items-center gap-1.5 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 cursor-pointer"
           >
             <Zap className="w-3 h-3 text-emerald-400" />
             Extensión
-          </a>
+          </button>
         </nav>
 
         {/* Right side: Auth + Free Credits Indicator & CTA */}

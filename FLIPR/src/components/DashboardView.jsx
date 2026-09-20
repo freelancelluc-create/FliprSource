@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, ShieldCheck, Zap, Clock, Copy, Check, Trash2, Users, Gift, Target, CheckCircle2, XCircle, AlertTriangle, BarChart3, Bell, BellOff, PencilLine, X, Mail, Loader2 } from 'lucide-react';
+import { TrendingUp, ShieldCheck, Zap, Clock, Copy, Check, Trash2, Users, Gift, Target, CheckCircle2, XCircle, AlertTriangle, BarChart3, Bell, BellOff, PencilLine, X, Mail, Loader2, Flame, Sparkles, Video } from 'lucide-react';
 
 function VerdictBadge({ verdict }) {
   const map = {
@@ -23,6 +23,8 @@ export default function DashboardView({
   user,
   onSelectResult,
   onOpenAuth,
+  onOpenCreateAlert,
+  onOpenContentEngine,
 }) {
   const [copied, setCopied] = useState(false);
   // Notas locales por item de watchlist (id → texto)
@@ -177,9 +179,20 @@ export default function DashboardView({
 
       {/* Seguimiento / Watchlist */}
       <section className="space-y-3">
-        <h2 className="text-sm font-mono font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-          <Target className="w-4 h-4 text-emerald-400" /> En seguimiento ({watchlist.length})
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-mono font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+            <Target className="w-4 h-4 text-emerald-400" /> En seguimiento ({watchlist.length})
+          </h2>
+          {onOpenCreateAlert && (
+            <button
+              onClick={onOpenCreateAlert}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 px-3 py-1.5 text-xs font-bold font-mono transition-all"
+            >
+              <Bell className="w-3.5 h-3.5" />
+              <span>+ Crear alerta</span>
+            </button>
+          )}
+        </div>
 
         {/* Panel de alertas automáticas */}
         <div className={`rounded-xl border px-4 py-3 space-y-3 transition-colors ${alertsEnabled ? 'bg-emerald-500/10 border-emerald-500/25' : 'bg-[#12151F]/80 border-gray-800'}`}>
@@ -324,6 +337,33 @@ export default function DashboardView({
           </div>
         )}
       </section>
+
+      {/* Herramientas de Creador / Content Engine */}
+      {onOpenContentEngine && (
+        <section className="space-y-3">
+          <h2 className="text-sm font-mono font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+            <Flame className="w-4 h-4 text-emerald-400" /> Creador de contenido viral
+          </h2>
+          <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/20 via-[#12151F] to-[#090A0F] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <span>Genera guiones para TikTok, Reels y publicaciones de X</span>
+                <span className="rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-mono px-2 py-0.5 font-bold">1-CLIC</span>
+              </h3>
+              <p className="text-xs text-gray-400 max-w-xl">
+                Crea publicaciones listas para publicar con ganchos, análisis de mercado y llamadas a la acción para atraer tráfico a tus análisis.
+              </p>
+            </div>
+            <button
+              onClick={onOpenContentEngine}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-4 py-2.5 text-xs font-bold text-black shadow-lg shadow-emerald-500/20 hover:scale-[1.02] transition-all shrink-0"
+            >
+              <Sparkles className="w-4 h-4 fill-black" />
+              <span>Abrir generador</span>
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* Referidos */}
       <section className="space-y-3">

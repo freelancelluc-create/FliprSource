@@ -13,6 +13,9 @@ import AuthModal from './components/AuthModal';
 import DashboardView from './components/DashboardView';
 import PriceCalculator from './components/PriceCalculator';
 import CompareView from './components/CompareView';
+import CreateAlertModal from './components/CreateAlertModal';
+import ContentEngineModal from './components/ContentEngineModal';
+import ExtensionModal from './components/ExtensionModal';
 import { PRESET_PRODUCTS } from './data/presetProducts';
 import { findMarketData } from './data/marketCatalog';
 import { calculateFlipScore } from './utils/flipCalculator';
@@ -24,6 +27,14 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('hero'); // hero | analyze | result | history | favorites
   const [currentResult, setCurrentResult] = useState(PRESET_PRODUCTS[0]);
   const [initialPresetForForm, setInitialPresetForForm] = useState(null);
+  const [initialVoteDealId, setInitialVoteDealId] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('vote') || null;
+    } catch (_) {
+      return null;
+    }
+  });
 
   // Cuenta de usuario
   const [user, setUser] = useState(() => getStoredUser());
@@ -82,6 +93,10 @@ export default function App() {
   // Active Modals
   const [negotiateModalResult, setNegotiateModalResult] = useState(null);
   const [listingModalResult, setListingModalResult] = useState(null);
+  const [alertModalOpen, setAlertModalOpen] = useState(false);
+  const [alertModalPreset, setAlertModalPreset] = useState(null);
+  const [contentEngineOpen, setContentEngineOpen] = useState(false);
+  const [extensionModalOpen, setExtensionModalOpen] = useState(false);
 
   // Save state to localStorage
   useEffect(() => {
@@ -358,6 +373,24 @@ export default function App() {
     setCompareList(compareList.filter(i => i.id !== id));
   };
 
+  const handleSaveCustomAlert = (alertData) => {
+    const item = {
+      id: alertData.id || `alert-${Date.now()}`,
+      name: alertData.title,
+      inputPrice: alertData.targetPrice,
+      maxRecommendedBuy: alertData.targetPrice,
+      marketplace: alertData.marketplace || 'Todos',
+      imageUrl: alertData.imageUrl || 'https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=600&auto=format&fit=crop&q=80',
+      verdict: 'COMPRALO',
+      flipScore: 85,
+      isCustomAlert: true,
+      createdAt: alertData.createdAt,
+    };
+    if (!watchlist.some(w => w.id === item.id)) {
+      setWatchlist([item, ...watchlist]);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#090A0F] text-gray-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
       <Analytics />
@@ -376,6 +409,7 @@ export default function App() {
         user={user}
         onOpenAuth={() => setAuthModalOpen(true)}
         onLogout={handleLogout}
+        onOpenExtensionModal={() => setExtensionModalOpen(true)}
       />
 
       {/* Main Content Router */}
@@ -407,6 +441,7 @@ export default function App() {
           <>
         {activeTab === 'hero' && (
           <HeroSection
+            initialVoteDealId={initialVoteDealId}
             onStartAnalyze={() => {
               setActiveTab('analyze');
               window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -445,6 +480,10 @@ export default function App() {
               onBack={() => setActiveTab('analyze')}
               onOpenNegotiate={(res) => setNegotiateModalResult(res)}
               onOpenListing={(res) => setListingModalResult(res)}
+              onOpenAlertModal={(res) => {
+                setAlertModalPreset(res);
+                setAlertModalOpen(true);
+              }}
               isFavorite={favoritesList.some(f => f.id === currentResult?.id)}
               onToggleFavorite={handleToggleFavorite}
               isFollowed={watchlist.some(f => f.id === currentResult?.id)}
@@ -456,7 +495,20 @@ export default function App() {
         )}
 
         {activeTab === 'calculadora' && (
-          <PriceCalculator />
+          <PriceCalculator
+            onAnalyzeProduct={(item) => {
+              setInitialPresetForForm({
+                id: null,
+                name: item.name,
+                inputPrice: item.inputPrice,
+                condition: item.condition || 'Muy buen estado',
+                marketplace: 'Wallapop',
+                accessories: ['Caja original'],
+              });
+              setActiveTab('analyze');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+          />
         )}
 
         {activeTab === 'comparar' && (
@@ -465,6 +517,7 @@ export default function App() {
             onRemove={handleRemoveCompare}
             onSelectResult={(res) => { setCurrentResult(res); setActiveTab('result'); }}
             onAnalyze={() => setActiveTab('analyze')}
+            onLoadSampleCompare={() => setCompareList(PRESET_PRODUCTS.slice(0, 3))}
           />
         )}
 
@@ -503,6 +556,11 @@ export default function App() {
               setActiveTab('result');
             }}
             onOpenAuth={() => setAuthModalOpen(true)}
+            onOpenCreateAlert={() => {
+              setAlertModalPreset(null);
+              setAlertModalOpen(true);
+            }}
+            onOpenContentEngine={() => setContentEngineOpen(true)}
           />
         )}
           </>
@@ -530,6 +588,29 @@ export default function App() {
         />
       )}
 
+      {alertModalOpen && (
+        <CreateAlertModal
+          productName={alertModalPreset?.name || ''}
+          targetPrice={alertModalPreset?.maxRecommendedBuy || alertModalPreset?.inputPrice || ''}
+          currentPrice={alertModalPreset?.inputPrice || ''}
+          imageUrl={alertModalPreset?.imageUrl || ''}
+          user={user}
+          onClose={() => {
+            setAlertModalOpen(false);
+            setAlertModalPreset(null);
+          }}
+          onSaveAlert={handleSaveCustomAlert}
+          onOpenAuth={(mode) => openAuth(mode)}
+        />
+      )}
+
+      {contentEngineOpen && (
+        <ContentEngineModal
+          defaultDeal={currentResult}
+          onClose={() => setContentEngineOpen(false)}
+        />
+      )}
+
       {upsellOpen && (
         <UpsellModal
           credits={credits}
@@ -547,6 +628,12 @@ export default function App() {
           initialMode={authMode}
           onClose={() => setAuthModalOpen(false)}
           onSuccess={handleAuthSuccess}
+        />
+      )}
+
+      {extensionModalOpen && (
+        <ExtensionModal
+          onClose={() => setExtensionModalOpen(false)}
         />
       )}
 

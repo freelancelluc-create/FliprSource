@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, ShieldCheck, Zap, TrendingUp, CheckCircle2, ChevronRight, Sparkles, Flame } from 'lucide-react';
 import FlipScoreGauge from './FlipScoreGauge';
+import DealVoteWidget from './DealVoteWidget';
 
 // Oportunidades de ejemplo que rotan (precios con pequeñas variaciones para sensación de "en vivo")
 const BASE_OPPORTUNITIES = [
@@ -19,7 +20,7 @@ const VERDICT_STYLE = {
 };
 const VERDICT_ICON = { COMPRALO: '🟢', NEGOCIA: '🟡', PASA: '🔴' };
 
-export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
+export default function HeroSection({ initialVoteDealId = null, onStartAnalyze, onSelectPreset }) {
   const [tick, setTick] = useState(0);
 
   // Cambia ligeramente los precios cada 4s para que el ticker parezca "en vivo"
@@ -244,6 +245,15 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
             </div>
           </div>
 
+        </div>
+
+        {/* Reto Interactivo Viral: ¿Comprarías esto? */}
+        <div className="mt-16 sm:mt-20">
+          <DealVoteWidget
+            initialDealId={initialVoteDealId}
+            onInspectPreset={onSelectPreset}
+            onStartAnalyze={onStartAnalyze}
+          />
         </div>
 
         {/* Transparencia & Seguridad: ¿Por qué FLIPR es 100% de fiar? */}
