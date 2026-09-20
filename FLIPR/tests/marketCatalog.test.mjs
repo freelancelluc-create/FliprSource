@@ -23,6 +23,10 @@ test('reconoce MacBook Air M1 (palabra clave específica)', () => {
 test('reconoce productos nuevos del catálogo ampliado', () => {
   assert.equal(findMarketData('Steam Deck')?.id, 'steam-deck');
   assert.equal(findMarketData('iPhone 12 128GB')?.id, 'iphone-12');
+  assert.equal(findMarketData('iPhone 16 Pro Max 256GB')?.id, 'iphone-16-pro');
+  assert.equal(findMarketData('PS5 Pro Digital Edition')?.id, 'ps5-pro');
+  assert.equal(findMarketData('Dyson Airwrap Styler')?.id, 'dyson-airwrap');
+  assert.equal(findMarketData('Fujifilm X100VI Silver')?.id, 'fujifilm-x100');
   assert.equal(findMarketData('Samsung Galaxy S23')?.id, 'samsung-galaxy');
   assert.equal(findMarketData('Silla Gaming')?.id, 'silla-gaming');
 });
