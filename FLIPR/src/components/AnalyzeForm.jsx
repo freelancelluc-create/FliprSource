@@ -143,19 +143,14 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
     setAiPriceWarning("");
 
     setIsScanning(true);
-    setScanStep("Identificando variante y modelo...");
+    setScanStep("Calculando FLIP SCORE™ y beneficio neto...");
 
-    setTimeout(() => {
-      setScanStep("Consultando histórico de ventas recientes...");
-    }, 600);
-
-    setTimeout(() => {
-      setScanStep("Calculando FLIP SCORE™ y beneficio neto...");
-    }, 1200);
-
+    // Antes había 1,8s de "escaneo" en varias etapas simuladas, lo cual
+    // contradecía la promesa de "respuesta en 5 segundos" del hero: el cálculo
+    // real es síncrono. Se deja un único paso breve solo para dar feedback visual.
     setTimeout(() => {
       setIsScanning(false);
-      
+
       const matchingPreset = PRESET_PRODUCTS.find(p => p.id === selectedPresetId);
       if (matchingPreset && matchingPreset.inputPrice === parseFloat(price)) {
         onAnalyze(matchingPreset);
@@ -172,7 +167,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
           km
         });
       }
-    }, 1800);
+    }, 500);
   };
 
   return (

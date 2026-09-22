@@ -430,6 +430,11 @@ export default function App() {
                   <div className="text-sm">
                     <span className="font-bold text-slate-900">Crea tu cuenta gratis</span>
                     <span className="text-slate-700"> para guardar análisis, comparar oportunidades y recibir alertas de precio.</span>
+                    {credits <= 1 && (
+                      <span className="block sm:inline text-emerald-800 font-semibold">
+                        {' '}Te queda{credits === 1 ? '' : 'n'} {credits} análisis gratis — no lo pierdas.
+                      </span>
+                    )}
                   </div>
                   <button
                     onClick={() => openAuth('register')}

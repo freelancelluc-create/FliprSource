@@ -33,7 +33,7 @@ export default function Footer({ onNavigate }) {
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-200 pt-6 text-[11px] font-mono">
-          <p>© 2026 FLIPR Technologies Inc. Todos los derechos reservados.</p>
+          <p>© 2026 FLIPR. Todos los derechos reservados.</p>
           
           <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <button onClick={() => onNavigate('hero')} className="hover:text-emerald-700">Inicio</button>

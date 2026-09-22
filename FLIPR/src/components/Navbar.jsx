@@ -138,56 +138,8 @@ export default function Navbar({
           </button>
 
           {/* Shown on xl+ (>=1280px) */}
-          <button
-            onClick={() => { setActiveTab('history'); setDropdownOpen(false); }}
-            className={`hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all ${
-              activeTab === 'history'
-                ? 'bg-emerald-700 text-white shadow-md shadow-emerald-500/20 font-bold'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <History className="w-3.5 h-3.5" />
-            <span>Historial</span>
-            {historyCount > 0 && (
-              <span className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
-                activeTab === 'history' ? 'bg-white/20 text-white' : 'bg-emerald-500/20 text-emerald-700'
-              }`}>
-                {historyCount}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => { setActiveTab('favorites'); setDropdownOpen(false); }}
-            className={`hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all ${
-              activeTab === 'favorites'
-                ? 'bg-emerald-700 text-white shadow-md shadow-emerald-500/20 font-bold'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <Bookmark className="w-3.5 h-3.5" />
-            <span>Favoritos</span>
-            {favoritesCount > 0 && (
-              <span className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
-                activeTab === 'favorites' ? 'bg-white/20 text-white' : 'bg-amber-500/20 text-amber-700'
-              }`}>
-                {favoritesCount}
-              </span>
-            )}
-          </button>
-
-          {/* Shown on 2xl+ (>=1536px) */}
-          <button
-            onClick={() => { setActiveTab('panel'); setDropdownOpen(false); }}
-            className={`hidden 2xl:flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-semibold rounded-full whitespace-nowrap transition-all ${
-              activeTab === 'panel'
-                ? 'bg-emerald-700 text-white shadow-md shadow-emerald-500/20 font-bold'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-            }`}
-          >
-            <LayoutDashboard className="w-3.5 h-3.5" />
-            <span>Panel</span>
-          </button>
+          {/* Historial, Favoritos y Panel viven solo en "Más": son herramientas de
+              cuenta, no la acción principal, y no deben competir con Analizar. */}
 
           <a
             href="/extension"
@@ -242,10 +194,10 @@ export default function Navbar({
                   <span>Comparar</span>
                 </button>
 
-                {/* Historial (only in dropdown if < xl) */}
+                {/* Historial (siempre en el menú "Más", ver nota arriba) */}
                 <button
                   onClick={() => { setActiveTab('history'); setDropdownOpen(false); }}
-                  className={`xl:hidden w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                     activeTab === 'history' ? 'bg-emerald-500/20 text-emerald-700 font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
@@ -260,10 +212,10 @@ export default function Navbar({
                   )}
                 </button>
 
-                {/* Favoritos (only in dropdown if < xl) */}
+                {/* Favoritos (siempre en el menú "Más", ver nota arriba) */}
                 <button
                   onClick={() => { setActiveTab('favorites'); setDropdownOpen(false); }}
-                  className={`xl:hidden w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
                     activeTab === 'favorites' ? 'bg-emerald-500/20 text-emerald-700 font-bold' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
                   }`}
                 >
@@ -368,10 +320,11 @@ export default function Navbar({
             </span>
           </div>
 
-          {/* Extra CTA: only on extra wide screens (2xl:flex) so it never pushes the credits off screen on laptops */}
+          {/* CTA principal: visible desde lg (portátil) para que siempre haya un
+              botón de acción claro en el navbar, no solo en pantallas muy anchas */}
           <button
             onClick={() => (credits > 0 ? setActiveTab('analyze') : onOpenUpsell())}
-            className="hidden 2xl:flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/35 hover:scale-[1.02] active:scale-[0.98] shrink-0"
+            className="hidden lg:flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-700 px-3.5 py-1.5 text-xs font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:shadow-emerald-500/35 hover:scale-[1.02] active:scale-[0.98] shrink-0"
           >
             <Zap className="h-3.5 w-3.5 fill-white text-white" />
             <span>{credits > 0 ? 'Analizar gratis' : 'Comprar créditos'}</span>

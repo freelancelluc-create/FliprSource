@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ArrowRight, ShieldCheck, Zap, TrendingUp, CheckCircle2, ChevronRight, Sparkles, Flame } from 'lucide-react';
 import FlipScoreGauge from './FlipScoreGauge';
 
@@ -20,17 +20,11 @@ const VERDICT_STYLE = {
 const VERDICT_ICON = { COMPRALO: '🟢', NEGOCIA: '🟡', PASA: '🔴' };
 
 export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
-  const [tick, setTick] = useState(0);
-
-  // Cambia ligeramente los precios cada 4s para que el ticker parezca "en vivo"
-  useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 4000);
-    return () => clearInterval(id);
-  }, []);
-
-  const items = BASE_OPPORTUNITIES.map((op, idx) => ({
+  // Ejemplos ilustrativos del tipo de veredicto que da FLIPR.
+  // No son datos en tiempo real: mostrar precios fijos evita simular actividad falsa.
+  const items = BASE_OPPORTUNITIES.map((op) => ({
     ...op,
-    displayPrice: op.price + ((tick + idx) % 3 - 1) * 5,
+    displayPrice: op.price,
   }));
 
   // Duplicamos para que el marquee haga bucle sin cortes
@@ -46,7 +40,7 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
         <div className="w-full bg-slate-50 border-b border-slate-200 py-1.5 text-[10px] font-mono uppercase tracking-widest">
           <div className="mx-auto max-w-7xl px-4 flex items-center justify-center gap-2 text-emerald-700 font-bold">
             <Flame className="w-3.5 h-3.5" />
-            Oportunidades detectadas ahora
+            Ejemplos de veredictos FLIPR
           </div>
         </div>
         <div className="w-full bg-white border-b border-slate-200 py-2 overflow-hidden text-xs font-mono">
@@ -72,22 +66,22 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
           <div className="lg:col-span-7 text-center md:text-left space-y-6">
             
             {/* Top Pill */}
-            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1 text-xs font-semibold text-emerald-700">
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-1 text-xs font-semibold text-emerald-700 shadow-sm shadow-emerald-500/10">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Sistema de decisión para Wallapop & Vinted</span>
+              <span>Compra con datos. No con intuición.</span>
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.1]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.08]">
               ¿Lo compro o no? <br />
-              <span className="bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
-                Toma la decisión correcta en 5 segundos.
+              <span className="bg-gradient-to-r from-emerald-700 via-emerald-600 to-green-500 bg-clip-text text-transparent">
+                La respuesta en 5 segundos.
               </span>
             </h1>
 
             {/* Subtitle */}
             <p className="text-lg text-slate-700 max-w-2xl mx-auto md:mx-0 font-normal leading-relaxed">
-              Descubre al instante si ese producto de segunda mano es una verdadera oportunidad de reventa antes de gastar tu dinero.
+              Analiza el precio real, calcula el margen y descubre si ese producto de segunda mano es una oportunidad o una trampa antes de gastar.
             </p>
 
             {/* 3 Core Benefits Grid according to Master Brief */}
@@ -121,16 +115,24 @@ export default function HeroSection({ onStartAnalyze, onSelectPreset }) {
             <div className="pt-4 flex flex-col sm:flex-row items-center sm:items-center gap-4">
               <button
                 onClick={onStartAnalyze}
-                className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-800 to-emerald-700 px-8 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/25 transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-emerald-700 to-emerald-600 px-8 py-4 text-base font-bold text-white shadow-xl shadow-emerald-500/20 transition-all hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
               >
                 <span>Analizar producto gratis</span>
                 <ArrowRight className="w-5 h-5" />
               </button>
 
-              <div className="flex items-center justify-center gap-2 text-xs text-slate-600 font-medium px-2 py-1">
-                <span className="h-2 w-2 rounded-full bg-emerald-600" />
-                <span>3 análisis gratis al empezar • Sin registro previo</span>
-              </div>
+              <button
+                onClick={() => onSelectPreset('ps5-slim')}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-emerald-500/30 bg-white px-6 py-4 text-sm font-semibold text-emerald-700 shadow-sm hover:bg-emerald-50 transition-all w-full sm:w-auto"
+              >
+                <span>Ver oportunidad del día</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex items-center justify-center md:justify-start gap-2 text-xs text-slate-600 font-medium px-2 py-1">
+              <span className="h-2 w-2 rounded-full bg-emerald-600" />
+              <span>3 análisis gratis al empezar • Sin registro previo</span>
             </div>
 
             {/* Secondary: enlace a contenido SEO / viral */}

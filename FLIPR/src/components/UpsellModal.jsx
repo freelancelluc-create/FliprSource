@@ -37,15 +37,19 @@ export default function UpsellModal({ credits = 0, onClose, onBuy }) {
         return;
       }
       if (data && data.error === 'no-stripe') {
-        setError('El pago aún no está configurado en el servidor (falta STRIPE_SECRET_KEY en Vercel).');
+        // Detalle técnico solo en consola: el cliente no debe ver nombres de
+        // variables de entorno del servidor en un mensaje de error de pago.
+        console.error('Stripe no configurado: falta STRIPE_SECRET_KEY en el servidor.');
+        setError('El pago no está disponible ahora mismo. Inténtalo de nuevo en unos minutos.');
       } else {
-        setError('No se pudo iniciar el pago. ' + ((data && data.detail) || 'Yendo a Stripe falló. Inténtalo de nuevo.'));
+        console.error('Error al iniciar checkout:', data);
+        setError('No se pudo iniciar el pago. Inténtalo de nuevo.');
       }
     } catch (e) {
       console.error(e);
       setError(
         e && e.name === 'AbortError'
-          ? 'El servidor de pagos tardó demasiado en responder. Comprueba que STRIPE_SECRET_KEY está configurada en Vercel.'
+          ? 'El servidor de pagos tardó demasiado en responder. Inténtalo de nuevo.'
           : 'Error de conexión al iniciar el pago. Inténtalo de nuevo.'
       );
     } finally {
@@ -77,6 +81,11 @@ export default function UpsellModal({ credits = 0, onClose, onBuy }) {
             Te quedan <strong className="text-emerald-700 font-mono">{credits}</strong> de tus análisis gratis.
             Consigue más créditos para seguir descifrando si algo es un chollo o un mal negocio.
           </p>
+        </div>
+
+        {/* Refuerzo de valor: mismo dato que el Hero, para justificar el precio */}
+        <div className="mx-auto max-w-sm rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2.5 text-center text-xs font-semibold text-emerald-800">
+          Cada análisis detecta de media <span className="font-mono font-black">+45 €</span> de margen. Un crédito Pro cuesta 0,17 €.
         </div>
 
         {/* Plans grid */}
