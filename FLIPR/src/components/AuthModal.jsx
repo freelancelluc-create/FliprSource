@@ -104,30 +104,30 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
       <div className="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8 space-y-5 border border-emerald-500/30 relative animate-in fade-in zoom-in-95">
         <button
           onClick={onClose}
           aria-label="Cerrar"
-          className="absolute top-4 right-4 h-9 w-9 rounded-xl bg-gray-800/70 hover:bg-gray-700 flex items-center justify-center text-gray-300 hover:text-white"
+          className="absolute top-4 right-4 h-9 w-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 hover:text-slate-900"
         >
           <X className="w-4 h-4" />
         </button>
 
         {/* ── Header ─────────────────────────────────────────────────────── */}
         <div className="text-center space-y-2">
-          <div className="mx-auto h-11 w-11 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-black shadow-lg shadow-emerald-500/30">
+          <div className="mx-auto h-11 w-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
             {mode === 'forgot' || mode === 'reset'
               ? <KeyRound className="h-5 w-5" />
-              : <Zap className="h-5 w-5 fill-black" />}
+              : <Zap className="h-5 w-5 fill-white" />}
           </div>
-          <h2 className="text-2xl font-extrabold text-white tracking-tight">
+          <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
             {mode === 'login' && 'Bienvenido de nuevo'}
             {mode === 'register' && 'Crea tu cuenta'}
             {mode === 'forgot' && 'Recuperar contraseña'}
             {mode === 'reset' && 'Nueva contraseña'}
           </h2>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-slate-600">
             {mode === 'login' && 'Entra para recuperar tu historial, favoritos y créditos.'}
             {mode === 'register' && 'Tu historial, favoritos y créditos quedarán asociados a tu cuenta.'}
             {mode === 'forgot' && 'Introduce tu email y te enviaremos un código de recuperación.'}
@@ -137,18 +137,18 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
 
         {/* ── Tabs login / register ──────────────────────────────────────── */}
         {(mode === 'login' || mode === 'register') && (
-          <div className="grid grid-cols-2 gap-1 rounded-xl bg-[#12151F] border border-gray-800 p-1">
+          <div className="grid grid-cols-2 gap-1 rounded-xl bg-white border border-slate-200 p-1">
             <button
               type="button"
               onClick={() => switchMode('login')}
-              className={`rounded-lg py-2 text-xs font-bold transition-all ${mode === 'login' ? 'bg-emerald-500 text-black' : 'text-gray-400'}`}
+              className={`rounded-lg py-2 text-xs font-bold transition-all ${mode === 'login' ? 'bg-emerald-700 text-white' : 'text-slate-600'}`}
             >
               Entrar
             </button>
             <button
               type="button"
               onClick={() => switchMode('register')}
-              className={`rounded-lg py-2 text-xs font-bold transition-all ${mode === 'register' ? 'bg-emerald-500 text-black' : 'text-gray-400'}`}
+              className={`rounded-lg py-2 text-xs font-bold transition-all ${mode === 'register' ? 'bg-emerald-700 text-white' : 'text-slate-600'}`}
             >
               Crear cuenta
             </button>
@@ -160,7 +160,7 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
           <button
             type="button"
             onClick={() => switchMode('login')}
-            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 text-xs text-slate-600 hover:text-slate-900 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Volver al inicio de sesión
           </button>
@@ -168,7 +168,7 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
 
         {/* ── Mensaje informativo ────────────────────────────────────────── */}
         {info && (
-          <div className="flex items-start gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-[11px] font-mono text-emerald-300">
+          <div className="flex items-start gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-[11px] font-mono text-emerald-800">
             <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
             <span>{info}</span>
           </div>
@@ -179,39 +179,39 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
           <form onSubmit={handleAuthSubmit} className="space-y-3">
             {mode === 'register' && (
               <div className="relative">
-                <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                <UserIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input
                   type="text"
                   required
                   placeholder="Tu nombre"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-xl bg-[#090A0F] border border-gray-800 pl-10 pr-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none"
+                  className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:outline-none"
                 />
               </div>
             )}
 
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <input
                 type="email"
                 required
                 placeholder="tu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl bg-[#090A0F] border border-gray-800 pl-10 pr-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:outline-none"
               />
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <input
                 type="password"
                 required
                 placeholder="Contraseña (mín. 6 caracteres)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-xl bg-[#090A0F] border border-gray-800 pl-10 pr-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:outline-none"
               />
             </div>
 
@@ -220,7 +220,7 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 py-3 text-sm font-bold text-black shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-700 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               {mode === 'login' ? 'Entrar' : 'Crear cuenta gratis'}
@@ -230,7 +230,7 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
               <button
                 type="button"
                 onClick={() => switchMode('forgot')}
-                className="w-full text-center text-[11px] text-gray-500 hover:text-gray-300 transition-colors"
+                className="w-full text-center text-[11px] text-slate-500 hover:text-slate-700 transition-colors"
               >
                 ¿Olvidaste tu contraseña?
               </button>
@@ -242,14 +242,14 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
         {mode === 'forgot' && (
           <form onSubmit={handleForgotSubmit} className="space-y-3">
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <input
                 type="email"
                 required
                 placeholder="tu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl bg-[#090A0F] border border-gray-800 pl-10 pr-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:outline-none"
               />
             </div>
 
@@ -258,7 +258,7 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 py-3 text-sm font-bold text-black shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-700 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               Enviar código de recuperación
@@ -270,26 +270,26 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
         {mode === 'reset' && (
           <form onSubmit={handleResetSubmit} className="space-y-3">
             <div className="relative">
-              <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <input
                 type="text"
                 required
                 placeholder="Código de recuperación"
                 value={resetToken}
                 onChange={(e) => setResetToken(e.target.value.trim())}
-                className="w-full rounded-xl bg-[#090A0F] border border-gray-800 pl-10 pr-4 py-3 text-sm text-white font-mono focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-900 font-mono focus:border-emerald-600 focus:outline-none"
               />
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
               <input
                 type="password"
                 required
                 placeholder="Nueva contraseña (mín. 6 caracteres)"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full rounded-xl bg-[#090A0F] border border-gray-800 pl-10 pr-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl bg-slate-50 border border-slate-200 pl-10 pr-4 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:outline-none"
               />
             </div>
 
@@ -298,7 +298,7 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 py-3 text-sm font-bold text-black shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-700 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               Cambiar contraseña
@@ -306,7 +306,7 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
           </form>
         )}
 
-        <p className="text-center text-[10px] text-gray-500 font-mono">
+        <p className="text-center text-[10px] text-slate-500 font-mono">
           Tus datos se guardan de forma segura en el servidor y se restauran en cualquier dispositivo.
         </p>
       </div>
@@ -316,7 +316,7 @@ export default function AuthModal({ initialMode = 'login', onClose, onSuccess })
 
 function ErrorBox({ msg }) {
   return (
-    <div role="alert" className="flex items-start gap-2 rounded-xl bg-red-500/10 border border-red-500/30 px-3 py-2 text-[11px] font-mono text-red-300">
+    <div role="alert" className="flex items-start gap-2 rounded-xl bg-red-500/10 border border-red-500/30 px-3 py-2 text-[11px] font-mono text-red-700">
       <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
       <span>{msg}</span>
     </div>

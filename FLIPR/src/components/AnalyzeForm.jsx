@@ -179,20 +179,20 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
     <div className="mx-auto max-w-4xl px-4 py-8">
       
       {/* Form Container */}
-      <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-gray-800 space-y-8 relative overflow-hidden">
+      <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-slate-200 space-y-8 relative overflow-hidden">
         
         {/* Header */}
-        <div className="border-b border-gray-800 pb-6 space-y-2">
+        <div className="border-b border-slate-200 pb-6 space-y-2">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
-              <Zap className="w-7 h-7 text-emerald-400 fill-emerald-400" />
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+              <Zap className="w-7 h-7 text-emerald-700 fill-emerald-600" />
               <span>Analizar oportunidad de compra</span>
             </h2>
-            <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-mono font-bold text-emerald-400">
+            <span className="rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-mono font-bold text-emerald-700">
               Wallapop & Vinted · Decisión en 5 segundos
             </span>
           </div>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-slate-600">
             Pega cualquier enlace de Wallapop o Vinted, o sube una captura. Extraeremos el título y precio al instante.
           </p>
         </div>
@@ -201,7 +201,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           
           {/* Photo Drag & Drop Dropzone */}
-          <div className="relative border-2 border-dashed border-gray-700 hover:border-emerald-500/60 rounded-2xl p-4 bg-[#090A0F]/80 text-center transition-all group flex flex-col items-center justify-center min-h-[140px]">
+          <div className="relative border-2 border-dashed border-slate-300 hover:border-emerald-500/60 rounded-2xl p-4 bg-slate-50/80 text-center transition-all group flex flex-col items-center justify-center min-h-[140px]">
             <input
               type="file"
               accept="image/*"
@@ -212,30 +212,30 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
               <div className="flex items-center gap-3 w-full">
                 <img src={imageUrl} alt="Subida" className="w-16 h-16 rounded-xl object-cover border border-emerald-500/50" />
                 <div className="text-left text-xs font-mono">
-                  <span className="text-emerald-400 font-bold block">✓ Imagen cargada</span>
-                  <span className="text-gray-400">Análisis de la captura listo</span>
-                  <span className="text-[10px] text-gray-500 block underline mt-1">Haz clic para cambiar</span>
+                  <span className="text-emerald-700 font-bold block">✓ Imagen cargada</span>
+                  <span className="text-slate-600">Análisis de la captura listo</span>
+                  <span className="text-[10px] text-slate-500 block underline mt-1">Haz clic para cambiar</span>
                 </div>
               </div>
             ) : (
               <>
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-2 group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-700 mb-2 group-hover:scale-110 transition-transform">
                   <Upload className="w-5 h-5" />
                 </div>
-                <span className="text-xs font-bold text-white block">Subir foto o captura del anuncio</span>
-                <span className="text-[10px] text-gray-400 block font-mono">JPG, PNG o Screenshot</span>
+                <span className="text-xs font-bold text-slate-900 block">Subir foto o captura del anuncio</span>
+                <span className="text-[10px] text-slate-600 block font-mono">JPG, PNG o Screenshot</span>
               </>
             )}
           </div>
 
           {/* Paste URL Box */}
-          <form onSubmit={handleUrlAiExtract} className="border border-gray-800 rounded-2xl p-4 bg-[#090A0F]/80 flex flex-col justify-between space-y-3">
+          <form onSubmit={handleUrlAiExtract} className="border border-slate-200 rounded-2xl p-4 bg-slate-50/80 flex flex-col justify-between space-y-3">
             <div className="space-y-1">
-              <label className="text-xs font-mono font-bold text-gray-300 uppercase flex items-center gap-1.5">
-                <LinkIcon className="w-3.5 h-3.5 text-emerald-400" />
+              <label className="text-xs font-mono font-bold text-slate-700 uppercase flex items-center gap-1.5">
+                <LinkIcon className="w-3.5 h-3.5 text-emerald-700" />
                 Pega la URL del producto de Wallapop o Vinted:
               </label>
-              <p className="text-[11px] text-gray-400">Presiona Enter o "Extraer con IA" para autorrellenar</p>
+              <p className="text-[11px] text-slate-600">Presiona Enter o "Extraer con IA" para autorrellenar</p>
             </div>
 
             <div className="flex gap-2">
@@ -246,17 +246,17 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                 onChange={(e) => setUrlInput(e.target.value)}
                 onPaste={handleUrlPaste}
                 onBlur={() => { if (urlInput.trim()) handleUrlAiExtract(); }}
-                className="flex-1 rounded-xl bg-[#12151F] border border-gray-800 px-3 py-2 text-xs text-white focus:border-emerald-500 focus:outline-none font-mono"
+                className="flex-1 rounded-xl bg-white border border-slate-200 px-3 py-2 text-xs text-slate-900 focus:border-emerald-600 focus:outline-none font-mono"
               />
               <button
                 type="submit"
                 disabled={isAiParsing}
-                className="rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black px-3.5 py-2 text-xs font-bold flex items-center gap-1 shadow-lg shadow-emerald-500/20 flex-shrink-0"
+                className="rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white px-3.5 py-2 text-xs font-bold flex items-center gap-1 shadow-lg shadow-emerald-500/20 flex-shrink-0"
               >
                 {isAiParsing ? (
-                  <div className="h-4 w-4 rounded-full border-2 border-black border-t-transparent animate-spin" />
+                  <div className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
                 ) : (
-                  <Sparkles className="w-3.5 h-3.5 fill-black" />
+                  <Sparkles className="w-3.5 h-3.5 fill-white" />
                 )}
                 <span>{isAiParsing ? 'Leyendo...' : 'Extraer con IA'}</span>
               </button>
@@ -267,17 +267,17 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
 
         {/* AI Success Feedback Notification */}
         {aiSuccessMessage && (
-          <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/30 p-3.5 flex items-center gap-3 text-xs font-mono text-emerald-400 animate-in fade-in">
+          <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/30 p-3.5 flex items-center gap-3 text-xs font-mono text-emerald-700 animate-in fade-in">
             <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
             <span className="font-bold">{aiSuccessMessage}</span>
           </div>
         )}
 
         {/* Preset Chips Selector */}
-        <div className="space-y-3 pt-2 border-t border-gray-800/80">
+        <div className="space-y-3 pt-2 border-t border-slate-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-xs font-mono font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-700" />
               O selecciona un producto demo preseteado:
             </span>
           </div>
@@ -292,23 +292,23 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                   onClick={() => handleSelectPreset(preset)}
                   className={`flex items-center gap-2.5 p-2.5 rounded-xl border text-left transition-all ${
                     isSelected
-                      ? 'bg-emerald-500/15 border-emerald-500 text-white shadow-md shadow-emerald-500/10'
-                      : 'bg-[#161B29]/60 border-gray-800 text-gray-300 hover:border-gray-700 hover:bg-[#161B29]'
+                      ? 'bg-emerald-500/15 border-emerald-600 text-slate-900 shadow-md shadow-emerald-500/10'
+                      : 'bg-slate-100 border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-100'
                   }`}
                 >
                   <img
                     src={preset.imageUrl}
                     alt={preset.name}
-                    className="w-10 h-10 rounded-lg object-cover border border-gray-700 flex-shrink-0"
+                    className="w-10 h-10 rounded-lg object-cover border border-slate-300 flex-shrink-0"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold truncate text-white">{preset.name}</p>
-                    <div className="flex items-center justify-between text-[11px] font-mono text-gray-400">
-                      <span className="text-emerald-400 font-bold">{preset.inputPrice} €</span>
+                    <p className="text-xs font-bold truncate text-slate-900">{preset.name}</p>
+                    <div className="flex items-center justify-between text-[11px] font-mono text-slate-600">
+                      <span className="text-emerald-700 font-bold">{preset.inputPrice} €</span>
                       <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded ${
-                        preset.verdict === 'COMPRALO' ? 'bg-emerald-500/20 text-emerald-400' :
-                        preset.verdict === 'NEGOCIA' ? 'bg-amber-500/20 text-amber-400' :
-                        'bg-red-500/20 text-red-400'
+                        preset.verdict === 'COMPRALO' ? 'bg-emerald-500/20 text-emerald-700' :
+                        preset.verdict === 'NEGOCIA' ? 'bg-amber-500/20 text-amber-700' :
+                        'bg-red-500/20 text-red-600'
                       }`}>
                         {preset.verdict}
                       </span>
@@ -327,7 +327,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
             
             {/* Title / Product Name */}
             <div className="space-y-2">
-              <label className="text-xs font-mono font-semibold text-gray-300 uppercase tracking-wider block">
+              <label className="text-xs font-mono font-semibold text-slate-700 uppercase tracking-wider block">
                 Producto / Modelo
               </label>
               <input
@@ -339,17 +339,17 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                   setTitle(e.target.value);
                   setSelectedPresetId(null);
                 }}
-                className="w-full rounded-xl bg-[#090A0F] border border-gray-800 px-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-sans font-medium"
+                className="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 font-sans font-medium"
               />
             </div>
 
             {/* Purchase Price Input */}
             <div className="space-y-2">
-              <label className="text-xs font-mono font-semibold text-gray-300 uppercase tracking-wider block">
+              <label className="text-xs font-mono font-semibold text-slate-700 uppercase tracking-wider block">
                 Precio de compra (€) *
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-400 font-bold font-mono">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-emerald-700 font-bold font-mono">
                   €
                 </div>
                 <input
@@ -362,15 +362,15 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                     setPrice(e.target.value);
                     setAiPriceWarning("");
                   }}
-                  className={`w-full rounded-xl bg-[#090A0F] border pl-8 pr-4 py-3 text-sm text-white font-mono font-bold focus:outline-none focus:ring-1 ${
+                  className={`w-full rounded-xl bg-slate-50 border pl-8 pr-4 py-3 text-sm text-slate-900 font-mono font-bold focus:outline-none focus:ring-1 ${
                     aiPriceWarning && !price
                       ? 'border-amber-500/60 focus:border-amber-400 focus:ring-amber-400'
-                      : 'border-gray-800 focus:border-emerald-500 focus:ring-emerald-500'
+                      : 'border-slate-200 focus:border-emerald-600 focus:ring-emerald-600'
                   }`}
                 />
               </div>
               {aiPriceWarning && (
-                <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 border border-amber-500/30 px-3 py-2 text-[11px] font-mono text-amber-300">
+                <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 border border-amber-500/30 px-3 py-2 text-[11px] font-mono text-amber-800">
                   <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
                   <span>{aiPriceWarning}</span>
                 </div>
@@ -383,13 +383,13 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
             
             {/* Condition Selection */}
             <div className="space-y-2">
-              <label className="text-xs font-mono font-semibold text-gray-300 uppercase tracking-wider block">
+              <label className="text-xs font-mono font-semibold text-slate-700 uppercase tracking-wider block">
                 Estado del producto
               </label>
               <select
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
-                className="w-full rounded-xl bg-[#090A0F] border border-gray-800 px-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-sans"
+                className="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 font-sans"
               >
                 <option value="Nuevo">Nuevo (En caja precintada)</option>
                 <option value="Como nuevo">Como nuevo (Sin marcas)</option>
@@ -402,13 +402,13 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
 
             {/* Marketplace Selection */}
             <div className="space-y-2">
-              <label className="text-xs font-mono font-semibold text-gray-300 uppercase tracking-wider block">
+              <label className="text-xs font-mono font-semibold text-slate-700 uppercase tracking-wider block">
                 Marketplace de la oferta
               </label>
               <select
                 value={marketplace}
                 onChange={(e) => setMarketplace(e.target.value)}
-                className="w-full rounded-xl bg-[#090A0F] border border-gray-800 px-4 py-3 text-sm text-white focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 font-sans"
+                className="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 text-sm text-slate-900 focus:border-emerald-600 focus:outline-none focus:ring-1 focus:ring-emerald-600 font-sans"
               >
                 <option value="Wallapop">Wallapop</option>
                 <option value="Vinted">Vinted</option>
@@ -421,7 +421,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
 
           {/* Optional Accessories Input */}
           <div className="space-y-2">
-            <label className="text-xs font-mono font-semibold text-gray-300 uppercase tracking-wider block">
+            <label className="text-xs font-mono font-semibold text-slate-700 uppercase tracking-wider block">
               Accesorios opcionales que incluye
             </label>
             
@@ -432,12 +432,12 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                 value={accessoryInput}
                 onChange={(e) => setAccessoryInput(e.target.value)}
                 onKeyDown={handleAddAccessory}
-                className="flex-1 rounded-xl bg-[#090A0F] border border-gray-800 px-4 py-2.5 text-xs text-white focus:border-emerald-500 focus:outline-none"
+                className="flex-1 rounded-xl bg-slate-50 border border-slate-200 px-4 py-2.5 text-xs text-slate-900 focus:border-emerald-600 focus:outline-none"
               />
               <button
                 type="button"
                 onClick={handleAddAccessory}
-                className="rounded-xl bg-gray-800 hover:bg-gray-700 px-4 py-2.5 text-xs font-bold text-white border border-gray-700"
+                className="rounded-xl bg-slate-100 hover:bg-slate-200 px-4 py-2.5 text-xs font-bold text-slate-900 border border-slate-300"
               >
                 Añadir
               </button>
@@ -448,13 +448,13 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
                 {accessories.map((acc, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 text-xs font-medium text-emerald-400"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 text-xs font-medium text-emerald-700"
                   >
                     <span>{acc}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveAccessory(acc)}
-                      className="hover:text-red-400"
+                      className="hover:text-red-600"
                     >
                       ×
                     </button>
@@ -466,7 +466,7 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
 
           {/* Descripción del anuncio (opcional): se rellena sola si se detecta, o puedes pegar la del vendedor */}
           <div className="space-y-2">
-            <label className="text-xs font-mono font-semibold text-gray-300 uppercase tracking-wider block">
+            <label className="text-xs font-mono font-semibold text-slate-700 uppercase tracking-wider block">
               Descripción del anuncio (mejora el análisis)
             </label>
             <textarea
@@ -474,9 +474,9 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
               placeholder="Ej: Seat Ibiza 2009, 150.000 km, le falta un faro y hay que cambiar el embrague..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-xl bg-[#090A0F] border border-gray-800 px-4 py-3 text-xs text-white focus:border-emerald-500 focus:outline-none resize-y"
+              className="w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 text-xs text-slate-900 focus:border-emerald-600 focus:outline-none resize-y"
             />
-            <p className="text-[10px] text-gray-500 font-mono">
+            <p className="text-[10px] text-slate-500 font-mono">
               Si pegas la descripción del vendedor (año, km, desperfectos...), el análisis lo tiene en cuenta.
             </p>
           </div>
@@ -486,30 +486,30 @@ export default function AnalyzeForm({ onAnalyze, initialPreset = null }) {
             <button
               type="submit"
               disabled={isScanning}
-              className="w-full rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-400 py-4 font-bold text-black shadow-xl shadow-emerald-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-3 text-base"
+              className="w-full rounded-2xl bg-gradient-to-r from-emerald-800 to-emerald-700 py-4 font-bold text-white shadow-xl shadow-emerald-500/25 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-3 text-base"
             >
               {isScanning ? (
                 <>
-                  <div className="h-5 w-5 rounded-full border-2 border-black border-t-transparent animate-spin" />
+                  <div className="h-5 w-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
                   <span className="font-mono text-sm font-bold">{scanStep}</span>
                 </>
               ) : (
                 <>
-                  <Zap className="w-5 h-5 fill-black" />
+                  <Zap className="w-5 h-5 fill-white" />
                   <span>Analizar oportunidad ahora</span>
                 </>
               )}
             </button>
 
             {/* Trust & Privacy Guarantee strip */}
-            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-gray-400 font-mono text-center pt-1">
-              <span className="flex items-center gap-1 text-gray-300">
-                <span className="text-emerald-400">🔒</span> 100% Privado y Seguro
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-slate-600 font-mono text-center pt-1">
+              <span className="flex items-center gap-1 text-slate-700">
+                <span className="text-emerald-700">🔒</span> 100% Privado y Seguro
               </span>
               <span>·</span>
               <span>Sin pedir contraseñas</span>
               <span>·</span>
-              <span className="text-emerald-400 font-bold">Algoritmo neutral</span>
+              <span className="text-emerald-700 font-bold">Algoritmo neutral</span>
             </div>
           </div>
 

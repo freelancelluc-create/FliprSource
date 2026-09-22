@@ -4,61 +4,74 @@
 :root {
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  color-scheme: light;
   
-  --color-bg-dark: #090A0F;
-  --color-card-dark: #12151F;
-  --color-card-border: #1F2434;
-  --color-lime-neon: #10B981;
-  --color-lime-glow: rgba(16, 185, 129, 0.25);
-  --color-amber-negocia: #F59E0B;
-  --color-red-pasa: #EF4444;
+  /* Paleta clara: fondo blanco/gris muy claro + verde esmeralda como acento.
+     Los nombres de variable se mantienen por compatibilidad. */
+  --color-bg-dark: #F8FAFC;          /* fondo principal (slate-50) */
+  --color-card-dark: #FFFFFF;        /* tarjetas y paneles */
+  --color-card-border: #E2E8F0;      /* bordes (slate-200) */
+  --color-lime-neon: #047857;        /* acento: botones, CTAs, texto destacado (emerald-700) */
+  --color-lime-glow: rgba(5, 150, 105, 0.25);
+  --color-amber-negocia: #B45309;    /* NEGOCIA, apto para texto sobre blanco */
+  --color-red-pasa: #DC2626;         /* PASA */
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--color-bg-dark);
-  color: #F3F4F6;
+  color: #0F172A;
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
+/* Foco visible accesible para teclado (botones y enlaces) */
+@layer base {
+  button:focus-visible,
+  a:focus-visible,
+  [role="button"]:focus-visible {
+    outline: 2px solid #059669;
+    outline-offset: 2px;
+  }
+}
+
 /* Custom Financial / Trading Glassmorphism */
 .glass-panel {
-  background: rgba(18, 21, 31, 0.85);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-card-border);
 }
 
 .glass-panel-interactive {
-  background: rgba(18, 21, 31, 0.85);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid var(--color-card-border);
   transition: all 0.2s ease-in-out;
 }
 
 .glass-panel-interactive:hover {
-  border-color: rgba(16, 185, 129, 0.4);
+  border-color: rgba(4, 120, 87, 0.45);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px -6px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 8px 24px -6px rgba(15, 23, 42, 0.12);
 }
 
 /* Glowing Neon Elements */
 .glow-lime {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+  box-shadow: 0 0 20px rgba(5, 150, 105, 0.25);
 }
 
 .glow-lime-sm {
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 0 10px rgba(5, 150, 105, 0.2);
 }
 
 .glow-amber {
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 20px rgba(217, 119, 6, 0.25);
 }
 
 .glow-red {
-  box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.22);
 }
 
 /* Ticker Marquee for live feel */

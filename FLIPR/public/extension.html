@@ -21,8 +21,8 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background-color: #06080E;
-      color: #E2E8F0;
+      background-color: #0F172A;
+      color: #0F172A;
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       line-height: 1.6;
       overflow-x: hidden;
@@ -31,8 +31,8 @@
     
     /* Header */
     header {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(6, 8, 14, 0.85);
+      border-bottom: 1px solid #E2E8F0;
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
@@ -46,14 +46,14 @@
       gap: 10px;
       font-weight: 900;
       font-size: 20px;
-      color: #FFFFFF;
+      color: #0F172A;
       text-decoration: none;
       letter-spacing: -0.5px;
     }
-    .logo span { color: #10B981; }
+    .logo span { color: #047857; }
     .nav-links { display: flex; align-items: center; gap: 20px; }
-    .nav-link { color: #94A3B8; text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.2s; }
-    .nav-link:hover { color: #10B981; }
+    .nav-link { color: #475569; text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.2s; }
+    .nav-link:hover { color: #047857; }
 
     /* Hero */
     .hero {
@@ -68,7 +68,7 @@
       transform: translate(-50%, -50%);
       width: 500px;
       height: 300px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(6, 8, 14, 0) 70%);
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(248, 250, 252, 0) 70%);
       pointer-events: none;
     }
     .badge {
@@ -77,7 +77,7 @@
       gap: 6px;
       background: rgba(16, 185, 129, 0.1);
       border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #34D399;
+      color: #047857;
       font-size: 13px;
       font-weight: 700;
       padding: 6px 14px;
@@ -92,13 +92,13 @@
       letter-spacing: -1px;
     }
     .hero h1 span {
-      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
     .hero p {
       font-size: 18px;
-      color: #94A3B8;
+      color: #475569;
       max-width: 680px;
       margin: 0 auto 36px;
     }
@@ -113,20 +113,20 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      background: #10B981;
-      color: #06080E;
+      background: #047857;
+      color: #FFFFFF;
       font-weight: 800;
       font-size: 16px;
       padding: 14px 28px;
       border-radius: 12px;
       text-decoration: none;
-      box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 10px 25px -5px rgba(4, 120, 87, 0.3);
       transition: all 0.25s ease;
     }
     .btn-download:hover {
-      background: #34D399;
+      background: #065F46;
       transform: translateY(-2px);
-      box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.6);
+      box-shadow: 0 15px 30px -5px rgba(4, 120, 87, 0.4);
     }
     .supported-browsers {
       display: flex;
@@ -148,7 +148,7 @@
     }
     .section-sub {
       text-align: center;
-      color: #94A3B8;
+      color: #475569;
       margin-bottom: 48px;
       font-size: 16px;
     }
@@ -159,8 +159,8 @@
       margin-bottom: 80px;
     }
     .step-card {
-      background: #0E131F;
-      border: 1px solid #1E293B;
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
       border-radius: 16px;
       padding: 28px;
       position: relative;
@@ -173,7 +173,7 @@
       width: 36px;
       height: 36px;
       background: rgba(16, 185, 129, 0.15);
-      color: #34D399;
+      color: #047857;
       border: 1px solid rgba(16, 185, 129, 0.3);
       border-radius: 10px;
       display: flex;
@@ -187,15 +187,15 @@
       font-size: 18px;
       font-weight: 700;
       margin-bottom: 8px;
-      color: #F8FAFC;
+      color: #0F172A;
     }
     .step-card p {
       font-size: 14px;
-      color: #94A3B8;
+      color: #475569;
     }
     .step-card code {
-      background: #1E293B;
-      color: #34D399;
+      background: #F1F5F9;
+      color: #047857;
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 13px;
@@ -209,8 +209,8 @@
       margin-bottom: 80px;
     }
     .feat-card {
-      background: linear-gradient(180deg, #0E131F 0%, #080C14 100%);
-      border: 1px solid #1E293B;
+      background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%);
+      border: 1px solid #E2E8F0;
       border-radius: 16px;
       padding: 28px;
     }
@@ -222,23 +222,23 @@
       font-size: 18px;
       font-weight: 700;
       margin-bottom: 8px;
-      color: #F8FAFC;
+      color: #0F172A;
     }
     .feat-card p {
       font-size: 14px;
-      color: #94A3B8;
+      color: #475569;
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid #1E293B;
+      border-top: 1px solid #E2E8F0;
       padding: 40px 0;
       text-align: center;
       color: #64748B;
       font-size: 14px;
     }
-    footer a { color: #94A3B8; text-decoration: none; margin: 0 10px; }
-    footer a:hover { color: #10B981; }
+    footer a { color: #475569; text-decoration: none; margin: 0 10px; }
+    footer a:hover { color: #047857; }
 
     @media (max-width: 640px) {
       .hero h1 { font-size: 32px; }
@@ -251,7 +251,7 @@
   <header>
     <div class="container nav-wrap">
       <a href="/" class="logo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#10B981"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#047857"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
         FLIPR <span>SCORE</span>
       </a>
       <div class="nav-links">

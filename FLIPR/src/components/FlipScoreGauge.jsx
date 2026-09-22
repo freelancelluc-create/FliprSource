@@ -24,21 +24,21 @@ export default function FlipScoreGauge({ score = 85, verdict = "COMPRALO", size 
   }, [score]);
 
   // Color config based on verdict
-  let strokeColor = "#10B981"; // Emerald/Lime for CÓMPRALO
+  let strokeColor = "#059669"; // Emerald/Lime for CÓMPRALO
   let glowClass = "glow-lime";
-  let textColor = "text-emerald-400";
-  let badgeBg = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+  let textColor = "text-emerald-700";
+  let badgeBg = "bg-emerald-500/10 text-emerald-700 border-emerald-500/30";
 
   if (verdict === "NEGOCIA" || (score >= 60 && score < 80)) {
-    strokeColor = "#F59E0B";
+    strokeColor = "#D97706";
     glowClass = "glow-amber";
-    textColor = "text-amber-400";
-    badgeBg = "bg-amber-500/10 text-amber-400 border-amber-500/30";
+    textColor = "text-amber-700";
+    badgeBg = "bg-amber-500/10 text-amber-700 border-amber-500/30";
   } else if (verdict === "PASA" || score < 60) {
-    strokeColor = "#EF4444";
+    strokeColor = "#DC2626";
     glowClass = "glow-red";
-    textColor = "text-red-400";
-    badgeBg = "bg-red-500/10 text-red-400 border-red-500/30";
+    textColor = "text-red-600";
+    badgeBg = "bg-red-500/10 text-red-600 border-red-500/30";
   }
 
   const radius = size === "small" ? 36 : 58;
@@ -57,7 +57,7 @@ export default function FlipScoreGauge({ score = 85, verdict = "COMPRALO", size 
             cx={svgSize / 2}
             cy={svgSize / 2}
             r={radius}
-            stroke="#1F2434"
+            stroke="#E2E8F0"
             strokeWidth={strokeWidth}
             fill="transparent"
           />
@@ -81,7 +81,7 @@ export default function FlipScoreGauge({ score = 85, verdict = "COMPRALO", size 
           <span className={`font-mono font-black tracking-tight ${size === "small" ? "text-xl" : "text-3xl sm:text-4xl"} ${textColor}`}>
             {animatedScore}
           </span>
-          <span className="text-[9px] font-bold tracking-wider uppercase text-gray-400 font-mono">
+          <span className="text-[9px] font-bold tracking-wider uppercase text-slate-600 font-mono">
             /100
           </span>
         </div>

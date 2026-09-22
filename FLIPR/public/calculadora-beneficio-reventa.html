@@ -14,29 +14,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #090A0F; color: #e5e7eb; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; -webkit-font-smoothing: antialiased; }
     .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 56px; }
     .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-    .brand .mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#34d399,#10b981); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; font-size: 18px; }
-    .brand .name { font-size: 18px; font-weight: 800; letter-spacing: .02em; color: #fff; }
-    .brand .tag { font-size: 10px; color: #34d399; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
-    h1 { font-size: 32px; line-height: 1.2; font-weight: 900; margin: 20px 0 12px; color: #fff; letter-spacing: -0.02em; }
-    .subtle { color: #9ca3af; font-size: 16px; margin-bottom: 26px; }
-    .calc-box { background: #12151F; border: 1px solid #262a36; border-radius: 20px; padding: 26px; margin-bottom: 24px; }
+    .brand .mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#047857,#047857); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #ffffff; font-size: 18px; }
+    .brand .name { font-size: 18px; font-weight: 800; letter-spacing: .02em; color: #0f172a; }
+    .brand .tag { font-size: 10px; color: #047857; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
+    h1 { font-size: 32px; line-height: 1.2; font-weight: 900; margin: 20px 0 12px; color: #0f172a; letter-spacing: -0.02em; }
+    .subtle { color: #475569; font-size: 16px; margin-bottom: 26px; }
+    .calc-box { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 26px; margin-bottom: 24px; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
     @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
-    .field label { display: block; font-size: 12px; font-family: monospace; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 6px; }
-    .field input, .field select { width: 100%; background: #090A0F; border: 1px solid #262a36; border-radius: 12px; padding: 12px 14px; color: #fff; font-size: 15px; font-family: monospace; font-weight: 700; outline: none; }
-    .field input:focus, .field select:focus { border-color: #34d399; }
+    .field label { display: block; font-size: 12px; font-family: monospace; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 6px; }
+    .field input, .field select { width: 100%; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; color: #0f172a; font-size: 15px; font-family: monospace; font-weight: 700; outline: none; }
+    .field input:focus, .field select:focus { border-color: #047857; }
     .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
     @media (max-width: 600px) { .res-grid { grid-template-columns: 1fr; } }
-    .res-card { background: #090A0F; border: 1px solid #262a36; border-radius: 14px; padding: 16px; text-align: center; }
-    .res-card .k { font-size: 11px; font-family: monospace; color: #6b7280; text-transform: uppercase; margin-bottom: 4px; }
-    .res-card .v { font-size: 24px; font-family: 'JetBrains Mono', monospace; font-weight: 900; color: #34d399; }
-    .res-card .v.muted { color: #fff; }
-    .card { background: #12151F; border: 1px solid #262a36; border-radius: 20px; padding: 24px; margin-bottom: 22px; }
-    .card h2 { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 14px; }
-    .cta { display: block; text-align: center; background: linear-gradient(135deg,#34d399,#10b981); color: #000; font-weight: 800; font-size: 17px; padding: 16px; border-radius: 16px; text-decoration: none; margin: 28px 0 12px; box-shadow: 0 10px 30px rgba(52,211,153,0.25); transition: transform 0.15s ease; }
+    .res-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; text-align: center; }
+    .res-card .k { font-size: 11px; font-family: monospace; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+    .res-card .v { font-size: 24px; font-family: 'JetBrains Mono', monospace; font-weight: 900; color: #047857; }
+    .res-card .v.muted { color: #0f172a; }
+    .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 24px; margin-bottom: 22px; }
+    .card h2 { font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 14px; }
+    .cta { display: block; text-align: center; background: linear-gradient(135deg,#047857,#047857); color: #ffffff; font-weight: 800; font-size: 17px; padding: 16px; border-radius: 16px; text-decoration: none; margin: 28px 0 12px; box-shadow: 0 10px 30px rgba(52,211,153,0.25); transition: transform 0.15s ease; }
     .cta:hover { transform: scale(1.02); }
     .cta small { display: block; font-weight: 600; font-size: 12px; opacity: .85; margin-top: 4px; }
   </style>
@@ -136,7 +136,7 @@
         const marginPct = buy > 0 ? Math.round((netProfit / buy) * 100) : 0;
 
         document.getElementById('resProfit').textContent = (netProfit >= 0 ? '+' : '') + netProfit + ' €';
-        document.getElementById('resProfit').style.color = netProfit >= 25 ? '#34d399' : netProfit > 0 ? '#fbbf24' : '#ef4444';
+        document.getElementById('resProfit').style.color = netProfit >= 25 ? '#047857' : netProfit > 0 ? '#b45309' : '#dc2626';
         document.getElementById('resMargin').textContent = marginPct + '%';
         document.getElementById('resFees').textContent = fees + ' €';
       }
@@ -150,7 +150,7 @@
 
     <div class="card">
       <h2>¿Cómo saber si una oportunidad de reventa es rentable?</h2>
-      <p style="font-size: 14px; color: #d1d5db; line-height: 1.6;">
+      <p style="font-size: 14px; color: #334155; line-height: 1.6;">
         En la reventa de segunda mano, los expertos recomiendan buscar un <strong>margen mínimo del 25% al 35%</strong> sobre el dinero invertido. Esto te protege ante imprevistos como regateos del comprador final, comisiones de plataforma o pequeños costes de envío.
       </p>
     </div>

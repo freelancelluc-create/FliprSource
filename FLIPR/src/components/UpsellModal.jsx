@@ -55,26 +55,26 @@ export default function UpsellModal({ credits = 0, onClose, onBuy }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
       <div className="glass-panel w-full max-w-2xl rounded-3xl p-6 sm:p-8 space-y-6 border border-emerald-500/30 relative overflow-hidden animate-in fade-in zoom-in-95">
         {/* close */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 h-9 w-9 rounded-xl bg-gray-800/70 hover:bg-gray-700 flex items-center justify-center text-gray-300 hover:text-white"
+          className="absolute top-4 right-4 h-9 w-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-700 hover:text-slate-900"
         >
           <X className="w-4 h-4" />
         </button>
 
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="mx-auto h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-black shadow-lg shadow-emerald-500/30">
-            <Zap className="h-6 w-6 fill-black" />
+          <div className="mx-auto h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+            <Zap className="h-6 w-6 fill-white" />
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Se te acabaron los créditos
           </h2>
-          <p className="text-sm text-gray-400 max-w-md mx-auto">
-            Te quedan <strong className="text-emerald-400 font-mono">{credits}</strong> de tus análisis gratis.
+          <p className="text-sm text-slate-600 max-w-md mx-auto">
+            Te quedan <strong className="text-emerald-700 font-mono">{credits}</strong> de tus análisis gratis.
             Consigue más créditos para seguir descifrando si algo es un chollo o un mal negocio.
           </p>
         </div>
@@ -88,22 +88,22 @@ export default function UpsellModal({ credits = 0, onClose, onBuy }) {
                 key={plan.id}
                 className={`relative rounded-2xl border p-4 flex flex-col space-y-3 ${
                   plan.featured
-                    ? 'border-emerald-500 bg-gradient-to-b from-emerald-500/15 to-[#12151F] shadow-xl shadow-emerald-500/10'
-                    : 'border-gray-800 bg-[#0A0D14]/80'
+                    ? 'border-emerald-600 bg-gradient-to-b from-emerald-500/15 to-white shadow-xl shadow-emerald-500/10'
+                    : 'border-slate-200 bg-slate-50/80'
                 }`}
               >
                 {plan.featured && (
-                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-emerald-500 text-black text-[10px] font-black px-2.5 py-0.5 uppercase">
+                  <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-emerald-700 text-white text-[10px] font-black px-2.5 py-0.5 uppercase">
                     Mejor valor
                   </span>
                 )}
                 <div className="space-y-1">
-                  <span className="text-xs font-mono font-bold text-gray-300 uppercase tracking-wider">{plan.label}</span>
-                  <div className="text-3xl font-black text-white font-mono">
+                  <span className="text-xs font-mono font-bold text-slate-700 uppercase tracking-wider">{plan.label}</span>
+                  <div className="text-3xl font-black text-slate-900 font-mono">
                     {plan.credits}
-                    <span className="text-sm text-gray-400 font-sans font-medium"> créditos</span>
+                    <span className="text-sm text-slate-600 font-sans font-medium"> créditos</span>
                   </div>
-                  <span className="text-[11px] text-gray-400">≈ {plan.perCredit} / análisis</span>
+                  <span className="text-[11px] text-slate-600">≈ {plan.perCredit} / análisis</span>
                 </div>
 
                 <button
@@ -111,8 +111,8 @@ export default function UpsellModal({ credits = 0, onClose, onBuy }) {
                   disabled={isBuying}
                   className={`w-full rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
                     plan.featured
-                      ? 'bg-gradient-to-r from-emerald-500 to-emerald-400 text-black hover:scale-[1.02]'
-                      : 'bg-gray-800 hover:bg-gray-700 text-white border border-gray-700'
+                      ? 'bg-gradient-to-r from-emerald-800 to-emerald-700 text-white hover:scale-[1.02]'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-900 border border-slate-300'
                   }`}
                 >
                   {isBuying ? (
@@ -129,7 +129,7 @@ export default function UpsellModal({ credits = 0, onClose, onBuy }) {
 
         {/* Error de pago */}
         {error && (
-          <div className="flex items-start gap-2 rounded-xl bg-red-500/10 border border-red-500/30 px-3 py-2 text-[11px] font-mono text-red-300">
+          <div className="flex items-start gap-2 rounded-xl bg-red-500/10 border border-red-500/30 px-3 py-2 text-[11px] font-mono text-red-700">
             <AlertCircle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
@@ -137,23 +137,23 @@ export default function UpsellModal({ credits = 0, onClose, onBuy }) {
 
         {/* Modo pruebas */}
         {!PAYMENTS_ENABLED && (
-          <div className="flex items-start gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/25 px-3 py-2 text-[11px] font-mono text-emerald-300">
+          <div className="flex items-start gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/25 px-3 py-2 text-[11px] font-mono text-emerald-800">
             <FlaskConical className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
             <span>
               <strong>Modo pruebas:</strong> los créditos se añaden gratis sin cobrar. Cuando actives los pagos en
-              <code className="text-emerald-400"> src/config.js </code>, se cobrarán con Stripe (Google Pay / Apple Pay).
+              <code className="text-emerald-700"> src/config.js </code>, se cobrarán con Stripe (Google Pay / Apple Pay).
             </span>
           </div>
         )}
 
         {/* Trust / note */}
-        <div className="flex items-center justify-center gap-4 text-[11px] text-gray-400 font-mono">
+        <div className="flex items-center justify-center gap-4 text-[11px] text-slate-600 font-mono">
           <span className="flex items-center gap-1"><Lock className="w-3 h-3" /> Pago seguro</span>
-          <span className="flex items-center gap-1"><Check className="w-3 h-3 text-emerald-400" /> Créditos al instante</span>
-          <span className="flex items-center gap-1"><Sparkles className="w-3 h-3 text-emerald-400" /> Sin suscripción</span>
+          <span className="flex items-center gap-1"><Check className="w-3 h-3 text-emerald-700" /> Créditos al instante</span>
+          <span className="flex items-center gap-1"><Sparkles className="w-3 h-3 text-emerald-700" /> Sin suscripción</span>
         </div>
 
-        <p className="text-center text-[10px] text-gray-500 font-mono">
+        <p className="text-center text-[10px] text-slate-500 font-mono">
           {PAYMENTS_ENABLED
             ? 'Pagos procesados por Stripe. Google Pay y Apple Pay disponibles según tu dispositivo.'
             : 'Fase de pruebas: compra simulada para probar el flujo completo.'}

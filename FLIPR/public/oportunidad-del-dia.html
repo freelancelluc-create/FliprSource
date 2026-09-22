@@ -13,32 +13,32 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #090A0F; color: #e5e7eb; line-height: 1.6; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
     .wrap { max-width: 760px; margin: 0 auto; padding: 32px 20px 56px; }
     .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-    .brand .mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#34d399,#34d399); display: flex; align-items: center; justify-content: center; font-weight: 800; color: #000; }
+    .brand .mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#047857,#047857); display: flex; align-items: center; justify-content: center; font-weight: 800; color: #ffffff; }
     .brand .name { font-size: 18px; font-weight: 800; }
-    .brand .tag { font-size: 10px; color: #34d399; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
-    .pill { display: inline-flex; align-items: center; gap: 8px; background: #34d39914; border: 1px solid #34d39944; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; color: #34d399; margin: 18px 0 4px; }
-    h1 { font-size: 28px; line-height: 1.2; font-weight: 800; color: #fff; margin-bottom: 8px; }
-    .subtle { color: #9ca3af; margin-bottom: 22px; }
-    .hero { background: #12151F; border: 1px solid #34d39944; border-radius: 22px; padding: 22px; margin-bottom: 20px; }
-    .hero .name { font-size: 22px; font-weight: 800; color: #fff; }
-    .score { display: inline-block; margin: 10px 0; background: #34d399; color: #000; font-weight: 800; border-radius: 12px; padding: 8px 16px; font-family: ui-monospace, monospace; font-size: 20px; }
+    .brand .tag { font-size: 10px; color: #047857; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; background: #34d39914; border: 1px solid #34d39944; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; color: #047857; margin: 18px 0 4px; }
+    h1 { font-size: 28px; line-height: 1.2; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+    .subtle { color: #475569; margin-bottom: 22px; }
+    .hero { background: #ffffff; border: 1px solid #34d39944; border-radius: 22px; padding: 22px; margin-bottom: 20px; }
+    .hero .name { font-size: 22px; font-weight: 800; color: #0f172a; }
+    .score { display: inline-block; margin: 10px 0; background: #047857; color: #ffffff; font-weight: 800; border-radius: 12px; padding: 8px 16px; font-family: ui-monospace, monospace; font-size: 20px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 16px 0; }
-    .metric { background: #090A0F; border: 1px solid #262a36; border-radius: 12px; padding: 12px; }
-    .metric .k { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #6b7280; margin-bottom: 4px; }
-    .metric .v { font-size: 18px; font-weight: 800; color: #34d399; font-family: ui-monospace, monospace; }
-    .metric .v.muted { color: #e5e7eb; }
-    .card { background: #12151F; border: 1px solid #262a36; border-radius: 18px; padding: 20px; margin-bottom: 18px; }
-    .card h2 { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 12px; }
+    .metric { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; }
+    .metric .k { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #64748b; margin-bottom: 4px; }
+    .metric .v { font-size: 18px; font-weight: 800; color: #047857; font-family: ui-monospace, monospace; }
+    .metric .v.muted { color: #1e293b; }
+    .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 20px; margin-bottom: 18px; }
+    .card h2 { font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 12px; }
     ul.check { list-style: none; margin: 0; }
-    ul.check li { padding: 7px 0 7px 26px; position: relative; color: #d1d5db; border-bottom: 1px solid #1f232d; }
+    ul.check li { padding: 7px 0 7px 26px; position: relative; color: #334155; border-bottom: 1px solid #e2e8f0; }
     ul.check li:last-child { border-bottom: none; }
-    ul.check li::before { content: "✔"; color: #34d399; position: absolute; left: 0; font-weight: 800; }
-    .cta { display: block; text-align: center; background: linear-gradient(90deg,#34d399,#34d399); color: #000; font-weight: 800; font-size: 17px; padding: 15px; border-radius: 14px; text-decoration: none; margin: 24px 0 10px; }
+    ul.check li::before { content: "✔"; color: #047857; position: absolute; left: 0; font-weight: 800; }
+    .cta { display: block; text-align: center; background: linear-gradient(90deg,#047857,#047857); color: #ffffff; font-weight: 800; font-size: 17px; padding: 15px; border-radius: 14px; text-decoration: none; margin: 24px 0 10px; }
     .cta small { display: block; font-weight: 600; font-size: 12px; opacity: .8; margin-top: 4px; }
-    .note { font-size: 12px; color: #6b7280; }
+    .note { font-size: 12px; color: #64748b; }
   </style>
 
     <!-- Open Graph (WhatsApp, Telegram, Facebook, LinkedIn) -->

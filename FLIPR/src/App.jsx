@@ -359,7 +359,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090A0F] text-gray-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-emerald-200 selection:text-slate-900">
       <Analytics />
       
       {/* Top Navbar */}
@@ -382,12 +382,12 @@ export default function App() {
       <main className="flex-1">
         {publicRoute ? (
           publicLoading ? (
-            <div className="flex flex-1 items-center justify-center py-24 text-sm text-gray-400 font-mono">Cargando análisis…</div>
+            <div className="flex flex-1 items-center justify-center py-24 text-sm text-slate-600 font-mono">Cargando análisis…</div>
           ) : publicError ? (
             <div className="mx-auto max-w-xl px-4 py-24 text-center space-y-4">
-              <p className="text-lg font-bold text-white">Este análisis no está disponible</p>
-              <p className="text-sm text-gray-400">Puede que el enlace haya caducado o el servidor esté temporalmente inaccesible.</p>
-              <a href="/" className="inline-block rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-5 py-3 text-sm font-bold text-black">Probar FLIPR gratis</a>
+              <p className="text-lg font-bold text-slate-900">Este análisis no está disponible</p>
+              <p className="text-sm text-slate-600">Puede que el enlace haya caducado o el servidor esté temporalmente inaccesible.</p>
+              <a href="/" className="inline-block rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-700 px-5 py-3 text-sm font-bold text-white">Probar FLIPR gratis</a>
             </div>
           ) : publicResult ? (
             <ResultCard
@@ -428,12 +428,12 @@ export default function App() {
               <div className="mx-auto max-w-5xl px-4 pt-6">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3">
                   <div className="text-sm">
-                    <span className="font-bold text-white">Crea tu cuenta gratis</span>
-                    <span className="text-gray-300"> para guardar análisis, comparar oportunidades y recibir alertas de precio.</span>
+                    <span className="font-bold text-slate-900">Crea tu cuenta gratis</span>
+                    <span className="text-slate-700"> para guardar análisis, comparar oportunidades y recibir alertas de precio.</span>
                   </div>
                   <button
                     onClick={() => openAuth('register')}
-                    className="shrink-0 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-400 px-4 py-2 text-xs font-bold text-black hover:scale-105 transition-all"
+                    className="shrink-0 rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-700 px-4 py-2 text-xs font-bold text-white hover:scale-105 transition-all"
                   >
                     Crear cuenta gratis
                   </button>

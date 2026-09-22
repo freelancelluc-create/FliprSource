@@ -14,36 +14,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #090A0F; color: #e5e7eb; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; -webkit-font-smoothing: antialiased; }
     .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 56px; }
     .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-    .brand .mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#34d399,#10b981); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #000; font-size: 18px; }
-    .brand .name { font-size: 18px; font-weight: 800; letter-spacing: .02em; color: #fff; }
-    .brand .tag { font-size: 10px; color: #34d399; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
-    h1 { font-size: 32px; line-height: 1.2; font-weight: 900; margin: 20px 0 12px; color: #fff; letter-spacing: -0.02em; }
-    .subtle { color: #9ca3af; font-size: 16px; margin-bottom: 26px; }
-    .card { background: #12151F; border: 1px solid #262a36; border-radius: 20px; padding: 24px; margin-bottom: 22px; }
-    .card h2 { font-size: 19px; font-weight: 800; color: #fff; margin-bottom: 14px; }
+    .brand .mark { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg,#047857,#047857); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #ffffff; font-size: 18px; }
+    .brand .name { font-size: 18px; font-weight: 800; letter-spacing: .02em; color: #0f172a; }
+    .brand .tag { font-size: 10px; color: #047857; letter-spacing: .14em; text-transform: uppercase; font-weight: 800; }
+    h1 { font-size: 32px; line-height: 1.2; font-weight: 900; margin: 20px 0 12px; color: #0f172a; letter-spacing: -0.02em; }
+    .subtle { color: #475569; font-size: 16px; margin-bottom: 26px; }
+    .card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 24px; margin-bottom: 22px; }
+    .card h2 { font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 14px; }
     .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
-    .feature { background: #090A0F; border: 1px solid #262a36; border-radius: 14px; padding: 16px; }
+    .feature { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; }
     .feature .icon { font-size: 24px; margin-bottom: 8px; }
-    .feature h3 { font-size: 14px; font-weight: 800; color: #34d399; margin-bottom: 6px; }
-    .feature p { font-size: 12px; color: #9ca3af; line-height: 1.5; }
-    .callout { background: rgba(52, 211, 153, 0.08); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 18px; padding: 20px; margin: 24px 0; color: #d1fae5; }
-    .callout strong { color: #fff; }
-    .callout .big { font-size: 28px; font-weight: 900; color: #34d399; font-family: 'JetBrains Mono', monospace; }
+    .feature h3 { font-size: 14px; font-weight: 800; color: #047857; margin-bottom: 6px; }
+    .feature p { font-size: 12px; color: #475569; line-height: 1.5; }
+    .callout { background: rgba(52, 211, 153, 0.08); border: 1px solid rgba(52, 211, 153, 0.3); border-radius: 18px; padding: 20px; margin: 24px 0; color: #064e3b; }
+    .callout strong { color: #0f172a; }
+    .callout .big { font-size: 28px; font-weight: 900; color: #047857; font-family: 'JetBrains Mono', monospace; }
     ul.check { list-style: none; margin: 0; }
-    ul.check li { padding: 10px 0 10px 32px; position: relative; color: #d1d5db; border-bottom: 1px solid #1f232d; font-size: 14px; }
+    ul.check li { padding: 10px 0 10px 32px; position: relative; color: #334155; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
     ul.check li:last-child { border-bottom: none; }
-    ul.check li::before { content: "✔"; color: #34d399; position: absolute; left: 0; font-weight: 800; }
-    .cta { display: block; text-align: center; background: linear-gradient(135deg,#34d399,#10b981); color: #000; font-weight: 800; font-size: 17px; padding: 16px; border-radius: 16px; text-decoration: none; margin: 28px 0 12px; box-shadow: 0 10px 30px rgba(52,211,153,0.25); transition: transform 0.15s ease; }
+    ul.check li::before { content: "✔"; color: #047857; position: absolute; left: 0; font-weight: 800; }
+    .cta { display: block; text-align: center; background: linear-gradient(135deg,#047857,#047857); color: #ffffff; font-weight: 800; font-size: 17px; padding: 16px; border-radius: 16px; text-decoration: none; margin: 28px 0 12px; box-shadow: 0 10px 30px rgba(52,211,153,0.25); transition: transform 0.15s ease; }
     .cta:hover { transform: scale(1.02); }
     .cta small { display: block; font-weight: 600; font-size: 12px; opacity: .85; margin-top: 4px; }
     .table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
-    .table th, .table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #262a36; }
-    .table th { color: #9ca3af; font-family: monospace; font-size: 11px; text-transform: uppercase; }
-    .table td { color: #e5e7eb; }
-    .table td.profit { color: #34d399; font-weight: 800; font-family: monospace; }
+    .table th, .table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    .table th { color: #475569; font-family: monospace; font-size: 11px; text-transform: uppercase; }
+    .table td { color: #1e293b; }
+    .table td.profit { color: #047857; font-weight: 800; font-family: monospace; }
   </style>
 
   <!-- Open Graph (WhatsApp, Telegram, Facebook, LinkedIn) -->
@@ -115,7 +115,7 @@
     <div class="callout">
       <strong>Regla de oro de la reventa:</strong>
       <div class="big">El beneficio se hace en la compra, no en la venta.</div>
-      <p style="margin-top:6px; font-size:13px; color:#a7f3d0;">
+      <p style="margin-top:6px; font-size:13px; color:#065f46;">
         Si compras al precio adecuado con colchón suficiente, la venta siempre es rentable. FLIPR calcula tu precio máximo de compra para asegurar tu margen.
       </p>
     </div>

@@ -32,24 +32,24 @@ export default function ActionListingModal({ result, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
       <div className="glass-panel w-full max-w-2xl rounded-3xl p-6 sm:p-8 space-y-6 border border-emerald-500/30 relative max-h-[90vh] overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-gray-800 pb-4">
+        <div className="flex items-center justify-between border-b border-slate-200 pb-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+            <div className="h-10 w-10 rounded-xl bg-emerald-500/20 text-emerald-700 flex items-center justify-center">
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">✍️ Generador de Anuncio para Revender</h3>
-              <p className="text-xs text-gray-400">Optimizando conversión para Wallapop y Vinted</p>
+              <h3 className="text-lg font-bold text-slate-900">✍️ Generador de Anuncio para Revender</h3>
+              <p className="text-xs text-slate-600">Optimizando conversión para Wallapop y Vinted</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="rounded-full p-2 text-gray-400 hover:bg-gray-800 hover:text-white"
+            className="rounded-full p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
           >
             <X className="w-5 h-5" />
           </button>
@@ -58,24 +58,24 @@ export default function ActionListingModal({ result, onClose }) {
         {/* Pricing Strategy Banner */}
         <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-4 grid grid-cols-2 gap-4 text-xs font-mono">
           <div>
-            <span className="text-gray-400 uppercase block">Precio de salida recomendado</span>
-            <span className="text-base font-bold text-emerald-400">{result.probableResellMax || result.marketRangeMax} €</span>
+            <span className="text-slate-600 uppercase block">Precio de salida recomendado</span>
+            <span className="text-base font-bold text-emerald-700">{result.probableResellMax || result.marketRangeMax} €</span>
           </div>
           <div>
-            <span className="text-gray-400 uppercase block">Precio mínimo aceptable</span>
-            <span className="text-base font-bold text-white">{result.probableResellMin || result.marketRangeMin} €</span>
+            <span className="text-slate-600 uppercase block">Precio mínimo aceptable</span>
+            <span className="text-base font-bold text-slate-900">{result.probableResellMin || result.marketRangeMin} €</span>
           </div>
         </div>
 
         {/* Title Generator */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-mono font-bold text-gray-300 uppercase">
+            <label className="text-xs font-mono font-bold text-slate-700 uppercase">
               Título Optimizado para SEO:
             </label>
             <button
               onClick={handleCopyTitle}
-              className="text-xs font-bold text-emerald-400 flex items-center gap-1 hover:underline"
+              className="text-xs font-bold text-emerald-700 flex items-center gap-1 hover:underline"
             >
               {copiedTitle ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
               <span>{copiedTitle ? 'Copiado' : 'Copiar título'}</span>
@@ -85,19 +85,19 @@ export default function ActionListingModal({ result, onClose }) {
             type="text"
             readOnly
             value={title}
-            className="w-full rounded-xl bg-[#090A0F] border border-gray-800 p-3 text-xs font-bold text-white focus:outline-none"
+            className="w-full rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs font-bold text-slate-900 focus:outline-none"
           />
         </div>
 
         {/* Description Generator */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-xs font-mono font-bold text-gray-300 uppercase">
+            <label className="text-xs font-mono font-bold text-slate-700 uppercase">
               Descripción detallada de venta:
             </label>
             <button
               onClick={handleCopyDesc}
-              className="rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 shadow-lg"
+              className="rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 shadow-lg"
             >
               {copiedDesc ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               <span>{copiedDesc ? 'Todo copiado!' : 'Copiar anuncio completo'}</span>
@@ -108,28 +108,28 @@ export default function ActionListingModal({ result, onClose }) {
             readOnly
             rows={7}
             value={description}
-            className="w-full rounded-2xl bg-[#090A0F] border border-gray-800 p-4 text-xs font-sans text-gray-200 focus:outline-none leading-relaxed resize-none"
+            className="w-full rounded-2xl bg-slate-50 border border-slate-200 p-4 text-xs font-sans text-slate-800 focus:outline-none leading-relaxed resize-none"
           />
         </div>
 
         {/* SEO Tags */}
         <div className="space-y-2">
-          <label className="text-xs font-mono font-bold text-gray-300 uppercase block">
+          <label className="text-xs font-mono font-bold text-slate-700 uppercase block">
             Etiquetas / Hashtags recomendados:
           </label>
           <div className="flex flex-wrap gap-2">
             {tags.map((t, idx) => (
-              <span key={idx} className="rounded-lg bg-gray-800/80 border border-gray-700 px-2.5 py-1 text-xs text-gray-300 font-mono">
+              <span key={idx} className="rounded-lg bg-slate-100 border border-slate-300 px-2.5 py-1 text-xs text-slate-700 font-mono">
                 #{t}
               </span>
             ))}
           </div>
         </div>
 
-        <div className="flex justify-end pt-2 border-t border-gray-800">
+        <div className="flex justify-end pt-2 border-t border-slate-200">
           <button
             onClick={onClose}
-            className="rounded-xl bg-gray-800 hover:bg-gray-700 px-6 py-2 text-xs font-bold text-white"
+            className="rounded-xl bg-slate-100 hover:bg-slate-200 px-6 py-2 text-xs font-bold text-slate-900"
           >
             Cerrar
           </button>
