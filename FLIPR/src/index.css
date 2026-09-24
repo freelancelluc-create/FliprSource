@@ -5,16 +5,14 @@
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   color-scheme: light;
-  
-  /* Paleta clara: fondo blanco/gris muy claro + verde esmeralda como acento.
-     Los nombres de variable se mantienen por compatibilidad. */
-  --color-bg-dark: #F8FAFC;          /* fondo principal (slate-50) */
-  --color-card-dark: #FFFFFF;        /* tarjetas y paneles */
-  --color-card-border: #E2E8F0;      /* bordes (slate-200) */
-  --color-lime-neon: #047857;        /* acento: botones, CTAs, texto destacado (emerald-700) */
-  --color-lime-glow: rgba(5, 150, 105, 0.25);
-  --color-amber-negocia: #B45309;    /* NEGOCIA, apto para texto sobre blanco */
-  --color-red-pasa: #DC2626;         /* PASA */
+  /* Paleta conversion-focused: blanco puro + verde fuerte para acento y CTA */
+  --color-bg-dark: #F5FAF7;
+  --color-card-dark: #FFFFFF;
+  --color-card-border: #DDEFE4;
+  --color-lime-neon: #0F9F6E;
+  --color-lime-glow: rgba(15, 159, 110, 0.18);
+  --color-amber-negocia: #B45309;
+  --color-red-pasa: #DC2626;
 }
 
 body {

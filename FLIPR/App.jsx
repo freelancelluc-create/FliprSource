@@ -361,7 +361,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090A0F] text-gray-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-black">
+    <div className="min-h-screen bg-[#F7FAF8] text-slate-900 flex flex-col font-sans selection:bg-emerald-600 selection:text-white">
       <Analytics />
       
       {/* Top Navbar */}
