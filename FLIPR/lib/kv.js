@@ -67,3 +67,28 @@ export async function kvDel(key) {
   const data = await runCommand(["DEL", key]);
   return !!data;
 }
+
+/** Incrementa un contador entero y devuelve el nuevo valor (o null si falla). */
+export async function kvIncr(key) {
+  const data = await runCommand(["INCR", key]);
+  return data && typeof data.result === "number" ? data.result : null;
+}
+
+/** Añade un valor (serializado a JSON) al final de una lista. */
+export async function kvRpush(key, value) {
+  const data = await runCommand(["RPUSH", key, JSON.stringify(value)]);
+  return !!data && typeof data.result === "number";
+}
+
+/** Lee un rango de una lista y parsea cada elemento (por defecto, todos). */
+export async function kvLrange(key, start = 0, stop = -1) {
+  const data = await runCommand(["LRANGE", key, String(start), String(stop)]);
+  const rows = data && Array.isArray(data.result) ? data.result : [];
+  return rows.map((raw) => {
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      return raw;
+    }
+  });
+}
